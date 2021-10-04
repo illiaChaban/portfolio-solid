@@ -1,5 +1,5 @@
 import { JSX, splitProps } from "solid-js"
-import { cx, makeStyles } from "./utils/styles"
+import { cx, makeStyles } from "../utils/styles/make-styles"
 
 const styles = makeStyles({
   btn: {

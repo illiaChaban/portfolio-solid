@@ -1,13 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <link rel="shortcut icon" type="image/ico" href="/src/assets/favicon.ico" />
-    <title>Solid App</title>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-178460557-1"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		function gtagEvent(eventName, config) {
+			gtag('event', eventName, config);
+		}
+		function gtagSetPath(path) {
+			gtagEvent('page_view', {
+				page_path: location.pathname,
+			})
+		}
+
+		gtag('js', new Date());
+		gtag('config', 'UA-178460557-1');
+		gtagSetPath();
+	</script>
+
+	<!-- Meta -->
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+	<meta name="Description" content="My main area of expertise is all things JavaScript. I love working with TypeScript and RxJS. Angular/React are my frameworks of choice for the client side. I also have a good amount of experience working with C# with .Net and Node with Express.js on the back-end.">
+	<meta property="og:locale" content="en_US">
+	<meta property="og:title" content="Illia - Full Stack Developer">
+	<meta property="og:description" content="My main area of expertise is all things JavaScript. I love working with TypeScript and RxJS. Angular/React are my frameworks of choice for the client side. I also have a good amount of experience working with C# with .Net and Node with Express.js on the back-end."/>
+	<meta property="og:site_name" content="Illia - Full Stack Developer">
+	<meta property="og:image" content="imgs/screen.jpg">
+	<meta property="og:image:secure_url" content="imgs/screen.jpg">
+	<meta property="og:image:width" content="1280">
+	<meta property="og:image:height" content="640">
+
+	<title>
+		Illia - Full Stack Developer
+	</title>
+
+	<link rel="icon" type="image/png" href="icons/favicon.ico">
+
+	<!-- Icons -->
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.9.0/css/all.css" >
+	<!-- Fonts -->
+	<link href="https://fonts.googleapis.com/css?family=Special+Elite|Inconsolata|Saira|League+Script|&display=swap" rel="stylesheet" type='text/css' media="all" >
+
   </head>
-  <body>
+  <body class="modern-theme">
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
 
