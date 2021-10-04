@@ -5,6 +5,7 @@ import About from './pages/about'
 import Skills from './pages/skills'
 import Projects from './pages/projects'
 import Contact from './pages/contact'
+import NotFound from "./pages/not-found";
 
 import {Button} from './components/button'
 import { ThemeProvider } from "./theme/theme";
@@ -12,6 +13,9 @@ import { NavIcon } from "./components/nav-icon";
 import { css } from "solid-styled-components";
 import { makeStyles } from "./utils/styles/make-styles";
 import { breakpoints } from "./utils/styles/breakpoints";
+import { isProduction } from "./constants/dev-mode";
+import { GTag } from "./components/g-tag";
+import { Particles } from "./components/particles";
 
 
 const styles = makeStyles({
@@ -99,37 +103,37 @@ const styles = makeStyles({
 })
 
 const App: Component = () => {
-
-
-  {/* <Particles /> */}
   return (
-    <main>
-      <Router>
+    <div>
+      <Particles />
+      <main>
+        <Router>
 
-        <div id='menu' class={styles.menu}>
-          <nav id='nav' class={styles.nav}>
-            <NavIcon.Home/>
-            <NavIcon.About/>
-            <NavIcon.Skills/>
-            <NavIcon.Projects/>
-            <NavIcon.Contact/>
-          </nav>
-        </div>
+          <div id='menu' class={styles.menu}>
+            <nav id='nav' class={styles.nav}>
+              <NavIcon.Home/>
+              <NavIcon.About/>
+              <NavIcon.Skills/>
+              <NavIcon.Projects/>
+              <NavIcon.Contact/>
+            </nav>
+          </div>
 
-        <div id="content">
-          <Routes>
-            <Route path="/" element={<Home/>} />
-            <Route path="/about" element={<About/>} />
-            <Route path="/skills" element={<Skills/>} />
-            <Route path="/projects" element={<Projects/>} />
-            <Route path="/contact" element={<Contact/>} />
-          </Routes>
-        </div>
+          <div id="content">
+            <Routes>
+              <Route path="/" element={<Home/>} />
+              <Route path="/about" element={<About/>} />
+              <Route path="/skills" element={<Skills/>} />
+              <Route path="/projects" element={<Projects/>} />
+              <Route path="/contact" element={<Contact/>} />
+              <Route path="/*all" element={<NotFound />} />
+            </Routes>
+          </div>
 
-      </Router>
-    </main>
+        </Router>
+      </main>
 
-
+    </div>
   );
 };
 {/* <div class={styles.App}>
@@ -144,6 +148,7 @@ const App: Component = () => {
 
 export default () => (
   <ThemeProvider>
+    {isProduction && <GTag/>}
     <App />
   </ThemeProvider>
 );

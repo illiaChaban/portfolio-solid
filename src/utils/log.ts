@@ -1,5 +1,5 @@
-import { Dictionary, isFunction, mapValues } from "lodash"
 import { createEffect } from "solid-js"
+import { isFunction, mapValues } from "./lodash"
 
 /** Log object of values or accessors. Will invoke all functions in the object */
 export const logValues = <T extends {}>(obj: T, msg: string = ''): void => {

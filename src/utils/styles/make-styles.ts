@@ -1,5 +1,5 @@
 import { css, CSSAttribute } from "solid-styled-components";
-import { mapValues } from 'lodash'
+import { mapValues } from "../lodash";
 
 export { default as cx } from 'classnames'
 

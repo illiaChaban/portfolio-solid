@@ -1,4 +1,4 @@
-import { isNumber } from "lodash"
+import { isNumber } from "../lodash"
 
 const _breakpoints = {
   xs: 320,

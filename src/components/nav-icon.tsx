@@ -103,7 +103,11 @@ export const NavIcon = {
     <NavIconBase href="/skills" iconName="fas fa-cog" />
   ),
   Projects: () => (
-    <NavIconBase href="/projects" iconName="fas fa-laptop-code" iconClassName={css``} />
+    <NavIconBase 
+      href="/projects" 
+      iconName="fas fa-laptop-code" 
+      iconClassName={css`font-size: 20px;`} 
+    />
   ),
   Contact: () => (
     <NavIconBase href="/contact" iconName="fas fa-envelope" />
