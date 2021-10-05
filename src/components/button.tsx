@@ -1,38 +1,66 @@
-import { JSX, splitProps } from "solid-js"
-import { cx, makeStyles } from "../utils/styles/make-styles"
+import { createSignal, JSX } from "solid-js"
+import { css } from 'solid-styled-components'
 
-const styles = makeStyles({
-  btn: {
-    minHeight: '40px',
-    minWidth: '70px',
-    background: 'blue',
-    color: 'white',
-    '&:hover': {
-      background: 'green'
-    },
-  },
-  disabled: {
-    background: 'gray'
+const styles = css`
+  --mouse-pos-x: 0px;
+  --mouse-pos-y: 0px;
+  --btn-color: var(--color-highlight);
+
+  box-shadow: 0 0 10px var(--btn-color);
+  text-decoration: none;
+  color: var(--btn-color);
+  background: transparent;
+  font-weight: 100;
+
+  padding: 8px 12px;
+  border-radius: 5px;
+  border: 1px solid var(--btn-color);
+  
+  font-family: 'Saira', Helvetica, Arial, sans-serif; 
+  font-size: 1.5rem;
+
+  display: inline-block;
+  text-transform: uppercase;
+  cursor: pointer;
+  outline: none;
+
+  &:focus {
+    box-shadow: 0 0 20px 1px var(--color-highlight);
   }
-})
+
+  &:hover {
+    color: var(--body-background-color);
+    /* font-weight: 900;  */ /* changes btn width on firefox */
+    background: orange;
+    background: radial-gradient(circle at var(--mouse-pos-x) var(--mouse-pos-y), var(--btn-color) 50%,rgba(0,0,0,0) 100%);
+  }
+`
 
 
-export const Button = (props: {
+export const Button = (p: {
   children: JSX.Element, 
-  onClick?: JSX.DOMAttributes<HTMLButtonElement>['onClick'],
-  disabled?: boolean
+  onClick: JSX.DOMAttributes<HTMLButtonElement>['onClick'],
 }): JSX.Element => {
 
-  const [p, otherProps] = splitProps(props, ['children', 'disabled'])
+  type MousePosition = {x: number, y: number};
+  const [mousePosition, setMousePosition] = createSignal<MousePosition>({x: 0, y: 0})
+  const trackMousePosition = (e: MouseEvent) => {
+    setMousePosition({x: e.offsetX, y: e.offsetY});
+  };
+
   return (
     <button 
-      className={cx(
-        styles.btn, 
-        {[styles.disabled]: p.disabled}
-      )} 
-      {...otherProps}
-    >
-      {p.disabled ? 'DISABLED' : p.children}
+      class={styles}
+      onMouseMove={trackMousePosition}
+      onClick={p.onClick}
+      style={`
+        --mouse-pos-x: ${mousePosition().x}px; 
+        --mouse-pos-y: ${mousePosition().y}px;
+      `}
+      >
+      {p.children}
     </button>
   )
 }
+
+

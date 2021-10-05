@@ -19,3 +19,7 @@ export const isNumber = (val: unknown): val is number => {
 export const isFunction = (val: unknown): val is Function => {
   return typeof val === 'function'
 }
+
+export const isArray = (val: unknown): val is any[] => {
+  return Array.isArray(val)
+}

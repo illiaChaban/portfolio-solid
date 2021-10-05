@@ -1,13 +1,12 @@
 import { onMount } from "solid-js";
 import { css } from "solid-styled-components";
-import { loadScript } from "../utils/load-script";
+import { getCssVariable } from "../utils/styles/get-css-var";
 
 export const Particles = () => {
   const containerId = 'particles';
 
   onMount(async () => {
-    const colorHighlight = 'blue';
-    // const colorHighlight = getCssVariable('--color-highlight');
+    const colorHighlight = getCssVariable('--color-highlight');
     await initParticles(containerId, colorHighlight);
   });
 
@@ -32,7 +31,7 @@ declare function particlesJS(id: string, config: Record<string, any>): void;
 
 const initParticles = async (containerId: string, color: string) => {
   
-  await loadScript('other/js/part1cl3sLibrary.js');
+  await import('../assets/other/part1cl3sLibrary')
   
   particlesJS(
     containerId, 
