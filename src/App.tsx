@@ -136,15 +136,6 @@ const App: Component = () => {
     </div>
   );
 };
-{/* <div class={styles.App}>
-      <h1>App</h1>
-      <NavLink href="/">Home</NavLink>
-      <NavLink href="/about">About</NavLink>
-      <Routes>
-        <Route path="/about" element={<About />} />
-        <Route path="/" element={<Home />} />
-      </Routes>
-    </div> */}
 
 export default () => (
   <ThemeProvider>
