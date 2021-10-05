@@ -1,5 +1,5 @@
 import { Component } from "solid-js";
-import { Router, Routes, Route, NavLink } from "solid-app-router";
+import { Router, Routes, Route } from "solid-app-router";
 import Home from './pages/home'
 import About from './pages/about'
 import Skills from './pages/skills'
@@ -7,10 +7,8 @@ import Projects from './pages/projects'
 import Contact from './pages/contact'
 import NotFound from "./pages/not-found";
 
-import {Button} from './components/button'
 import { ThemeProvider } from "./theme/theme";
 import { NavIcon } from "./components/nav-icon";
-import { css } from "solid-styled-components";
 import { makeStyles } from "./utils/styles/make-styles";
 import { breakpoints } from "./utils/styles/breakpoints";
 import { isProduction } from "./constants/dev-mode";
@@ -69,37 +67,22 @@ const styles = makeStyles({
       textAlign: 'center',
       height: '60px',
     }
+  },
+  content: {
+    boxSizing: 'border-box',
+    width: '100%',
+    height: '100%',
+    position: 'relative',
+    paddingLeft: 'var(--menu-offset)',
+    minHeight: '100vh',
+    display: 'flex',
+    flexDirection: 'column',
+
+    [breakpoints.down('md')]: {
+      paddingLeft: 0,
+      paddingBottom: 'var(--menu-offset)',
+    }
   }
- 
-
-  // #nav {
-
-  // }
-
-  // #content {
-  //   box-sizing: border-box;
-  //   width: 100%;
-  //   height: 100%;
-  //   position: relative;
-  //   padding-left: var(--menu-offset);
-
-  //   min-height: 100vh;
-
-  //   display: flex;
-  //   flex-direction: column;
-  // }
-
-  // @media (max-width: 960px) {
-
-
-  //   #content
-  //   {
-  //     padding-left: 0;
-  //     padding-bottom: var(--menu-offset);
-  //   }
-
-  // }
-
 })
 
 const App: Component = () => {
@@ -109,8 +92,14 @@ const App: Component = () => {
       <main>
         <Router>
 
-          <div id='menu' class={styles.menu}>
-            <nav id='nav' class={styles.nav}>
+          <div 
+            // id='menu' 
+            class={styles.menu}
+          >
+            <nav 
+              // id='nav' 
+              class={styles.nav}
+            >
               <NavIcon.Home/>
               <NavIcon.About/>
               <NavIcon.Skills/>
@@ -119,7 +108,10 @@ const App: Component = () => {
             </nav>
           </div>
 
-          <div id="content">
+          <div 
+            // id="content" 
+            className={styles.content}
+          >
             <Routes>
               <Route path="/" element={<Home/>} />
               <Route path="/about" element={<About/>} />

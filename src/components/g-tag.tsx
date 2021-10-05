@@ -1,8 +1,8 @@
 import { onMount } from "solid-js";
 import { JSX } from "solid-js/jsx-runtime";
-import { loadEnv } from "vite";
 import { loadScript } from "../utils/load-script";
 
+// TODO: Add lodash once
 export const GTag = (): JSX.Element => {
   onMount( async () => {
     const id = 'UA-178460557-1'
