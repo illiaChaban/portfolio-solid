@@ -1,7 +1,7 @@
 import { useNavigate } from 'solid-app-router'
 import { Button } from '../components/button'
 import { textScramble } from '../directives/text-scramble'
-import { getUseDirectives } from '../utils/get-use-directives'
+import { use } from '../utils/get-use-directives'
 import { breakpoints } from '../utils/styles/breakpoints'
 import { cx, makeStyles } from '../utils/styles/make-styles'
 
@@ -57,7 +57,7 @@ const Home = () => {
     <div class={cx(styles.homeText, 'padding-15 body-tags')}>
       <div class={cx(styles.textContainer, "div-tags")}>
         <h2 
-          ref={getUseDirectives(textScramble)}
+          ref={use(textScramble)}
           class={styles.subtle} 
         >Full Stack | TS | Angular | React Native | C# | .Net</h2>
         
