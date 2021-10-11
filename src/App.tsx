@@ -1,5 +1,5 @@
-import { Component } from "solid-js";
-import { Router, Routes, Route } from "solid-app-router";
+import { Component, createEffect, createSignal, onCleanup, onMount } from "solid-js";
+import { Router, Routes, Route, useLocation } from "solid-app-router";
 import Home from './pages/home'
 import About from './pages/about'
 import Skills from './pages/skills'
@@ -14,6 +14,9 @@ import { breakpoints } from "./utils/styles/breakpoints";
 import { isProduction } from "./constants/dev-mode";
 import { GTag } from "./components/g-tag";
 import { Particles } from "./components/particles";
+import { InkTransition } from './components/ink-transition'
+import { createLogValues } from "./utils/log";
+import { PageTransitionProvider, usePageTransition } from "./contexts/page-transition";
 
 
 const styles = makeStyles({
@@ -66,6 +69,10 @@ const styles = makeStyles({
       overflow: 'hidden',
       textAlign: 'center',
       height: '60px',
+
+      '&:after': {
+
+      }, 
     }
   },
   content: {
@@ -86,11 +93,17 @@ const styles = makeStyles({
 })
 
 const App: Component = () => {
+  const {PageTransitionHandler} = usePageTransition()
+
   return (
     <div>
       <Particles />
+      {/* {PageTransitionHandler} */}
+      <PageTransitionHandler />
+
+      {/* <InkTransition /> */}
+
       <main>
-        <Router>
 
           <div 
             // id='menu' 
@@ -108,6 +121,7 @@ const App: Component = () => {
             </nav>
           </div>
 
+
           <div 
             // id="content" 
             className={styles.content}
@@ -122,7 +136,6 @@ const App: Component = () => {
             </Routes>
           </div>
 
-        </Router>
       </main>
 
     </div>
@@ -132,6 +145,10 @@ const App: Component = () => {
 export default () => (
   <ThemeProvider>
     {isProduction && <GTag/>}
-    <App />
+    <Router>
+      <PageTransitionProvider>
+        <App />
+      </PageTransitionProvider>
+    </Router>
   </ThemeProvider>
 );
