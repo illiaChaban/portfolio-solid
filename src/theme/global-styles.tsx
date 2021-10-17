@@ -1,4 +1,5 @@
 import { createGlobalStyles } from "solid-styled-components";
+import InkImg from '../contexts/page-transition/ink.png'
 
 // export const GlobalStyles = createGlobalStyles({
 //   body: {
@@ -295,6 +296,117 @@ export const GlobalStyles = createGlobalStyles`
     outline: none;
   }
 
+  .cd-transition-layer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    height: 100%;
+    width: 100%;
+    opacity: 0;
+    visibility: hidden;
+    overflow: hidden;
+    filter: hue-rotate(252deg);
+  }
+  .cd-transition-layer .bg-layer {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    -webkit-transform: translateY(-50%) translateX(-2%);
+    -moz-transform: translateY(-50%) translateX(-2%);
+    -ms-transform: translateY(-50%) translateX(-2%);
+    -o-transform: translateY(-50%) translateX(-2%);
+    transform: translateY(-50%) translateX(-2%);
+    /* its dimentions will be overwritten using jQuery to proportionally fit the viewport */
+    height: 100%;
+    /* our sprite is composed of 25 frames */
+    width: 2500%;
+    background: url(${InkImg}) no-repeat 0 0;
+    background-size: 100% 100%;
+    opacity: 1;
+  }
+  .cd-transition-layer.visible {
+    opacity: 1;
+    visibility: visible;
+  }
+  .cd-transition-layer.opening .bg-layer {
+    animation: cd-sequence 0.4s steps(20);
+    animation-fill-mode: forwards;
+  }
+  .cd-transition-layer.closing .bg-layer {
+    animation: cd-sequence-reverse 0.4s steps(20);
+    animation-fill-mode: forwards;
+    animation: fadeOut 2s;
+  }
+  .no-cssanimations .cd-transition-layer {
+    display: none;
+  }
+  
+  @keyframes fadeOut {
+    0% {
+      opacity: 1;
+    }
+
+    100% {
+      opacity: 0;
+    }
+  }
+  @keyframes cd-sequence {
+    0% {
+      transform: translateY(-50%) translateX(-2%);
+    }
+    100% {
+      transform: translateY(-50%) translateX(-82%);
+    }
+  }
+
+  @keyframes cd-sequence-reverse {
+    0% {
+      transform: translateY(-50%) translateX(-82%);
+    }
+    100% {
+      transform: translateY(-50%) translateX(-2%);
+    }
+  }
+  
 `
 
+
+ // @-webkit-keyframes cd-sequence {
+  //   0% {
+  //     /* translateX(-2%) is used to horizontally center the first frame inside the viewport */
+  //     -webkit-transform: translateY(-50%) translateX(-2%);
+  //   }
+  //   100% {
+  //     /* translateX(-98%) (2% + 96) is used to horizontally center the last frame inside the viewport  */
+  //     -webkit-transform: translateY(-50%) translateX(-98%);
+  //   }
+  // }
+  // @-moz-keyframes cd-sequence {
+  //   0% {
+  //     /* translateX(-2%) is used to horizontally center the first frame inside the viewport */
+  //     -moz-transform: translateY(-50%) translateX(-2%);
+  //   }
+  //   100% {
+  //     /* translateX(-98%) (2% + 96) is used to horizontally center the last frame inside the viewport  */
+  //     -moz-transform: translateY(-50%) translateX(-98%);
+  //   }
+  // }
+
+  // @-webkit-keyframes cd-sequence-reverse {
+  //   0% {
+  //     -webkit-transform: translateY(-50%) translateX(-98%);
+  //   }
+  //   100% {
+  //     -webkit-transform: translateY(-50%) translateX(-2%);
+  //   }
+  // }
+  // @-moz-keyframes cd-sequence-reverse {
+  //   0% {
+  //     -moz-transform: translateY(-50%) translateX(-98%);
+  //   }
+  //   100% {
+  //     -moz-transform: translateY(-50%) translateX(-2%);
+  //   }
+  // }
 
