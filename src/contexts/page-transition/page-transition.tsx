@@ -3,7 +3,10 @@ import { Unsubscribe } from "../../types"
 import { waitForEvent } from "../../utils/events"
 import { useRef } from "../../utils/useRef"
 
-
+// TODO:
+// - move global styles here
+// - fix set layer dimensions on mobile
+// - update ink picture with ligher main color ?
 export const PageTranstion = (p: {onTransitionIn: () => void}) => {
   const transitionLayerRef = useRef<HTMLDivElement>()
   const backgroundLayerRef = useRef<HTMLDivElement>()
