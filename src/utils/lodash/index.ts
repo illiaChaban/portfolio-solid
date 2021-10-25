@@ -23,3 +23,10 @@ export const isFunction = (val: unknown): val is Function => {
 export const isArray = (val: unknown): val is any[] => {
   return Array.isArray(val)
 }
+
+export const pick = <T extends {}, TKeys extends keyof T>(obj: T, keys: TKeys[]): Pick<T, TKeys> => {
+  return keys.reduce((newObj, key) => {
+    newObj[key] = obj[key]
+    return newObj
+  }, {} as Pick<T, TKeys>)
+} 

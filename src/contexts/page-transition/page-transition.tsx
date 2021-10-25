@@ -1,158 +1,59 @@
-import { createEffect, createSignal, on, onCleanup, onMount } from "solid-js"
-import { css } from 'solid-styled-components'
-import { bindEvent } from "../../utils/bind-event"
-import { cx, makeStyles } from "../../utils/styles/make-styles"
+import { createEffect, on, onCleanup, onMount } from "solid-js"
+import { Unsubscribe } from "../../types"
+import { waitForEvent } from "../../utils/events"
 import { useRef } from "../../utils/useRef"
 
-const styles = makeStyles({
-  cover: {
-    width: '100vw',
-    height: '100vh',
-    background: 'black',
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    zIndex: 3,
-    opacity: 0,
-    transition: 'opacity 1s',
-    display: 'block',
-    pointerEvents: 'none'
-  },
-  hide: {
-    display: 'none'
-  },
-  in: {
-    opacity: 1
-  },
-  out: {
-    opacity: 0,
-  },
-      
-  // 50% {
-  //   opacity: 1;
-  // }
 
-  // showTransition: `
-  //   animation: fadeInOut .6s;
-  //   animation-fill-mode: forwards;
-  //   @keyframes fadeInOut {
-  //     0% {
-  //       opacity: 0;
-  //     }
-
-  //     100% {
-  //       opacity: 1;
-  //     }
-  //   }
-  // `,
-  // showTransition2: `
-  //   animation: fadeInOut2 .6s;
-  //   @keyframes fadeInOut2 {
-  //     0% {
-  //       opacity: 0;
-  //     }
-    
-  //     50% {
-  //       opacity: 1;
-  //     }
-
-  //     0% {
-  //       opacity: 0;
-  //     }
-  //   }
-  // `
-})
-
-const animationDuration = 400
-const animationStyle = css`
-  animation: fadeInOut ${animationDuration / 1000}s;
-  @keyframes fadeInOut {
-    0% {
-      opacity: 0;
-    }
-
-    50% {
-      opacity: 1;
-    }
-
-    100% {
-      opacity: 0;
-    }
-  }
-`
-
-export const PageTranstion = (p: {onTransitionIn?: () => void}) => {
-  // const ref = useRef<HTMLDivElement>()
-
-
-  // createEffect(on(() => p.onTransitionIn, () => {
-  //   ref.current.classList.add(animationStyle)
-  //   const id = setTimeout(() => p.onTransitionIn?.(), animationDuration / 2)
-  //   const unbind = bindEvent(ref.current, 'animationend', () => ref.current.classList.remove(animationStyle))
-  //   onCleanup(() => {
-  //     clearTimeout(id);
-  //     unbind()
-  //   })
-  //   console.log('on transition in changed')
-
-
-  // }))
+export const PageTranstion = (p: {onTransitionIn: () => void}) => {
+  const transitionLayerRef = useRef<HTMLDivElement>()
+  const backgroundLayerRef = useRef<HTMLDivElement>()
 
   onMount(() => {
-    const transitionL = document.querySelector('.cd-transition-layer'),
-    transitionB = transitionL.querySelector('.bg-layer');
-  
-    const animationEndEvents = ['webkitAnimationEnd', 'onanimationend', 'msAnimationEnd', 'animationend'],
-      frameProportion = 1.78, //png frame aspect ratio
-      frames = 25; //number of png frames
+    const transitionLayer = transitionLayerRef.current;
+    const backgroundLayer = backgroundLayerRef.current;
+
+    const frameProportion = 1.78; //png frame aspect ratio
+    const frames = 25; //number of png frames
   
     let settingLayerDimensions = false;
   
     //set transitionBackground dimentions
     setLayerDimensions();
     window.addEventListener('resize', () => {
+      console.log('resize')
       if( !settingLayerDimensions ) {
         settingLayerDimensions = true;
         (!window.requestAnimationFrame) ? setTimeout(setLayerDimensions, 300) : window.requestAnimationFrame(setLayerDimensions);
       }
     });
   
-    //open modal window
-    // modalT.addEventListener('click', e => {
-    // 	e.preventDefault();
-    const animate = () => {
-      transitionL.classList.add('visible','opening');
-      // var delay = ( $('.no-cssanimations').length > 0 ) ? 0 : 600;
-      setTimeout(function(){
+    const animate = (): Unsubscribe => {
+      const classes = transitionLayer.classList
+
+      let canceled = false
+      const cancel = () => canceled = true;
+
+      const waitForAnimation = () => waitForEvent(backgroundLayer, 'animationend')
+
+      ;(async () => {
+        classes.remove('closing')
+        if (!classes.contains('opening')) {
+          classes.add('visible','opening');
+          await waitForAnimation()
+        }
+        if (canceled) return
+
+        classes.remove('opening')
         p.onTransitionIn()
-        transitionL.classList.add('closing');
-        animationEndEvents.forEach( event => {
-          transitionB.addEventListener( event, removeTransitionLayerClasses )
-        });
-      }, 500);
+        classes.add('closing');
+
+        await waitForAnimation()
+        if (canceled) return
+        classes.remove('visible', 'closing');
+      })()
+
+      return cancel
     }
-    // })
-  
-    //close modal window
-    function removeTransitionLayerClasses() {
-      transitionL.classList.remove('closing', 'opening', 'visible');
-      animationEndEvents.forEach( ev => {
-        transitionB.removeEventListener(ev, removeTransitionLayerClasses);
-      });
-    }
-  
-  
-    // modalW.addEventListener('click', e => {
-    // 	if (e.target.classList.contains('modal-close')) {
-    // 		e.preventDefault();
-    // 		transitionL.classList.add('closing');
-    // 		modalW.classList.remove('visible');
-    // 		animationEndEvents.forEach( event => {
-    // 			transitionB.addEventListener( event, removeTransitionLayerClasses )
-    // 		});
-    // 	}
-    // })
-  
   
     // vanilla JS window width and height
     function getWindowWidthHeight() {
@@ -177,8 +78,10 @@ export const PageTranstion = (p: {onTransitionIn?: () => void}) => {
         layerWidth = layerHeight*frameProportion;
       }
   
-      transitionB.style.width = layerWidth*frames+'px';
-      transitionB.style.height = layerHeight+'px';
+      backgroundLayer.style.width = layerWidth*frames+'px';
+      backgroundLayer.style.height = layerHeight+'px';
+
+      console.log('set layer dimensions', {layerHeight, layerWidth})
   
       settingLayerDimensions = false;
     }
@@ -191,10 +94,9 @@ export const PageTranstion = (p: {onTransitionIn?: () => void}) => {
       //   clearTimeout(id);
       //   unbind()
       // })
-      console.log('on transition in changed')
-      animate()
-
-
+      // console.log('on transition in changed')
+      const cancel = animate()
+      onCleanup(cancel)
     }))
   
   })
@@ -208,8 +110,8 @@ export const PageTranstion = (p: {onTransitionIn?: () => void}) => {
     //   )}
     // ></div>
 
-    <div class="cd-transition-layer"> 
-      <div class="bg-layer"></div>
+    <div class="cd-transition-layer" ref={transitionLayerRef}> 
+      <div class="bg-layer" ref={backgroundLayerRef}></div>
     </div>
   )
 }

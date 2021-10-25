@@ -1,11 +1,5 @@
 import { createGlobalStyles } from "solid-styled-components";
-import InkImg from '../contexts/page-transition/ink.png'
-
-// export const GlobalStyles = createGlobalStyles({
-//   body: {
-//     background: 'red'
-//   } 
-// })
+import InkImg from '../contexts/page-transition/ink-11.png' // 11, 14
 
 export const GlobalStyles = createGlobalStyles`
   html, body {
@@ -268,7 +262,8 @@ export const GlobalStyles = createGlobalStyles`
   body.modern-theme {
     --color-subtle: #7f838a;
     --color-main: #fdfbeb;
-    --color-highlight: #49eeff;
+    // --color-highlight: #49eeff;
+    --color-highlight: #7fffff;
 
     --body-background-color: #112d44; 
     
@@ -306,7 +301,6 @@ export const GlobalStyles = createGlobalStyles`
     opacity: 0;
     visibility: hidden;
     overflow: hidden;
-    filter: hue-rotate(252deg);
   }
   .cd-transition-layer .bg-layer {
     position: absolute;
@@ -336,21 +330,8 @@ export const GlobalStyles = createGlobalStyles`
   .cd-transition-layer.closing .bg-layer {
     animation: cd-sequence-reverse 0.4s steps(20);
     animation-fill-mode: forwards;
-    animation: fadeOut 2s;
   }
-  .no-cssanimations .cd-transition-layer {
-    display: none;
-  }
-  
-  @keyframes fadeOut {
-    0% {
-      opacity: 1;
-    }
 
-    100% {
-      opacity: 0;
-    }
-  }
   @keyframes cd-sequence {
     0% {
       transform: translateY(-50%) translateX(-2%);
@@ -370,43 +351,3 @@ export const GlobalStyles = createGlobalStyles`
   }
   
 `
-
-
- // @-webkit-keyframes cd-sequence {
-  //   0% {
-  //     /* translateX(-2%) is used to horizontally center the first frame inside the viewport */
-  //     -webkit-transform: translateY(-50%) translateX(-2%);
-  //   }
-  //   100% {
-  //     /* translateX(-98%) (2% + 96) is used to horizontally center the last frame inside the viewport  */
-  //     -webkit-transform: translateY(-50%) translateX(-98%);
-  //   }
-  // }
-  // @-moz-keyframes cd-sequence {
-  //   0% {
-  //     /* translateX(-2%) is used to horizontally center the first frame inside the viewport */
-  //     -moz-transform: translateY(-50%) translateX(-2%);
-  //   }
-  //   100% {
-  //     /* translateX(-98%) (2% + 96) is used to horizontally center the last frame inside the viewport  */
-  //     -moz-transform: translateY(-50%) translateX(-98%);
-  //   }
-  // }
-
-  // @-webkit-keyframes cd-sequence-reverse {
-  //   0% {
-  //     -webkit-transform: translateY(-50%) translateX(-98%);
-  //   }
-  //   100% {
-  //     -webkit-transform: translateY(-50%) translateX(-2%);
-  //   }
-  // }
-  // @-moz-keyframes cd-sequence-reverse {
-  //   0% {
-  //     -moz-transform: translateY(-50%) translateX(-98%);
-  //   }
-  //   100% {
-  //     -moz-transform: translateY(-50%) translateX(-2%);
-  //   }
-  // }
-

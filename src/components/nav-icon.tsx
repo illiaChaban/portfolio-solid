@@ -1,9 +1,10 @@
 import { JSX } from "solid-js/jsx-runtime";
 import { NavLink } from 'solid-app-router'
-import { createMemo } from "solid-js";
+import { createEffect, createMemo, on } from "solid-js";
 import { cx } from "../utils/styles/make-styles";
 import { css } from "solid-styled-components";
 import { usePageTransition } from "../contexts/page-transition";
+import { createLogValues } from "../utils/log";
 
 const styles = {
   link: css`
@@ -76,14 +77,15 @@ const NavIconBase = (p: {
   const removeSlashes = (str: string) => str.replace('/', '');
   const name = createMemo(() => p.name ?? removeSlashes(p.href))
 
-  const {navigate} = usePageTransition()
+  const {navigate, getPathname} = usePageTransition()
+
+  const isActivated = createMemo(() => getPathname() === p.href)
 
   return (
     <NavLink 
       href={p.href}
       end={p.end}
-      className={cx(styles.link, styles.iconToTextOnHover)}
-      activeClass={styles.active}
+      className={cx(styles.link, styles.iconToTextOnHover, isActivated() && styles.active)}
       style={`--hover-text: '${name()}'`}
       aria-label={`nav-menu--${name()}`}
       onClick={(e) => {

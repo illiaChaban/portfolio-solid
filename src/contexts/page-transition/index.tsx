@@ -6,6 +6,7 @@ import { PageTranstion } from './page-transition'
 type TPageTransitionContext = {
   navigate: (to: string, options?: Pick<NavigateOptions, 'replace'>) => void
   PageTransitionHandler: () => JSX.Element
+  getPathname: () => string
 }
 type NavigateParams = Parameters<TPageTransitionContext['navigate']>
 
@@ -30,7 +31,12 @@ export const PageTransitionProvider = (p: {children?: JSX.Element}) => {
   }
 
   return (
-    <PageTransitionContext.Provider value={{navigate, PageTransitionHandler}}>
+    <PageTransitionContext.Provider 
+      value={{
+        navigate, 
+        PageTransitionHandler, 
+        getPathname: () => navParams()[0],
+      }}>
       {p.children}
     </PageTransitionContext.Provider>
   )
