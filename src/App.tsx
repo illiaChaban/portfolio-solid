@@ -135,9 +135,9 @@ export default () => (
   <ThemeProvider>
     {isProduction && <GTag/>}
     <Router>
-      <PageTransitionProvider>
+      {/* <PageTransitionProvider> */}
         <App />
-      </PageTransitionProvider>
+      {/* </PageTransitionProvider> */}
     </Router>
   </ThemeProvider>
 );
