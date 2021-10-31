@@ -3,28 +3,18 @@ import { Unsubscribe } from "../types"
 export const bindEvent = (
   el: Element, 
   eventName: string, 
-  callback: (e: unknown) => void
+  callback: (e: unknown) => void,
+  options?: AddEventListenerOptions,
 ): Unsubscribe => {
-  el.addEventListener(eventName, callback)
-  return () => el.removeEventListener(eventName, callback)
-}
-
-export const bindEventOnce = (
-  el: Element, 
-  eventName: string, 
-  callback: (e: unknown) => void
-): void => {
-  let unsubscriber: Unsubscribe
-  const updatedCallback = (e: unknown) => {
-    callback(e)
-    unsubscriber?.()
-  }
-  unsubscriber = bindEvent(el, eventName, updatedCallback)
+  el.addEventListener(eventName, callback, options)
+  return () => el.removeEventListener(eventName, callback, options)
 }
 
 export const waitForEvent = (
   el: Element, 
   eventName: string
 ): Promise<unknown> => {
-  return new Promise((res) => bindEventOnce(el, eventName, res))
+  return new Promise((res) => {
+    bindEvent(el, eventName, res, { once: true })
+  })
 }

@@ -20,11 +20,16 @@ const styles = invoke(() => {
     overflow: 'hidden',
   })
 
+  const frameInPercent = 100 / framesNum
+  const initialPosition = frameInPercent / 2; // center the frame
+  const showFramesNum = framesNum - 5
+  const animationTime = 400
+
   const bgLayer = css({
     position: 'absolute',
     left: '50%',
     top: '50%',
-    transform: 'translateY(-50%) translateX(-2%)',
+    transform: `translateY(-50%) translateX(-${initialPosition}%)`,
     /* its dimentions will be overwritten using jQuery to proportionally fit the viewport */
     height: '100%',
     /* our sprite is composed of 25 frames */
@@ -38,10 +43,7 @@ const styles = invoke(() => {
       visibility: 'visible',
   });
 
-  const frameInPercent = 100 / framesNum
-  const initialPosition = frameInPercent / 2; // center the frame
-  const showFramesNum = framesNum - 5
-  const animationTime = 400
+
 
   const sequence = keyframes`
     0% {

@@ -15,6 +15,8 @@ import { isProduction } from "./constants/dev-mode";
 import { GTag } from "./components/g-tag";
 import { Particles } from "./components/particles";
 import { PageTransitionProvider, usePageTransition } from "./contexts/page-transition";
+import { Transition } from "solid-transition-group";
+import { PageTransitionC } from './components/page-transition-c'
 
 
 const styles = makeStyles({
@@ -115,14 +117,16 @@ const App: Component = () => {
             // id="content" 
             className={styles.content}
           >
-            <Routes>
-              <Route path="/" element={<Home/>} />
-              <Route path="/about" element={<About/>} />
-              <Route path="/skills" element={<Skills/>} />
-              <Route path="/projects" element={<Projects/>} />
-              <Route path="/contact" element={<Contact/>} />
-              <Route path="/*all" element={<NotFound />} />
-            </Routes>
+            <PageTransitionC>
+              <Routes>
+                <Route path="/" element={<Home/>} />
+                <Route path="/about" element={<About/>} />
+                <Route path="/skills" element={<Skills/>} />
+                <Route path="/projects" element={<Projects/>} />
+                <Route path="/contact" element={<Contact/>} />
+                <Route path="/*all" element={<NotFound />} />
+              </Routes>
+            </PageTransitionC>
           </div>
 
       </main>
