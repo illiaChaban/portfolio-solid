@@ -30,3 +30,5 @@ export const pick = <T extends {}, TKeys extends keyof T>(obj: T, keys: TKeys[])
     return newObj
   }, {} as Pick<T, TKeys>)
 } 
+
+export const invoke = <T>(callback: () => T): T => callback()

@@ -1,13 +1,89 @@
 import { createEffect, on, onCleanup, onMount } from "solid-js"
+import { css, keyframes } from "solid-styled-components"
 import { Unsubscribe } from "../../types"
 import { waitForEvent } from "../../utils/events"
+import { invoke } from "../../utils/lodash"
 import { useRef } from "../../utils/useRef"
+import InkImg from './ink-11.png' // 11, 14
+
+const framesNum = 25;
+const styles = invoke(() => {
+  const transitionLayer = css({
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    zIndex: 2,
+    height: '100%',
+    width: '100%',
+    opacity: 0,
+    visibility: 'hidden',
+    overflow: 'hidden',
+  })
+
+  const bgLayer = css({
+    position: 'absolute',
+    left: '50%',
+    top: '50%',
+    transform: 'translateY(-50%) translateX(-2%)',
+    /* its dimentions will be overwritten using jQuery to proportionally fit the viewport */
+    height: '100%',
+    /* our sprite is composed of 25 frames */
+    width: `${framesNum * 100}%`,
+    background: `url(${InkImg}) no-repeat 0 0`,
+    backgroundSize: '100% 100%',
+    opacity: 1,
+  })
+  const visible = css({
+      opacity: 1,
+      visibility: 'visible',
+  });
+
+  const frameInPercent = 100 / framesNum
+  const initialPosition = frameInPercent / 2; // center the frame
+  const showFramesNum = framesNum - 5
+  const animationTime = 400
+
+  const sequence = keyframes`
+    0% {
+      transform: translateY(-50%) translateX(-${initialPosition}%);
+    }
+    100% {
+      transform: translateY(-50%) translateX(-${initialPosition + showFramesNum * frameInPercent}%);
+    }
+  `
+  const sequenceReverse = keyframes`
+    0% {
+      transform: translateY(-50%) translateX(-${initialPosition + showFramesNum * frameInPercent}%);
+    }
+    100% {
+      transform: translateY(-50%) translateX(-${initialPosition}%);
+    }
+  `
+  const opening = css({
+    [`& .${bgLayer}`]: {
+      animation: `${sequence} ${animationTime / 1000}s steps(${showFramesNum})`,
+      animationFillMode: 'forwards',
+    }
+  })
+  const closing = css({
+    [`& .${bgLayer}`]: {
+      animation: `${sequenceReverse} ${animationTime / 1000}s steps(${showFramesNum})`,
+      animationFillMode: 'forwards',
+    }
+  })
+
+  return {
+    transitionLayer,
+    bgLayer,
+    visible,
+    opening,
+    closing,
+  }
+})
 
 // TODO:
-// - move global styles here
 // - fix set layer dimensions on mobile
-// - update ink picture with ligher main color ?
-export const PageTranstion = (p: {onTransitionIn: () => void}) => {
+export const PageTransition = (p: {onTransitionIn: () => void}) => {
   const transitionLayerRef = useRef<HTMLDivElement>()
   const backgroundLayerRef = useRef<HTMLDivElement>()
 
@@ -16,7 +92,6 @@ export const PageTranstion = (p: {onTransitionIn: () => void}) => {
     const backgroundLayer = backgroundLayerRef.current;
 
     const frameProportion = 1.78; //png frame aspect ratio
-    const frames = 25; //number of png frames
   
     let settingLayerDimensions = false;
   
@@ -30,7 +105,7 @@ export const PageTranstion = (p: {onTransitionIn: () => void}) => {
       }
     });
   
-    const animate = (): Unsubscribe => {
+    const animate = (callback: () => void): Unsubscribe => {
       const classes = transitionLayer.classList
 
       let canceled = false
@@ -39,20 +114,20 @@ export const PageTranstion = (p: {onTransitionIn: () => void}) => {
       const waitForAnimation = () => waitForEvent(backgroundLayer, 'animationend')
 
       ;(async () => {
-        classes.remove('closing')
-        if (!classes.contains('opening')) {
-          classes.add('visible','opening');
+        classes.remove(styles.closing)
+        if (!classes.contains(styles.opening)) {
+          classes.add(styles.visible, styles.opening);
           await waitForAnimation()
         }
         if (canceled) return
 
-        classes.remove('opening')
-        p.onTransitionIn()
-        classes.add('closing');
+        classes.remove(styles.opening)
+        callback()
+        classes.add(styles.closing);
 
         await waitForAnimation()
         if (canceled) return
-        classes.remove('visible', 'closing');
+        classes.remove(styles.visible, styles.closing);
       })()
 
       return cancel
@@ -81,7 +156,7 @@ export const PageTranstion = (p: {onTransitionIn: () => void}) => {
         layerWidth = layerHeight*frameProportion;
       }
   
-      backgroundLayer.style.width = layerWidth*frames+'px';
+      backgroundLayer.style.width = layerWidth*framesNum+'px';
       backgroundLayer.style.height = layerHeight+'px';
 
       console.log('set layer dimensions', {layerHeight, layerWidth})
@@ -89,32 +164,25 @@ export const PageTranstion = (p: {onTransitionIn: () => void}) => {
       settingLayerDimensions = false;
     }
 
-    createEffect(on(() => p.onTransitionIn, () => {
-      // ref.current.classList.add(animationStyle)
-      // const id = setTimeout(() => p.onTransitionIn?.(), animationDuration / 2)
-      // const unbind = bindEvent(ref.current, 'animationend', () => ref.current.classList.remove(animationStyle))
-      // onCleanup(() => {
-      //   clearTimeout(id);
-      //   unbind()
-      // })
-      // console.log('on transition in changed')
-      const cancel = animate()
-      onCleanup(cancel)
-    }))
+    createEffect(on(
+      () => p.onTransitionIn, 
+      () => {
+        const cancel = animate(p.onTransitionIn)
+        onCleanup(cancel)
+      }
+    ))
   
   })
- 
 
   return (
-    // <div 
-    //   ref={ref}
-    //   className={cx(
-    //     styles.cover, 
-    //   )}
-    // ></div>
-
-    <div class="cd-transition-layer" ref={transitionLayerRef}> 
-      <div class="bg-layer" ref={backgroundLayerRef}></div>
+    <div 
+      class={styles.transitionLayer} 
+      ref={transitionLayerRef}
+    > 
+      <div 
+        class={styles.bgLayer} 
+        ref={backgroundLayerRef}
+      />
     </div>
   )
 }

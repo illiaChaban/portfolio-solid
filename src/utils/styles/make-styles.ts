@@ -1,13 +1,16 @@
 import { css, CSSAttribute } from "solid-styled-components";
 import { mapValues } from "../lodash";
 
-export { default as cx } from 'classnames'
+type Style = CSSAttribute | string
+type Styles = Record<string, Style>
+type OutputStyles<T extends Styles> = {
+  [K in keyof T]: string
+}
 
 export const makeStyles = <
-  T extends Record<string, CSSAttribute | string>
->(styles: T): {
-  [key in keyof T]: string
-} => mapValues(styles, (v) => css(v))
-
-
-
+  T extends Styles, 
+>(
+  styles: T, 
+): OutputStyles<T> => {
+  return mapValues(styles, (v) => css(v))
+}

@@ -1,7 +1,7 @@
 import { JSX } from "solid-js/jsx-runtime";
 import { NavLink } from 'solid-app-router'
 import { createEffect, createMemo, on } from "solid-js";
-import { cx } from "../utils/styles/make-styles";
+import { cx } from "../utils/styles";
 import { css } from "solid-styled-components";
 import { usePageTransition } from "../contexts/page-transition";
 import { createLogValues } from "../utils/log";

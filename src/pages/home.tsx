@@ -3,7 +3,7 @@ import { Button } from '../components/button'
 import { textScramble } from '../directives/text-scramble'
 import { use } from '../utils/get-use-directives'
 import { breakpoints } from '../utils/styles/breakpoints'
-import { cx, makeStyles } from '../utils/styles/make-styles'
+import { cx, makeStyles } from '../utils/styles'
 
 const styles = makeStyles({
   homeText: {

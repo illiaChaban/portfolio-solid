@@ -1,7 +1,7 @@
 import { useNavigate as useNavigateBase, NavigateOptions } from "solid-app-router";
-import { createContext, Component, createMemo, useContext, JSX, createSignal, createEffect, on } from "solid-js";
-import { assert, returnAsserted } from "../../utils/assert";
-import { PageTranstion } from './page-transition'
+import { createContext, createMemo, useContext, JSX, createSignal, createEffect, on } from "solid-js";
+import { returnAsserted } from "../../utils/assert";
+import { PageTransition } from './page-transition'
 
 type TPageTransitionContext = {
   navigate: (to: string, options?: Pick<NavigateOptions, 'replace'>) => void
@@ -27,7 +27,7 @@ export const PageTransitionProvider = (p: {children?: JSX.Element}) => {
     const onTransitionIn = createMemo(on(navParams, () => {
       return () => navigateBase(...navParams())
     }))
-    return <PageTranstion onTransitionIn={onTransitionIn()} />
+    return <PageTransition onTransitionIn={onTransitionIn()} />
   }
 
   return (
