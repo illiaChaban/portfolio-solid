@@ -1,4 +1,4 @@
-import { Component, createEffect, createSignal, onCleanup, onMount } from "solid-js";
+import { Component } from "solid-js";
 import { Router, Routes, Route, useLocation } from "solid-app-router";
 import Home from './pages/home'
 import About from './pages/about'
@@ -14,8 +14,6 @@ import { breakpoints } from "./utils/styles/breakpoints";
 import { isProduction } from "./constants/dev-mode";
 import { GTag } from "./components/g-tag";
 import { Particles } from "./components/particles";
-import { InkTransition } from './components/ink-transition'
-import { createLogValues } from "./utils/log";
 import { PageTransitionProvider, usePageTransition } from "./contexts/page-transition";
 
 
@@ -93,24 +91,15 @@ const styles = makeStyles({
 })
 
 const App: Component = () => {
-  const {PageTransitionHandler} = usePageTransition()
-
   return (
     <div>
       <Particles />
-      {/* {PageTransitionHandler} */}
-      <PageTransitionHandler />
-
-      {/* <InkTransition /> */}
-
       <main>
 
           <div 
-            // id='menu' 
             class={styles.menu}
           >
             <nav 
-              // id='nav' 
               class={styles.nav}
             >
               <NavIcon.Home/>

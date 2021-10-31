@@ -3,7 +3,7 @@ import { css, keyframes } from "solid-styled-components"
 import { Unsubscribe } from "../../types"
 import { waitForEvent } from "../../utils/events"
 import { invoke } from "../../utils/lodash"
-import { useRef } from "../../utils/useRef"
+import { useRef } from "../../utils/use-ref"
 import InkImg from './ink-11.png' // 11, 14
 
 const framesNum = 25;
