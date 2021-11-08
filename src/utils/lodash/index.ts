@@ -24,6 +24,10 @@ export const isArray = (val: unknown): val is any[] => {
   return Array.isArray(val)
 }
 
+export const isObject = (val: unknown): val is {} => {
+  return typeof val === 'object' && val !== null && !isArray(val)
+}
+
 export const pick = <T extends {}, TKeys extends keyof T>(obj: T, keys: TKeys[]): Pick<T, TKeys> => {
   return keys.reduce((newObj, key) => {
     newObj[key] = obj[key]
@@ -32,3 +36,13 @@ export const pick = <T extends {}, TKeys extends keyof T>(obj: T, keys: TKeys[])
 } 
 
 export const invoke = <T>(callback: () => T): T => callback()
+
+export const combine = <T>(...callbacks: ((arg: T) => unknown)[]) => (arg: T): void => {
+  return callbacks.forEach(cb => cb(arg))
+}
+
+export const tap = <T>(cb: (arg: T) => unknown) => 
+  (arg: T): T => {
+    cb(arg)
+    return arg
+  }

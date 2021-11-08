@@ -16,7 +16,7 @@ import { GTag } from "./components/g-tag";
 import { Particles } from "./components/particles";
 import { PageTransitionProvider, usePageTransition } from "./contexts/page-transition";
 import { Transition } from "solid-transition-group";
-import { PageTransitionC } from './components/page-transition-c'
+import { PageTransitionC } from './components/page-transition/page-transition-c'
 
 
 const styles = makeStyles({
