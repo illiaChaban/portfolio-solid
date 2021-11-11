@@ -10,8 +10,12 @@ import { pipe, pipeWith } from "pipe-ts";
 import { useNavigate } from "solid-app-router";
 // import {MaskSvg} from '../contexts/page-transition/ink-mask'
 import {MaskSvg} from '../../contexts/page-transition/mask-2'
-import Path7 from '../../contexts/page-transition/mask_1'
 import {InkImage} from './image'
+import {Path2, Path3, Path4, Path5, Path6, Path7, Path8, Path9, Path10, Path11,
+  Path12, Path13, Path14, Path15, Path16, Path17, Path18, Path19, Path20, Path21, Path22, Path23, Path24
+} from '../../contexts/page-transition/clips-svg_/clips'
+
+const framesNum = 25
 
 type State = 'entering' | 'exiting' | 'stale'
 export const PageTransitionC = (p: {children: JSX.Element}) => {
@@ -62,13 +66,17 @@ export const PageTransitionC = (p: {children: JSX.Element}) => {
 
 
 const Mask = (p: {children: JSX.Element, afterTransition?: () => void}) => {
+  const [step, setStep] = createSignal(0)
+  const incrementStep = () => setStep(v => (v + 1) % (framesNum - 1))
+
+
   // console.log('mask constructor')
   // onMount(() => console.log('mount mask'))
   // onCleanup(() => console.log('unmount mask'))
 
 
 
-  const [clipPath, setClipPath] = createSignal<number>(0) 
+  // const [clipPath, setClipPath] = createSignal<number>(0) 
 
   const containerRef = useRef()
   const parentRef = useParentRefSignal(containerRef)
@@ -88,34 +96,50 @@ const Mask = (p: {children: JSX.Element, afterTransition?: () => void}) => {
   // })
 
   const animate = () => {
-    setClipPath(0)
-    // TODO: Update with request animation frame or css animation
+    const time = 1000
+    const interval = time / framesNum
+    const currentStep = step() + 1
+    let stepsLeft = framesNum - currentStep
+
     const id = setInterval(() => {
-      let val = clipPath() + 1
-      if (val >= 100) {
-        // reset
-        // setClipPath(0)
+      if (!stepsLeft) {
         cancel()
-        p.afterTransition?.()
         return
       }
-      setClipPath(val)
-    }, 5)
+      stepsLeft--
+      incrementStep()
+
+    }, interval)
+    // setClipPath(0)
+    // // TODO: Update with request animation frame or css animation
+    // const id = setInterval(() => {
+    //   let val = clipPath() + 1
+    //   if (val >= 100) {
+    //     // reset
+    //     // setClipPath(0)
+    //     cancel()
+    //     p.afterTransition?.()
+    //     return
+    //   }
+    //   setClipPath(val)
+    // }, 5)
 
     function cancel() {
       clearInterval(id)
     }
 
+    onCleanup(cancel)
+
     return cancel
   }
 
-  onCleanup(animate())
+  // onCleanup(animate())
 
-  const firstPolygon = createMemo(on(clipPath, () => {
-    return `0% 100%, 40% 100%, 36% 83%, 26% 76%, 13% 71%, 0% 70%`
-    // return `0% 100%, 40% ${clipPath()}%, 36% 83%, 26% 76%, 13% 71%, 0% ${Math.max(clipPath(), 70)}%`
+  // const firstPolygon = createMemo(on(clipPath, () => {
+  //   return `0% 100%, 40% 100%, 36% 83%, 26% 76%, 13% 71%, 0% 70%`
+  //   // return `0% 100%, 40% ${clipPath()}%, 36% 83%, 26% 76%, 13% 71%, 0% ${Math.max(clipPath(), 70)}%`
 
-  }))
+  // }))
 
   return (
     <div id="transition-mask"
@@ -146,30 +170,64 @@ const Mask = (p: {children: JSX.Element, afterTransition?: () => void}) => {
         // })
       )}
     >
-      <InkImage step={8} />
+      <InkImage step={step()} />
 
-      <div className={cx(css`
-        width: 100%;
-        height: 100%;
-      `, css({clipPath: 'url(#clip)'}))}>
+      <div 
+        className={cx(
+          css`
+            width: 100%;
+            height: 100%;
+          `, 
+          css({clipPath: 'url(#clip)'})
+        )}
+        style={{opacity: .5 / framesNum * step()}}
+      >
         {p.children}
       </div>
 
 
 
-        <ResetContainer>
-          <button onClick={() => location.replace('/')}>Navigate</button>
-          <button onClick={animate}>Reset animation</button>
-        </ResetContainer>
+        <ControlsContainer>
+          <button onClick={() => location.replace('/')}>Navigate Home</button>
+          <button onClick={animate}>Animate</button>
+          <div style={{width: '20px', textAlign: 'center', display: 'inline-block'}}>{step()}</div>
+          <button onClick={incrementStep}>Increment</button>
+          <button onClick={() => setStep(v => (v - 1))}>Decrement</button>
+        </ControlsContainer>
 
         {/* <MaskSvg clipId="clip" /> */}
 
         <svg width="0" height="0">
           <defs>
             <clipPath id="clip" clipPathUnits="objectBoundingBox">
+              {{
+                1: <Path2 />,
+                2: <Path3 />,
+                3: <Path4 />,
+                4: <Path5 />,
+                5: <Path6 />,
+                6: <Path7 />,
+                7: <Path8 />,
+                8: <Path9 />,
+                9: <Path10 />,
+                10: <Path11 />,
+                11: <Path12 />,
+                12: <Path13 />,
+                13: <Path14 />,
+                14: <Path15 />,
+                15: <Path16 />,
+                16: <Path17 />,
+                17: <Path18 />,
+                18: <Path19 />,
+                19: <Path20 />,
+                20: <Path21 />,
+                21: <Path22 />,
+                22: <Path23 />,
+                23: <Path24 />,
+              }[step()]}
               {/* <polygon points="0,1 0.5,0.5 1,1"/>
               <path d="M0,0 l0.5,0.5 v-0.5 z"/> */}
-              <Path7 />
+              {/* <Path7 /> */}
               {/* <polygon points="400,50 400,320, 140,300"/>
               <polygon points="450,10 500,200 600,100" />
               <polygon points="150,10 100,200 300,100" /> */}
@@ -217,7 +275,7 @@ const useParentRefSignal = (childRef: Ref<Element>): Accessor<Element | undefine
 //   opacity: 1,
 // })
 
-const ResetContainer = styled('div')`
+const ControlsContainer = styled('div')`
   position: fixed;
   top: 20px;
   right: 20px;

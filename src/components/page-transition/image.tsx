@@ -88,7 +88,7 @@ const initialPosition = frameInPercent / 2; // center the frame
 export const InkImage = (p: {step?: number}) => {
   const position = createMemo(() => initialPosition + (p.step ?? 0) * frameInPercent);
 
-  log.accessors({position})
+  /* log.accessors({position}) */
 
   return (
     <div className={css({
