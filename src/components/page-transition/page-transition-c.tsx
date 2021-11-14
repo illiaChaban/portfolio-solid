@@ -1,6 +1,6 @@
-import { Accessor, createEffect, createMemo, createRoot, createSignal, on, onCleanup, onMount, Setter, untrack } from "solid-js";
+import { Accessor, createEffect, createMemo, createRoot, createSignal, from, observable, on, onCleanup, onMount, Setter, untrack } from "solid-js";
 import { JSX } from "solid-js/jsx-runtime";
-import { css, styled } from "solid-styled-components";
+import { css, keyframes, styled } from "solid-styled-components";
 import { Transition } from "solid-transition-group";
 import { log } from "../../utils/log";
 import { breakpoints, cx } from "../../utils/styles";
@@ -11,6 +11,9 @@ import { useNavigate } from "solid-app-router";
 // import {MaskSvg} from '../contexts/page-transition/ink-mask'
 import {MaskSvg} from '../../contexts/page-transition/mask-2'
 import {InkImage, ClipPath, framesNum} from './ink'
+import { call } from "../../utils/lodash";
+import { Cleanup, Unsubscribe } from "../../types";
+import { Cleanups } from "../../utils/cleanups";
 
 
 type State = 'entering' | 'exiting' | 'stale'
@@ -33,28 +36,29 @@ export const PageTransitionC = (p: {children: JSX.Element}) => {
   return (
     <>
       <Transition
-        // onEnter={(el, done) => {
-        //   const parent = el.parentElement!
+        onEnter={(el, done) => {
+          const parent = el.parentElement!
 
-        //   const {dispose, maskedEl} = createRoot(dispose => {
-        //     const maskedEl = <Mask afterTransition={afterTransition}>{el}</Mask>
-        //     parent.appendChild(maskedEl as Element)
-        //     return {dispose, maskedEl}
-        //   }) 
+          const {dispose, maskedEl} = createRoot(dispose => {
+            const maskedEl = <Mask afterTransition={afterTransition}>{el}</Mask>
+            parent.appendChild(maskedEl as Element)
+            return {dispose, maskedEl}
+          }) 
 
-        //   function afterTransition() {
-        //     // parent.replaceChild(el, maskedEl as Element)
-        //     // dispose()
-        //     done()
-        //   }
-        // }}
-        // onExit={(el, done) => {
-        //   setTimeout(done, 600)
-        // }}
+          function afterTransition() {
+            parent.replaceChild(el, maskedEl as Element)
+            dispose()
+            done()
+          }
+        }}
+        onExit={(el, done) => {
+          // time to animate ink
+          setTimeout(done, 1000)
+        }}
       >
-        <Mask>
+        {/* <Mask> */}
           {p.children}
-        </Mask>
+        {/* </Mask> */}
       </Transition>
     </>
   )
@@ -62,76 +66,106 @@ export const PageTransitionC = (p: {children: JSX.Element}) => {
 
 
 const Mask = (p: {children: JSX.Element, afterTransition?: () => void}) => {
-  const [step, setStep] = createSignal(0)
 
-  const totalsteps = framesNum + 10
-  const updateRange = (step: number) => (step + totalsteps) % (totalsteps)
+  // get parent dimensions
+  const containerRef = useRef()
+  const parentRef = useParentRefSignal(containerRef)
+  const parentDimensions = useContentWidth(parentRef)
+
+  // other refs
+  const inkRef = useRef()
+  const chldrenContainerRef = useRef()
+
+  // describe animation
+  const [animationCount, startAnimation] = call(() => {
+    const [animationCount, setAnimationCount] = createSignal(0)
+    return [animationCount, () => setAnimationCount(v => v+1)]
+  })
+
+  const totalSteps = framesNum + 1
+  const lastStep = totalSteps - 1
+
+  const [step, setStep] = createSignal(0)
+  const updateRange = (step: number) => (step + totalSteps) % (totalSteps)
   const incrementStep = () => setStep(v => pipeWith(v+1, updateRange))
   const decrementStep = () => setStep(v => pipeWith(v-1, updateRange))
 
 
-  // console.log('mask constructor')
-  // onMount(() => console.log('mount mask'))
-  // onCleanup(() => console.log('unmount mask'))
+  createEffect(on(animationCount, (_, _2, prevCleanups: Cleanups | void): Cleanups | void => {
+    // if (!animationCount()) return;
 
-
-
-  // const [clipPath, setClipPath] = createSignal<number>(0) 
-
-  const containerRef = useRef()
-  const parentRef = useParentRefSignal(containerRef)
-  // const [parentWidth, setParentWidth] = createSignal<number>(0)
-
-  const parentDimensions = useContentWidth(parentRef)
-
-  // const navigate = useNavigate()
-  
-  // const [parentWidth, refParentWidth] = useHoistAccessor<number>(0)
-  // log.useAccessors({parentWidth})
-
-  // onMount(() => {
-  //   refParentWidth(
-  //     useContentWidth(() => containerRef.current.parentElement!), 
-  //   )
-  // })
-
-  const animate = () => {
-    if (step() + 1 === totalsteps) {
+    if (step() === lastStep) {
+      prevCleanups?.execute()
       setStep(0)
+      return;
     }
 
-    const time = 1000
-    const interval = time / totalsteps
-    const currentStep = step()
-    let stepsLeft = totalsteps - currentStep
+    const fadeInText = (): Cleanup => {
+      const textAnimation = chldrenContainerRef.current.animate([
+        {opacity: 0.2},
+        {opacity: 0.8, offset: 0.75},
+        {opacity: 1}
+      ], {
+        duration: 1300,
+        fill: 'forwards'
+      })
 
+      return () => textAnimation.cancel()
+    }
 
-    const id = setInterval(() => {
-      // stop in the end
-      if (!(stepsLeft - 1)) {
-        cancel()
-        return
+    const fadeOutInk = (): Cleanup => {
+      // fade out ink
+      const inkAnimation = inkRef.current.animate([
+        {opacity: 0},
+      ], {
+        duration: 300,
+        fill: 'forwards',
+      })
+
+      return () => inkAnimation.cancel()
+    }
+
+    const animateInk = (onDone: () => void): Cleanup => {
+  
+      const interval = call(() => {
+        const time = 1000
+        return time / totalSteps
+      }) 
+
+      const id = setInterval(() => {
+        if (lastStep === step()) {
+          onDone()
+          stop()
+          return
+        }
+        incrementStep()
+      }, interval)
+  
+      function stop() {
+        clearInterval(id)
       }
-      stepsLeft--
-      incrementStep()
 
-    }, interval)
-
-    function cancel() {
-      clearInterval(id)
+      return stop
     }
 
-    return cancel
-  }
 
-  const textOpacity = createMemo(() => {
-    const val = .5 / framesNum * step() + .2
-    pipeWith(5, range(0, 1))
-    return 1
-  })
+    const cleanups = new Cleanups()
+    cleanups.add(fadeInText()) 
+    cleanups.add(
+      animateInk(() => {
+        cleanups.add(fadeOutInk()) 
+        
+        setTimeout(() => p.afterTransition?.(), 300)
+      })
+    )
+
+    return cleanups
+
+  }))
+
 
   return (
-    <div id="transition-mask"
+    <div test-id="transition-mask"
       ref={containerRef}
       className={cx(
         css({
@@ -149,22 +183,28 @@ const Mask = (p: {children: JSX.Element, afterTransition?: () => void}) => {
         }),
       )}
     >
-      <InkImage step={step()} />
+      <InkImage 
+        ref={inkRef}
+        step={step()} 
+      />
 
       <div 
+        ref={chldrenContainerRef}
         className={css`
           width: 100%;
           height: 100%;
           clip-path: url(#clip);
+          /* Copying styles from #content */
+          display: flex;
+          flex-direction: column;
         `}
-        style={{opacity: textOpacity()}}
       >
         {p.children}
       </div>
 
         <ControlsContainer>
           <button onClick={() => location.replace('/')}>Navigate Home</button>
-          <button onClick={animate}>Animate</button>
+          <button onClick={startAnimation}>{step() === lastStep ? 'Reset' : 'Animate'}</button>
           <div style={{width: '20px', textAlign: 'center', display: 'inline-block'}}>{step()}</div>
           <button onClick={incrementStep}>Increment</button>
           <button onClick={decrementStep}>Decrement</button>

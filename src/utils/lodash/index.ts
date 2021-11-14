@@ -35,7 +35,7 @@ export const pick = <T extends {}, TKeys extends keyof T>(obj: T, keys: TKeys[])
   }, {} as Pick<T, TKeys>)
 } 
 
-export const invoke = <T>(callback: () => T): T => callback()
+export const call = <T>(callback: () => T): T => callback()
 
 export const combine = <T>(...callbacks: ((arg: T) => unknown)[]) => (arg: T): void => {
   return callbacks.forEach(cb => cb(arg))
