@@ -14,6 +14,7 @@ import {InkImage, ClipPath, framesNum} from './ink'
 import { call } from "../../utils/lodash";
 import { Cleanup, Unsubscribe } from "../../types";
 import { Cleanups } from "../../utils/cleanups";
+import { TransitionContainer } from './transition-container'
 
 
 type State = 'entering' | 'exiting' | 'stale'
@@ -32,10 +33,20 @@ export const PageTransitionC = (p: {children: JSX.Element}) => {
 
   // console.log(<div></div>)
   // createLogValues({c: p.children})
-  
+
+  const [count, increment] = call(() => {
+    const [count, setCount] = createSignal(0)
+    return [count, () => setCount(v => v+1)]
+  })
+  const text = createMemo(() => {
+    const texts = [<p>'hello world'</p>, <p>hi</p>, <span>one</span>, <span>two</span>]
+    const index = count() % texts.length
+    return texts[index]
+  })
+
   return (
     <>
-      <Transition
+      {/* <Transition
         onEnter={(el, done) => {
           const parent = el.parentElement!
 
@@ -55,22 +66,30 @@ export const PageTransitionC = (p: {children: JSX.Element}) => {
           // time to animate ink
           setTimeout(done, 1000)
         }}
-      >
-        {/* <Mask> */}
+      > */}
+        {/* <button onClick={increment}>Click me</button> */}
+        <TransitionContainer>
+          {/* {text()} */}
           {p.children}
-        {/* </Mask> */}
-      </Transition>
+        </TransitionContainer>
+        {/* <Mask>
+          {p.children}
+        </Mask> */}
+      {/* </Transition> */}
     </>
   )
 }
 
 
-const Mask = (p: {children: JSX.Element, afterTransition?: () => void}) => {
+export const Mask = (p: {children: JSX.Element, afterTransition?: () => void}) => {
 
+  // console.log('created mask')
   // get parent dimensions
   const containerRef = useRef()
   const parentRef = useParentRefSignal(containerRef)
   const parentDimensions = useContentWidth(parentRef)
+
+  log.accessors({parentRef, parentDimensions})
 
   // other refs
   const inkRef = useRef()
@@ -259,4 +278,6 @@ const ControlsContainer = styled('div')`
 const max = (max: number) => (v: number) => Math.min(max, v)
 const min = (min: number) => (v: number) => Math.max(min, v)
 const range = (minNum: number, maxNum: number) => pipe(min(minNum), max(maxNum))
+
+
       
