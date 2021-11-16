@@ -1,8 +1,10 @@
 import { createEffect, onMount } from "solid-js"
 import { isFunction, isObject, mapValues, tap } from "./lodash"
 
+type Logger = (...data: any[]) => void
+
 /** Log accessor or object of accessors. Will invoke all functions */
-const logAccessors = (...args: any[]): void => {
+const logAccessors = (logger: Logger) => (...args: any[]): void => {
   const execAccessor = (val: unknown) => isFunction(val) ? val() : val
 
   const mappedArgs = args.map(arg => 
@@ -10,29 +12,37 @@ const logAccessors = (...args: any[]): void => {
       ? mapValues(arg, execAccessor)
       : execAccessor(arg)
   )
-  console.log(...mappedArgs)
+  logger(...mappedArgs)
 } 
 
 /** Log object of values or accessors. Will invoke all functions in the object */
-export const createLogAccessors = (...args: any[]) => {
-  createEffect(() => logAccessors(...args))
+export const createLogAccessors = (logger: Logger) => (...args: any[]) => {
+  createEffect(() => logAccessors(logger)(...args))
 }
 
-const tapLog = (...args: any[]) => tap((arg) => console.log(...args, arg))
+const tapLog = (logger: Logger) => (...args: any[]) => tap((arg) => logger(...args, arg))
 
-const onMountLog = (msg: string) => onMount(() => console.log(msg))
+const onMountLog = (logger: Logger) => (msg: string) => onMount(() => logger(msg))
 
-const pipeTap = <T extends any[], TReturn>(fn: (...args: T) => TReturn, ...logs: any[]) => {
+const pipeTap = (logger: Logger) => <T extends any[], TReturn>(fn: (...args: T) => TReturn, ...logs: any[]) => {
   return (...args: T): TReturn => {
-    console.log(...logs, args)
+    logger(...logs, args)
     return fn(...args)
   }
 }
 
 export const log = Object.assign(
   (...args: any[]) => console.log(...args), {
-    accessors: createLogAccessors, 
-    tap: tapLog, 
-    onMount: onMountLog,
-    pipe: pipeTap,
+    accessors: createLogAccessors(console.log), 
+    tap: tapLog(console.log), 
+    onMount: onMountLog(console.log),
+    pipe: pipeTap(console.log),
+  })
+
+export const warn = Object.assign(
+  (...args: any[]) => console.warn(...args), {
+    accessors: createLogAccessors(console.warn), 
+    tap: tapLog(console.warn), 
+    onMount: onMountLog(console.warn),
+    pipe: pipeTap(console.warn),
   })

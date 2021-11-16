@@ -1,68 +1,54 @@
-import { children, Component, createEffect, createSignal, For, JSXElement, on } from "solid-js"
-import { log } from "../../utils/log"
+import { children, Component, createComputed, createEffect, createMemo, createSignal, For, JSXElement, on } from "solid-js"
+import { call, last } from "../../utils/lodash"
 import { Mask } from './page-transition-c'
-
-
 
 export const TransitionContainer = (p: {children: JSXElement}): JSXElement => {
   const propsChildren = children(() => p.children)
-  let id = 0
+  const getNextId = call(() => {
+    let id = 0
+    return () => ++id
+  })
   const [elements, setElements] = createSignal<{el: JSXElement, id: number}[]>([
-    {el: p.children, id: ++id}
+    {el: propsChildren(), id: getNextId()}
   ])
-  createEffect(on(propsChildren, (child, prevChild) => {
-    console.log('children changed', {child, prevChild})
+  createComputed(on(propsChildren, (child, prevChild) => {
+
     const isFirst = !prevChild
     if (isFirst) return;
 
 
-    const currChildId = elements()[elements().length - 1]?.id
+    const currChildId = last(elements())?.id
 
 
     const transitionedChild = (
       <TransitionPage 
-        onFinish={() => {
+        onFilled={() => {
+          console.log('on filled', {currChildId})
           if (!currChildId) return;
           setElements(v => v.filter(child => child.id !== currChildId))
         }}
       >{child}</TransitionPage>
     )
 
-    setElements(prev => [...prev, {el: transitionedChild, id: ++id}])
-
-    // console.log('children updates')
+    setElements(prev => [...prev, {el: transitionedChild, id: getNextId()}])
   }))
 
-  // log.accessors({elements})
-  // log.accessors({propsChildren})
+  return () => elements().map(v => v.el)
+}
 
-  // createEffect(on(children, (children, prevChildren) => {
-
-  //   const added = prevChildren && prevChildren.length < children.length
-  //   if (!added || children.length < 2) return;
-
-  //   const secondToLast = children[children.length - 2]
-  //   setTimeout(() => {
-  //     (secondToLast as Element).animate([
-  //       {opacity: 0}
-  //     ], { duration: 1000 }).finished.then(() => {
-  //       setChildren(children => children.filter(v => v !== secondToLast))
-  //     })
-  //   }, 500)
-    
-  // }))
-
-  // return (<>{children()}</>)
-  return (
-    <For each={elements()}>
-      {({el}) => el}
-    </For>
+const TransitionPage = (p: {children: JSXElement, onFilled: () => void}): JSXElement => {
+  const [transitioned, setTransitioned] = createSignal(false)
+  // wrapping in children as a workaround for a bug inside Solid.js
+  // https://github.com/solidjs/solid/issues/731
+  return children(() => transitioned() 
+    ? p.children
+    : (
+      <Mask 
+        onFilled={p.onFilled}
+        onDone={() => setTransitioned(true)} 
+      >{p.children}</Mask>
+    )
   )
 }
 
-const TransitionPage = (p: {children: JSXElement, onFinish: () => void}): JSXElement => {
-  const [transitioned, setTransitioned] = createSignal(false)
-  return transitioned() 
-    ? <>{p.children}</> 
-    : <Mask afterTransition={() => setTransitioned(true)} >{p.children}</Mask>
-}
+

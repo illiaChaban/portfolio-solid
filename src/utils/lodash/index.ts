@@ -46,3 +46,12 @@ export const tap = <T>(cb: (arg: T) => unknown) =>
     cb(arg)
     return arg
   }
+
+interface Last {
+  <T>(arr: Readonly<[T, ...T[]]>): T
+  <T>(arr: Readonly<T[]>): T | undefined 
+}
+export const last: Last = (arr) => {
+  const lastIdx = arr.length - 1
+  return arr[lastIdx]
+}

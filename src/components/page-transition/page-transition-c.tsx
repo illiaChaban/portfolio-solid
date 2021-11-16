@@ -81,15 +81,14 @@ export const PageTransitionC = (p: {children: JSX.Element}) => {
 }
 
 
-export const Mask = (p: {children: JSX.Element, afterTransition?: () => void}) => {
+export const Mask = (p: {children: JSX.Element, onDone?: () => void, onFilled?: () => void}) => {
 
-  // console.log('created mask')
+  console.log('created mask')
+  log.onMount('mounted mask')
   // get parent dimensions
   const containerRef = useRef()
   const parentRef = useParentRefSignal(containerRef)
   const parentDimensions = useContentWidth(parentRef)
-
-  log.accessors({parentRef, parentDimensions})
 
   // other refs
   const inkRef = useRef()
@@ -172,9 +171,9 @@ export const Mask = (p: {children: JSX.Element, afterTransition?: () => void}) =
     cleanups.add(fadeInText()) 
     cleanups.add(
       animateInk(() => {
+        p.onFilled?.()
         cleanups.add(fadeOutInk()) 
-        
-        setTimeout(() => p.afterTransition?.(), 300)
+        setTimeout(() => p.onDone?.(), 300)
       })
     )
 
