@@ -80,10 +80,16 @@ export const PageTransitionC = (p: {children: JSX.Element}) => {
   )
 }
 
+const getMaskId = call(() => {
+  let id = 0
+  return () => (++id).toString()
+})
 
 export const Mask = (p: {children: JSX.Element, onDone?: () => void, onFilled?: () => void}) => {
 
-  console.log('created mask')
+  const maskId = getMaskId()
+
+  // console.log('created mask')
   log.onMount('mounted mask')
   // get parent dimensions
   const containerRef = useRef()
@@ -108,9 +114,12 @@ export const Mask = (p: {children: JSX.Element, onDone?: () => void, onFilled?: 
   const incrementStep = () => setStep(v => pipeWith(v+1, updateRange))
   const decrementStep = () => setStep(v => pipeWith(v-1, updateRange))
 
+  log.accessors({maskId, step})
 
   createEffect(on(animationCount, (_, _2, prevCleanups: Cleanups | void): Cleanups | void => {
     // if (!animationCount()) return;
+
+    console.log('animate', {maskId})
 
     if (step() === lastStep) {
       prevCleanups?.execute()
@@ -183,7 +192,7 @@ export const Mask = (p: {children: JSX.Element, onDone?: () => void, onFilled?: 
 
 
   return (
-    <div test-id="transition-mask"
+    <div test-id={"transition-mask" + maskId}
       ref={containerRef}
       className={cx(
         css({
@@ -211,7 +220,7 @@ export const Mask = (p: {children: JSX.Element, onDone?: () => void, onFilled?: 
         className={css`
           width: 100%;
           height: 100%;
-          clip-path: url(#clip);
+          clip-path: url(#${maskId});
           /* Copying styles from #content */
           display: flex;
           flex-direction: column;
@@ -230,7 +239,7 @@ export const Mask = (p: {children: JSX.Element, onDone?: () => void, onFilled?: 
 
         <svg width="0" height="0">
           <defs>
-            <clipPath id="clip" clipPathUnits="objectBoundingBox">
+            <clipPath id={maskId} clipPathUnits="objectBoundingBox">
               <ClipPath step={step()} />
             </clipPath>
           </defs>
