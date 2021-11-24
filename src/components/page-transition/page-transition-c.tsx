@@ -2,7 +2,7 @@ import { Accessor, createEffect, createMemo, createRoot, createSignal, from, obs
 import { JSX } from "solid-js/jsx-runtime";
 import { css, keyframes, styled } from "solid-styled-components";
 import { Transition } from "solid-transition-group";
-import { log } from "../../utils/log";
+import { log, warn } from "../../utils/log";
 import { breakpoints, cx } from "../../utils/styles";
 import { Ref, useRef } from "../../utils/use-ref";
 import { bindEventAndCleanup } from "../../utils/events";
@@ -90,7 +90,7 @@ export const Mask = (p: {children: JSX.Element, onDone?: () => void, onFilled?: 
   const maskId = getMaskId()
 
   // console.log('created mask')
-  log.onMount('mounted mask')
+  // log.onMount('mounted mask')
   // get parent dimensions
   const containerRef = useRef()
   const parentRef = useParentRefSignal(containerRef)
@@ -114,12 +114,10 @@ export const Mask = (p: {children: JSX.Element, onDone?: () => void, onFilled?: 
   const incrementStep = () => setStep(v => pipeWith(v+1, updateRange))
   const decrementStep = () => setStep(v => pipeWith(v-1, updateRange))
 
-  log.accessors({maskId, step})
+  onCleanup(() => warn('cleanup mask'))
 
   createEffect(on(animationCount, (_, _2, prevCleanups: Cleanups | void): Cleanups | void => {
     // if (!animationCount()) return;
-
-    console.log('animate', {maskId})
 
     if (step() === lastStep) {
       prevCleanups?.execute()
@@ -191,6 +189,9 @@ export const Mask = (p: {children: JSX.Element, onDone?: () => void, onFilled?: 
   }))
 
 
+  // log.accessors({maskId, step})
+
+
   return (
     <div test-id={"transition-mask" + maskId}
       ref={containerRef}
@@ -229,13 +230,13 @@ export const Mask = (p: {children: JSX.Element, onDone?: () => void, onFilled?: 
         {p.children}
       </div>
 
-        <ControlsContainer>
+        {/* <ControlsContainer>
           <button onClick={() => location.replace('/')}>Navigate Home</button>
           <button onClick={startAnimation}>{step() === lastStep ? 'Reset' : 'Animate'}</button>
           <div style={{width: '20px', textAlign: 'center', display: 'inline-block'}}>{step()}</div>
           <button onClick={incrementStep}>Increment</button>
           <button onClick={decrementStep}>Decrement</button>
-        </ControlsContainer>
+        </ControlsContainer> */}
 
         <svg width="0" height="0">
           <defs>

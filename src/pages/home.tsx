@@ -5,6 +5,7 @@ import { use } from '../utils/get-use-directives'
 import { breakpoints } from '../utils/styles/breakpoints'
 import { cx, makeStyles } from '../utils/styles'
 import { Transition } from 'solid-transition-group'
+import { log, warn } from '../utils/log'
 
 const styles = makeStyles({
   homeText: {
@@ -53,6 +54,8 @@ const styles = makeStyles({
 const Home = () => {
  
   const navigate = useNavigate()
+
+  log.onCleanup('cleanup home')
 
   return (
     <div class={cx(styles.homeText, 'padding-15 body-tags')}>

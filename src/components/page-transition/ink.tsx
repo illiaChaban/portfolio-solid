@@ -1,6 +1,6 @@
 import { css, keyframes } from "solid-styled-components";
 import InkImg from '../../contexts/page-transition/ink-11.png'
-import { createMemo, JSX } from "solid-js";
+import { createEffect, createMemo, JSX } from "solid-js";
 import { log } from "../../utils/log";
 import {Path2, Path3, Path4, Path5, Path6, Path7, Path8, Path9, Path10, Path11,
   Path12, Path13, Path14, Path15, Path16, Path17, Path18, Path19, Path20, Path21,

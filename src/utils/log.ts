@@ -1,4 +1,4 @@
-import { createEffect, onMount } from "solid-js"
+import { createEffect, onCleanup, onMount } from "solid-js"
 import { isFunction, isObject, mapValues, tap } from "./lodash"
 
 type Logger = (...data: any[]) => void
@@ -16,33 +16,38 @@ const logAccessors = (logger: Logger) => (...args: any[]): void => {
 } 
 
 /** Log object of values or accessors. Will invoke all functions in the object */
-export const createLogAccessors = (logger: Logger) => (...args: any[]) => {
+const createLogAccessors = (logger: Logger) => (...args: any[]) => {
   createEffect(() => logAccessors(logger)(...args))
 }
 
-const tapLog = (logger: Logger) => (...args: any[]) => tap((arg) => logger(...args, arg))
+const tapLog = (logger: Logger) => <T>(...args: any[]) => tap<T>((arg) => logger(...args, arg))
 
-const onMountLog = (logger: Logger) => (msg: string) => onMount(() => logger(msg))
+
+const createHookLog = (hook: (cb: () => void) => void, logger: Logger) => (msg: string) => hook(() => logger(msg))
 
 const pipeTap = (logger: Logger) => <T extends any[], TReturn>(fn: (...args: T) => TReturn, ...logs: any[]) => {
   return (...args: T): TReturn => {
-    logger(...logs, args)
-    return fn(...args)
+    const returnValue = fn(...args)
+    logger(...logs, {args, value: returnValue})
+    return returnValue
   }
 }
 
-export const log = Object.assign(
-  (...args: any[]) => console.log(...args), {
-    accessors: createLogAccessors(console.log), 
-    tap: tapLog(console.log), 
-    onMount: onMountLog(console.log),
-    pipe: pipeTap(console.log),
+const makeLoggerUtil = (logger: Logger) => Object.assign(
+  (...args: any[]) => logger(...args), {
+    /** Log object of values or accessors. Will invoke all functions in the object */
+    accessors: createLogAccessors(logger), 
+    /** Logs intermediate value with string message and passes through the value */
+    tap: tapLog(logger), 
+    /** Pipe function: 
+     * @example
+     * log.pipe(myFunction, "log message")
+     * // logs --> "log message", {args, returnValue}
+     */
+    pipe: pipeTap(logger),
+    onMount: createHookLog(onMount, logger),
+    onCleanup: createHookLog(onCleanup, logger),
   })
 
-export const warn = Object.assign(
-  (...args: any[]) => console.warn(...args), {
-    accessors: createLogAccessors(console.warn), 
-    tap: tapLog(console.warn), 
-    onMount: onMountLog(console.warn),
-    pipe: pipeTap(console.warn),
-  })
+export const log = makeLoggerUtil(console.log)
+export const warn = makeLoggerUtil(console.warn)
