@@ -1,5 +1,6 @@
-import { createSignal, JSX } from "solid-js"
+import { JSX } from "solid-js"
 import { css } from 'solid-styled-components'
+import { useAtom } from "../hooks/use-atom";
 
 const styles = css`
   --mouse-pos-x: 0px;
@@ -43,9 +44,9 @@ export const Button = (p: {
 }): JSX.Element => {
 
   type MousePosition = {x: number, y: number};
-  const [mousePosition, setMousePosition] = createSignal<MousePosition>({x: 0, y: 0})
+  const mousePosition$ = useAtom<MousePosition>({x: 0, y: 0})
   const trackMousePosition = (e: MouseEvent) => {
-    setMousePosition({x: e.offsetX, y: e.offsetY});
+    mousePosition$({x: e.offsetX, y: e.offsetY});
   };
 
   return (
@@ -54,8 +55,8 @@ export const Button = (p: {
       onMouseMove={trackMousePosition}
       onClick={p.onClick}
       style={`
-        --mouse-pos-x: ${mousePosition().x}px; 
-        --mouse-pos-y: ${mousePosition().y}px;
+        --mouse-pos-x: ${mousePosition$().x}px; 
+        --mouse-pos-y: ${mousePosition$().y}px;
       `}
       >
       {p.children}

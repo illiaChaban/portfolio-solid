@@ -4,8 +4,8 @@ import { css, keyframes, styled } from "solid-styled-components";
 import { Transition } from "solid-transition-group";
 import { log, warn } from "../../utils/log";
 import { breakpoints, cx } from "../../utils/styles";
-import { Ref, useRef } from "../../utils/use-ref";
-import { bindEventAndCleanup } from "../../utils/events";
+import { Ref, useRef } from "../../hooks/use-ref";
+import { bindEventWithCleanup } from "../../utils/events";
 import { pipe, pipeWith } from "pipe-ts";
 import { useNavigate } from "solid-app-router";
 // import {MaskSvg} from '../contexts/page-transition/ink-mask'
@@ -15,68 +15,17 @@ import { call } from "../../utils/lodash";
 import { Cleanup, Unsubscribe } from "../../types";
 import { Cleanups } from "../../utils/cleanups";
 import { TransitionContainer } from './transition-container'
+import { withActions } from "../../utils/withActions";
+import { useAtom } from "../../hooks/use-atom";
+import { assert, assertWarn } from "../../utils/assert";
 
 
-type State = 'entering' | 'exiting' | 'stale'
 export const PageTransitionC = (p: {children: JSX.Element}) => {
-  const [state, setState] = createSignal<State>('stale')
-
-  // const [animateCount, animate] = invoke(() => {
-  //   const [count, setCount] = createSignal<number>(0)
-  //   return [count, () => setCount(count => count + 1)]
-  // })
-
-  // createLogValues({animateCount})
-  // const [onTransitionIn, setOntransitionIn] = createSignal(() => {})
-
-
-
-  // console.log(<div></div>)
-  // createLogValues({c: p.children})
-
-  const [count, increment] = call(() => {
-    const [count, setCount] = createSignal(0)
-    return [count, () => setCount(v => v+1)]
-  })
-  const text = createMemo(() => {
-    const texts = [<p>'hello world'</p>, <p>hi</p>, <span>one</span>, <span>two</span>]
-    const index = count() % texts.length
-    return texts[index]
-  })
 
   return (
-    <>
-      {/* <Transition
-        onEnter={(el, done) => {
-          const parent = el.parentElement!
-
-          const {dispose, maskedEl} = createRoot(dispose => {
-            const maskedEl = <Mask afterTransition={afterTransition}>{el}</Mask>
-            parent.appendChild(maskedEl as Element)
-            return {dispose, maskedEl}
-          }) 
-
-          function afterTransition() {
-            parent.replaceChild(el, maskedEl as Element)
-            dispose()
-            done()
-          }
-        }}
-        onExit={(el, done) => {
-          // time to animate ink
-          setTimeout(done, 1000)
-        }}
-      > */}
-        {/* <button onClick={increment}>Click me</button> */}
         <TransitionContainer>
-          {/* {text()} */}
           {p.children}
         </TransitionContainer>
-        {/* <Mask>
-          {p.children}
-        </Mask> */}
-      {/* </Transition> */}
-    </>
   )
 }
 
@@ -89,12 +38,23 @@ export const Mask = (p: {children: JSX.Element, onDone?: () => void, onFilled?: 
 
   const maskId = getMaskId()
 
-  // console.log('created mask')
-  // log.onMount('mounted mask')
   // get parent dimensions
-  const containerRef = useRef()
-  const parentRef = useParentRefSignal(containerRef)
-  const parentDimensions = useContentWidth(parentRef)
+  const parentDimensions$ = call(() => {
+    const containerRef = useRef()
+    const parentRef = useRef()
+    onMount(() => {
+      const parent = containerRef.current.parentElement
+      assertWarn(parent, "Parent not found")
+      parentRef.current = parent
+    })
+    const parentDimensions$ = useContentWidth(parentRef)
+    return Object.assign(
+      parentDimensions$, 
+      {calculate: (currEl: Element) => {
+        containerRef.current = currEl 
+      }}
+    )
+  })
 
   // other refs
   const inkRef = useRef()
@@ -109,19 +69,20 @@ export const Mask = (p: {children: JSX.Element, onDone?: () => void, onFilled?: 
   const totalSteps = framesNum + 1
   const lastStep = totalSteps - 1
 
-  const [step, setStep] = createSignal(0)
-  const updateRange = (step: number) => (step + totalSteps) % (totalSteps)
-  const incrementStep = () => setStep(v => pipeWith(v+1, updateRange))
-  const decrementStep = () => setStep(v => pipeWith(v-1, updateRange))
-
-  onCleanup(() => warn('cleanup mask'))
+  const step = withActions(createSignal(0), (setStep) => {
+    const updateRange = (step: number) => (step + totalSteps) % (totalSteps)
+    const increment = () => setStep(v => pipeWith(v+1, updateRange))
+    const decrement = () => setStep(v => pipeWith(v-1, updateRange))
+    const reset = () => setStep(0)
+    return {increment, decrement, reset}
+  })
 
   createEffect(on(animationCount, (_, _2, prevCleanups: Cleanups | void): Cleanups | void => {
     // if (!animationCount()) return;
 
     if (step() === lastStep) {
       prevCleanups?.execute()
-      setStep(0)
+      step.reset()
       return;
     }
 
@@ -163,7 +124,7 @@ export const Mask = (p: {children: JSX.Element, onDone?: () => void, onFilled?: 
           stop()
           return
         }
-        incrementStep()
+        step.increment()
       }, interval)
   
       function stop() {
@@ -194,13 +155,13 @@ export const Mask = (p: {children: JSX.Element, onDone?: () => void, onFilled?: 
 
   return (
     <div test-id={"transition-mask" + maskId}
-      ref={containerRef}
+      ref={parentDimensions$.calculate}
       className={cx(
         css({
           position: 'fixed',
           top: 0,
           right: 0,
-          width: parentDimensions().contentWidth + 'px',
+          width: parentDimensions$().contentWidth + 'px',
           minHeight: '100vh',
           height: '100%',
           overflow: 'hidden',
@@ -250,7 +211,7 @@ export const Mask = (p: {children: JSX.Element, onDone?: () => void, onFilled?: 
 }
 
 type ContentRect = {contentWidth: number, paddingLeft: number}
-const useContentWidth = (element: Accessor<Element | undefined | null>): Accessor<ContentRect> => {
+const useContentWidth = (element: Ref<Element>): Accessor<ContentRect> => {
 
   const computeContentDimensions = (el: Element | undefined | null): ContentRect => {
     // It might need to be updated to be more flexible if we add elements on the right
@@ -261,32 +222,30 @@ const useContentWidth = (element: Accessor<Element | undefined | null>): Accesso
     return {contentWidth, paddingLeft: parseFloat(paddingLeft)}
   }
 
-  const [dimensions, setDimensions] = createSignal<ContentRect>(computeContentDimensions(element()))
-  const updateDimensions = () => pipeWith(element(), computeContentDimensions, setDimensions)
+  const dimensions$ = withActions(
+    createSignal<ContentRect>(computeContentDimensions(element.current)),
+    (set) => ({update: () => pipeWith(element.current, computeContentDimensions, set)})
+  )
 
-  bindEventAndCleanup(window, 'resize', updateDimensions)
-  createEffect(on(element, updateDimensions))
+  bindEventWithCleanup(window, 'resize', dimensions$.update)
+  onMount(dimensions$.update)
 
-  return dimensions
+  return dimensions$
 }
 
-const useParentRefSignal = (childRef: Ref<Element>): Accessor<Element | undefined> => {
-  const [parentRef, setParentRef] = createSignal<Element>()
-  onMount(() => setParentRef(childRef.current.parentElement ?? undefined))
-  return parentRef
-}
+// const ControlsContainer = styled('div')`
+//   position: fixed;
+//   top: 20px;
+//   right: 20px;
+//   z-index: 1000;
+//   opacity: 1;
+// `
 
-const ControlsContainer = styled('div')`
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 1000;
-  opacity: 1;
-`
 
-const max = (max: number) => (v: number) => Math.min(max, v)
-const min = (min: number) => (v: number) => Math.max(min, v)
-const range = (minNum: number, maxNum: number) => pipe(min(minNum), max(maxNum))
+
+// const max = (max: number) => (v: number) => Math.min(max, v)
+// const min = (min: number) => (v: number) => Math.max(min, v)
+// const range = (minNum: number, maxNum: number) => pipe(min(minNum), max(maxNum))
 
 
       

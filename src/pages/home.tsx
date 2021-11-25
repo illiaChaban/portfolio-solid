@@ -1,7 +1,7 @@
 import { useNavigate } from 'solid-app-router'
 import { Button } from '../components/button'
 import { textScramble } from '../directives/text-scramble'
-import { use } from '../utils/get-use-directives'
+import { use } from '../hooks/use-directives'
 import { breakpoints } from '../utils/styles/breakpoints'
 import { cx, makeStyles } from '../utils/styles'
 import { Transition } from 'solid-transition-group'
@@ -55,7 +55,7 @@ const Home = () => {
  
   const navigate = useNavigate()
 
-  log.onCleanup('cleanup home')
+  // log.onCleanup('cleanup home')
 
   return (
     <div class={cx(styles.homeText, 'padding-15 body-tags')}>

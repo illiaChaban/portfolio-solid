@@ -23,7 +23,7 @@ const createLogAccessors = (logger: Logger) => (...args: any[]) => {
 const tapLog = (logger: Logger) => <T>(...args: any[]) => tap<T>((arg) => logger(...args, arg))
 
 
-const createHookLog = (hook: (cb: () => void) => void, logger: Logger) => (msg: string) => hook(() => logger(msg))
+const createHookLog = (hook: (cb: () => void) => void, logger: Logger) => (...msgs: any[]) => hook(() => logger(...msgs))
 
 const pipeTap = (logger: Logger) => <T extends any[], TReturn>(fn: (...args: T) => TReturn, ...logs: any[]) => {
   return (...args: T): TReturn => {

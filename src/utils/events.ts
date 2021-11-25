@@ -19,7 +19,7 @@ export const bindEvent: BindEvent<Unsubscribe> = (
   return () => el.removeEventListener(eventName, callback, options)
 }
 
-export const bindEventAndCleanup: BindEvent<void> = (...args) => {
+export const bindEventWithCleanup: BindEvent<void> = (...args) => {
   const unsubscribe = bindEvent(...args)
   onCleanup(unsubscribe)
 } 

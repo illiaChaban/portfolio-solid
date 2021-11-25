@@ -39,4 +39,5 @@ export const getUseDirectives = (
  * @example
  * <div ref={use(directive1, [directive2, accessor]) />}
  */
+// Name alias as "use" to match the name of the special JSX attribute
 export const use = getUseDirectives
