@@ -10,14 +10,14 @@ import { pipe, pipeWith } from "pipe-ts";
 import { useNavigate } from "solid-app-router";
 // import {MaskSvg} from '../contexts/page-transition/ink-mask'
 import {MaskSvg} from '../../contexts/page-transition/mask-2'
-import {InkImage, ClipPath, framesNum} from './ink'
-import { call } from "../../utils/lodash";
+import {InkImage, ClipPath, framesNum as inkFramesNum} from './ink'
+import { call, tap } from "../../utils/lodash";
 import { Cleanup, Unsubscribe } from "../../types";
 import { Cleanups } from "../../utils/cleanups";
 import { TransitionContainer } from './transition-container'
 import { withActions } from "../../utils/withActions";
 import { useAtom } from "../../hooks/use-atom";
-import { assert, assertWarn } from "../../utils/assert";
+import { assert, assertLog } from "../../utils/assert";
 
 
 export const PageTransitionC = (p: {children: JSX.Element}) => {
@@ -44,7 +44,7 @@ export const Mask = (p: {children: JSX.Element, onDone?: () => void, onFilled?: 
     const parentRef = useRef()
     onMount(() => {
       const parent = containerRef.current.parentElement
-      assertWarn(parent, "Parent not found")
+      assertLog(parent, "Parent not found")
       parentRef.current = parent
     })
     const parentDimensions$ = useContentWidth(parentRef)
@@ -66,11 +66,13 @@ export const Mask = (p: {children: JSX.Element, onDone?: () => void, onFilled?: 
     return [animationCount, () => setAnimationCount(v => v+1)]
   })
 
-  const totalSteps = framesNum + 1
-  const lastStep = totalSteps - 1
+  // Last additional step represents fully filled screen
+  const totalStepsNum = inkFramesNum + 1
+  // The first step doesn't count, because it already starts at the first step
+  const totalAdditionalSteps = totalStepsNum - 1
 
-  const step = withActions(createSignal(0), (setStep) => {
-    const updateRange = (step: number) => (step + totalSteps) % (totalSteps)
+  const step$ = withActions(createSignal(0), (setStep) => {
+    const updateRange = (step: number) => (step + totalStepsNum) % (totalStepsNum)
     const increment = () => setStep(v => pipeWith(v+1, updateRange))
     const decrement = () => setStep(v => pipeWith(v-1, updateRange))
     const reset = () => setStep(0)
@@ -80,9 +82,9 @@ export const Mask = (p: {children: JSX.Element, onDone?: () => void, onFilled?: 
   createEffect(on(animationCount, (_, _2, prevCleanups: Cleanups | void): Cleanups | void => {
     // if (!animationCount()) return;
 
-    if (step() === lastStep) {
+    if (step$() === totalAdditionalSteps) {
       prevCleanups?.execute()
-      step.reset()
+      step$.reset()
       return;
     }
 
@@ -112,26 +114,48 @@ export const Mask = (p: {children: JSX.Element, onDone?: () => void, onFilled?: 
     }
 
     const animateInk = (onDone: () => void): Cleanup => {
-  
-      const interval = call(() => {
-        const time = 1000
-        return time / totalSteps
-      }) 
+      return animateSteps(
+        step$.increment,
+        {onDone, steps: totalAdditionalSteps, time: 1000}
+      )
+      // const interval = call(() => {
+      //   const time = 1000
+      //   return time / (totalAdditionalSteps - 1)
+      // }) 
 
-      const id = setInterval(() => {
-        if (lastStep === step()) {
-          onDone()
-          stop()
-          return
-        }
-        step.increment()
-      }, interval)
-  
-      function stop() {
-        clearInterval(id)
-      }
+      // const {nextStep, cancel} = call(() => {
+      //   let currentAnimationId: number
+      //   const nextStep = () => {
+      //     currentAnimationId = requestAnimationFrame(step)
+      //   }
+      //   const cancel = () => currentAnimationId && cancelAnimationFrame(currentAnimationId)
+      //   return {nextStep, cancel}
+      // })
 
-      return stop
+      // let startTimestamp: number
+
+      // function step(timestamp: number) {
+      //   if (step$() === lastStep) {
+      //     onDone()
+      //     return
+      //   }
+      //   const intervalElapsed = call(() => {
+      //     if (!startTimestamp) {
+      //       startTimestamp = timestamp
+      //       return true
+      //     }
+      //     const diff = timestamp - startTimestamp
+      //     return diff > interval * step$()
+      //   })
+
+      //   if (intervalElapsed) step$.increment();
+        
+      //   nextStep()
+      // }
+
+      // nextStep()
+
+      // return cancel
     }
 
 
@@ -148,9 +172,6 @@ export const Mask = (p: {children: JSX.Element, onDone?: () => void, onFilled?: 
     return cleanups
 
   }))
-
-
-  // log.accessors({maskId, step})
 
 
   return (
@@ -174,7 +195,7 @@ export const Mask = (p: {children: JSX.Element, onDone?: () => void, onFilled?: 
     >
       <InkImage 
         ref={inkRef}
-        step={step()} 
+        step={step$()} 
       />
 
       <div 
@@ -202,7 +223,7 @@ export const Mask = (p: {children: JSX.Element, onDone?: () => void, onFilled?: 
         <svg width="0" height="0">
           <defs>
             <clipPath id={maskId} clipPathUnits="objectBoundingBox">
-              <ClipPath step={step()} />
+              <ClipPath step={step$()} />
             </clipPath>
           </defs>
         </svg>
@@ -248,4 +269,55 @@ const useContentWidth = (element: Ref<Element>): Accessor<ContentRect> => {
 // const range = (minNum: number, maxNum: number) => pipe(min(minNum), max(maxNum))
 
 
+const animateSteps = (
+  callback: () => void, 
+  {
+    steps, 
+    time, 
+    onDone
+  } : {steps: number, time: number, onDone?: () => void}
+)=> {
+  const interval = call(() => {
+    const totalIntervals = steps - 1
+    return time / totalIntervals
+  }) 
+
+  const {nextStep, cancel} = call(() => {
+    let currentAnimationId: number
+    const nextStep = () => {
+      currentAnimationId = requestAnimationFrame(step)
+    }
+    const cancel = () => currentAnimationId && cancelAnimationFrame(currentAnimationId)
+    return {nextStep, cancel}
+  })
+
+  let startTimestamp: number
+  let stepsLeft = steps
+
+  function step(timestamp: number) {
+
+    const intervalElapsed = call(() => {
+      const currentStepIdx = steps - stepsLeft
+      if (!startTimestamp) {
+        assertLog(currentStepIdx === 0)
+        startTimestamp = timestamp
+        return true
+      }
+      const diff = timestamp - startTimestamp
+      return diff > interval * currentStepIdx
+    })
+
+    if (intervalElapsed) {
+      stepsLeft--
+      callback()
+      !stepsLeft && onDone?.()
+    };
+    
+    stepsLeft && nextStep()
+  }
+
+  nextStep()
+
+  return cancel
+}
       

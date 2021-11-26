@@ -7,9 +7,9 @@ export function assert(condition: unknown, msg?: string): asserts condition {
  * Use sparingly as it doesn't actually enforce the value. 
  * Use only when avoiding error is better than throwing 
  * */
-export function assertWarn(condition: unknown, msg?: string): asserts condition {
+export function assertLog(condition: unknown, msg?: string): asserts condition {
   if (condition) return;
-  console.warn(msg ?? 'Assertion failed')
+  console.error(msg ?? 'Assertion failed')
 }
 
 export function returnAsserted<T>(val: T | null | undefined | 0, msg?: string): T {
