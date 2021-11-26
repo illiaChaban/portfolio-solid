@@ -14,10 +14,7 @@ import { breakpoints } from "./utils/styles/breakpoints";
 import { isProduction } from "./constants/dev-mode";
 import { GTag } from "./components/g-tag";
 import { Particles } from "./components/particles";
-import { PageTransitionProvider, usePageTransition } from "./contexts/page-transition";
-import { Transition } from "solid-transition-group";
-import { PageTransitionC } from './components/page-transition/page-transition-c'
-
+import { PageTransition } from './components/page-transition'
 
 const styles = makeStyles({
   menu: {
@@ -117,7 +114,7 @@ const App: Component = () => {
             // id="content" 
             className={styles.content}
           >
-            <PageTransitionC>
+            <PageTransition>
               <Routes>
                 <Route path="/" element={<Home/>} />
                 <Route path="/about" element={<About/>} />
@@ -126,7 +123,7 @@ const App: Component = () => {
                 <Route path="/contact" element={<Contact/>} />
                 <Route path="/*all" element={<NotFound />} />
               </Routes>
-            </PageTransitionC>
+            </PageTransition>
           </div>
 
       </main>

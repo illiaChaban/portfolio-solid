@@ -19,7 +19,7 @@ import { useAtom } from "../../hooks/use-atom";
 import { assert, assertLog } from "../../utils/assert";
 
 
-export const PageTransitionC = (p: {children: JSX.Element}) => {
+export const PageTransition = (p: {children: JSX.Element}) => {
   return (
     <TransitionContainer>
       {p.children}

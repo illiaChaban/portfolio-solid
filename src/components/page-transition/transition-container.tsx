@@ -1,7 +1,7 @@
 import { children, createComputed, createRoot, createSignal, For, JSXElement, on, onCleanup, onMount, untrack } from "solid-js"
 import { call, last } from "../../utils/lodash"
 import { withActions } from "../../utils/withActions"
-import { Mask } from './page-transition-c'
+import { Mask } from './page-transition'
 
 export const TransitionContainer = (p: {children: JSXElement}): JSXElement => {
   const propsChildren = children(() => p.children)
