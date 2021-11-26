@@ -7,7 +7,6 @@ import { breakpoints, cx } from "../../utils/styles";
 import { Ref, useRef } from "../../hooks/use-ref";
 import { bindEventWithCleanup } from "../../utils/events";
 import { pipe, pipeWith } from "pipe-ts";
-import { useNavigate } from "solid-app-router";
 // import {MaskSvg} from '../contexts/page-transition/ink-mask'
 import {MaskSvg} from '../../contexts/page-transition/mask-2'
 import {InkImage, ClipPath, framesNum as inkFramesNum} from './ink'
@@ -21,11 +20,10 @@ import { assert, assertLog } from "../../utils/assert";
 
 
 export const PageTransitionC = (p: {children: JSX.Element}) => {
-
   return (
-        <TransitionContainer>
-          {p.children}
-        </TransitionContainer>
+    <TransitionContainer>
+      {p.children}
+    </TransitionContainer>
   )
 }
 
@@ -113,51 +111,13 @@ export const Mask = (p: {children: JSX.Element, onDone?: () => void, onFilled?: 
       return () => inkAnimation.cancel()
     }
 
-    const animateInk = (onDone: () => void): Cleanup => {
-      return animateSteps(
-        step$.increment,
-        {onDone, steps: totalAdditionalSteps, time: 1000}
-      )
-      // const interval = call(() => {
-      //   const time = 1000
-      //   return time / (totalAdditionalSteps - 1)
-      // }) 
-
-      // const {nextStep, cancel} = call(() => {
-      //   let currentAnimationId: number
-      //   const nextStep = () => {
-      //     currentAnimationId = requestAnimationFrame(step)
-      //   }
-      //   const cancel = () => currentAnimationId && cancelAnimationFrame(currentAnimationId)
-      //   return {nextStep, cancel}
-      // })
-
-      // let startTimestamp: number
-
-      // function step(timestamp: number) {
-      //   if (step$() === lastStep) {
-      //     onDone()
-      //     return
-      //   }
-      //   const intervalElapsed = call(() => {
-      //     if (!startTimestamp) {
-      //       startTimestamp = timestamp
-      //       return true
-      //     }
-      //     const diff = timestamp - startTimestamp
-      //     return diff > interval * step$()
-      //   })
-
-      //   if (intervalElapsed) step$.increment();
-        
-      //   nextStep()
-      // }
-
-      // nextStep()
-
-      // return cancel
-    }
-
+    const animateInk = (onDone: () => void): Cleanup => 
+      animateSteps({
+        onStep: step$.increment,
+        onDone, 
+        steps: totalAdditionalSteps, 
+        time: 1000, 
+      })
 
     const cleanups = new Cleanups()
     cleanups.add(fadeInText()) 
@@ -270,13 +230,13 @@ const useContentWidth = (element: Ref<Element>): Accessor<ContentRect> => {
 
 
 const animateSteps = (
-  callback: () => void, 
   {
     steps, 
     time, 
-    onDone
-  } : {steps: number, time: number, onDone?: () => void}
-)=> {
+    onDone,
+    onStep,
+  } : {steps: number, time: number, onDone?: () => void, onStep: () => void}
+): Cleanup => {
   const interval = call(() => {
     const totalIntervals = steps - 1
     return time / totalIntervals
@@ -309,7 +269,7 @@ const animateSteps = (
 
     if (intervalElapsed) {
       stepsLeft--
-      callback()
+      onStep()
       !stepsLeft && onDone?.()
     };
     

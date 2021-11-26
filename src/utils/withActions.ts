@@ -1,7 +1,7 @@
 import { Accessor, Setter } from "solid-js";
 
 /**
- * A utility to define custom setters and avoid exposing the setter
+ * A utility to define custom actions and avoid exposing the setter
  * 
  * @example
  * const value = withActions(createSignal(0), (set) => ({ 
