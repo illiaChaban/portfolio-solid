@@ -4,7 +4,7 @@ import { createMemo, JSX } from "solid-js";
 import {Path2, Path3, Path4, Path5, Path6, Path7, Path8, Path9, Path10, Path11,
   Path12, Path13, Path14, Path15, Path16, Path17, Path18, Path19, Path20, Path21,
   Path22, Path23, Path24, Path25
-} from '../../contexts/page-transition/clips-svg_/clips'
+} from './assets/clips/clips'
 import { cx } from "../../utils/styles";
 import { Ref } from "../../hooks/use-ref";
 

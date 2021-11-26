@@ -7,8 +7,6 @@ import { breakpoints, cx } from "../../utils/styles";
 import { Ref, useRef } from "../../hooks/use-ref";
 import { bindEventWithCleanup } from "../../utils/events";
 import { pipe, pipeWith } from "pipe-ts";
-// import {MaskSvg} from '../contexts/page-transition/ink-mask'
-import {MaskSvg} from '../../contexts/page-transition/mask-2'
 import {InkImage, ClipPath, framesNum as inkFramesNum} from './ink'
 import { call, tap } from "../../utils/lodash";
 import { Cleanup, Unsubscribe } from "../../types";
