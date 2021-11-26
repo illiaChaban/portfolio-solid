@@ -18,6 +18,12 @@ import { assert, assertLog } from "../../utils/assert";
 
 
 export const PageTransition = (p: {children: JSX.Element}) => {
+  // TODO
+  // Lazy load this transition due to clips and image size
+  // Try to reduce image size
+  // Use simple transition as a backup
+  // Show a banner "advanced transition loaded/loading" when it's ready 
+  // + "try to navigate to a different page"
   return (
     <TransitionContainer>
       {p.children}
