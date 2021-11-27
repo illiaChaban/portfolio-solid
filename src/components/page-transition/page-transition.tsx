@@ -7,7 +7,7 @@ import { breakpoints, cx } from "../../utils/styles";
 import { Ref, useRef } from "../../hooks/use-ref";
 import { bindEventWithCleanup } from "../../utils/events";
 import { pipe, pipeWith } from "pipe-ts";
-import {InkImage, ClipPath, framesNum as inkFramesNum} from './ink'
+import {InkImage, ClipPath, framesNum as inkFramesNum} from './ink-masks'
 import { call, tap } from "../../utils/lodash";
 import { Cleanup, Unsubscribe } from "../../types";
 import { Cleanups } from "../../utils/cleanups";
@@ -82,7 +82,7 @@ export const Mask = (p: {children: JSX.Element, onDone?: () => void, onFilled?: 
   })
 
   createEffect(on(animationCount, (_, _2, prevCleanups: Cleanups | void): Cleanups | void => {
-    // if (!animationCount()) return;
+    if (!animationCount()) return;
 
     if (step$() === totalAdditionalSteps) {
       prevCleanups?.execute()
@@ -119,8 +119,8 @@ export const Mask = (p: {children: JSX.Element, onDone?: () => void, onFilled?: 
       animateSteps({
         onStep: step$.increment,
         onDone, 
-        steps: totalAdditionalSteps, 
-        time: 1000, 
+        steps: totalAdditionalSteps - step$(), 
+        time: 1000 / totalAdditionalSteps * step$(), 
       })
 
     const cleanups = new Cleanups()
@@ -176,13 +176,13 @@ export const Mask = (p: {children: JSX.Element, onDone?: () => void, onFilled?: 
         {p.children}
       </div>
 
-        {/* <ControlsContainer>
+        <ControlsContainer>
           <button onClick={() => location.replace('/')}>Navigate Home</button>
-          <button onClick={startAnimation}>{step() === lastStep ? 'Reset' : 'Animate'}</button>
-          <div style={{width: '20px', textAlign: 'center', display: 'inline-block'}}>{step()}</div>
-          <button onClick={incrementStep}>Increment</button>
-          <button onClick={decrementStep}>Decrement</button>
-        </ControlsContainer> */}
+          <button onClick={startAnimation}>{step$() === totalAdditionalSteps ? 'Reset' : 'Animate'}</button>
+          <div style={{width: '20px', textAlign: 'center', display: 'inline-block'}}>{step$()}</div>
+          <button onClick={step$.increment}>Increment</button>
+          <button onClick={step$.decrement}>Decrement</button>
+        </ControlsContainer>
 
         <svg width="0" height="0">
           <defs>
@@ -218,13 +218,13 @@ const useContentWidth = (element: Ref<Element>): Accessor<ContentRect> => {
   return dimensions$
 }
 
-// const ControlsContainer = styled('div')`
-//   position: fixed;
-//   top: 20px;
-//   right: 20px;
-//   z-index: 1000;
-//   opacity: 1;
-// `
+const ControlsContainer = styled('div')`
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  opacity: 1;
+`
 
 
 

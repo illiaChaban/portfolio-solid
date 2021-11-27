@@ -12,8 +12,15 @@ export const TransitionContainer = (p: {children: JSXElement}): JSXElement => {
 
   type Child = {el: JSXElement, id: number, dispose?: () => void }
   const elements$ = withActions(
+    // createSignal<Child[]>([
+    //   {el: propsChildren(), id: getNextId()}
+    // ]), 
     createSignal<Child[]>([
-      {el: propsChildren(), id: getNextId()}
+      {el: (
+        <TransitionPage 
+          onFilled={() => {}}
+        >{propsChildren()}</TransitionPage>
+      ), id: getNextId()}
     ]), 
     (set) => ({
       remove: (id: number) => 
