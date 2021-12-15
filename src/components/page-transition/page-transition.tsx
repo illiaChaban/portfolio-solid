@@ -12,9 +12,11 @@ import { call, tap } from "../../utils/lodash";
 import { Cleanup, Unsubscribe } from "../../types";
 import { Cleanups } from "../../utils/cleanups";
 import { TransitionContainer } from './transition-container'
-import { withActions } from "../../utils/withActions";
+import { withActions } from "../../utils/with-actions";
 import { useAtom } from "../../hooks/use-atom";
 import { assert, assertLog } from "../../utils/assert";
+import { use } from "../../hooks/use-directives";
+import { devId } from "../../directives/dev-id";
 
 
 export const PageTransition = (p: {children: JSX.Element}) => {
@@ -36,7 +38,7 @@ const getMaskId = call(() => {
   return () => (++id).toString()
 })
 
-export const Mask = (p: {children: JSX.Element, onDone?: () => void, onFilled?: () => void}) => {
+export const Mask = (p: {children: JSX.Element, onDone?: () => void, onFilled?: () => void, debug?: boolean}) => {
 
   const maskId = getMaskId()
 
@@ -82,7 +84,7 @@ export const Mask = (p: {children: JSX.Element, onDone?: () => void, onFilled?: 
   })
 
   createEffect(on(animationCount, (_, _2, prevCleanups: Cleanups | void): Cleanups | void => {
-    if (!animationCount()) return;
+    if (p.debug && !animationCount()) return;
 
     if (step$() === totalAdditionalSteps) {
       prevCleanups?.execute()
@@ -90,27 +92,32 @@ export const Mask = (p: {children: JSX.Element, onDone?: () => void, onFilled?: 
       return;
     }
 
-    const fadeInText = (): Cleanup => {
+    const backgroundInTime = 800
+    const backgroundOutTime = 300
+
+    const fadeInPage = (): Cleanup => {
       const textAnimation = chldrenContainerRef.current.animate([
         {opacity: 0.2},
         {opacity: 0.8, offset: 0.75},
         {opacity: 1}
       ], {
-        duration: 1300,
+        duration: backgroundInTime + backgroundOutTime,
         fill: 'forwards'
       })
 
       return () => textAnimation.cancel()
     }
 
-    const fadeOutInk = (): Cleanup => {
+    const fadeOutInkBackground = (onDone?: () => void): Cleanup => {
       // fade out ink
       const inkAnimation = inkRef.current.animate([
         {opacity: 0},
       ], {
-        duration: 300,
+        duration: backgroundOutTime,
         fill: 'forwards',
       })
+
+      inkAnimation.onfinish = () => onDone?.()
 
       return () => inkAnimation.cancel()
     }
@@ -120,77 +127,93 @@ export const Mask = (p: {children: JSX.Element, onDone?: () => void, onFilled?: 
         onStep: step$.increment,
         onDone, 
         steps: totalAdditionalSteps - step$(), 
-        time: 1000 / totalAdditionalSteps * step$(), 
+        time: backgroundInTime - backgroundInTime / totalAdditionalSteps * step$(), 
       })
 
     const cleanups = new Cleanups()
-    cleanups.add(fadeInText()) 
+    cleanups.add(fadeInPage()) 
     cleanups.add(
       animateInk(() => {
         p.onFilled?.()
-        cleanups.add(fadeOutInk()) 
-        setTimeout(() => p.onDone?.(), 300)
+        const cancel = fadeOutInkBackground(p.onDone)
+        cleanups.add(cancel) 
       })
     )
 
     return cleanups
-
   }))
 
 
   return (
-    <div test-id={"transition-mask" + maskId}
-      ref={parentDimensions$.calculate}
+    <div
+      ref={use(
+        devId("transition-mask-" + maskId), 
+        parentDimensions$.calculate,
+      )}
       className={cx(
         css({
           position: 'fixed',
           top: 0,
           right: 0,
-          width: parentDimensions$().contentWidth + 'px',
-          minHeight: '100vh',
-          height: '100%',
+          width: "100vw",
+          height: "100vh",
           overflow: 'hidden',
-          // adjust for navbar on desktop
-          [breakpoints.up('md')]: {
-            marginLeft: 'var(--menu-offset)',
-          }
+          boxSizing: 'border-box',
+          // For mobile view, show the whole thing
+          paddingLeft: 'inherit',
+          display: 'flex',
         }),
       )}
     >
-      <InkImage 
-        ref={inkRef}
-        step={step$()} 
-      />
+      <div className={css`
+        flex-grow: 1;
+        overflow: hidden;
+        position: relative;
+      `}>
 
-      <div 
-        ref={chldrenContainerRef}
-        className={css`
-          width: 100%;
-          height: 100%;
-          clip-path: url(#${maskId});
-          /* Copying styles from #content */
-          display: flex;
-          flex-direction: column;
-        `}
-      >
-        {p.children}
+        <InkImage 
+          ref={inkRef}
+          step={step$()} 
+        />
+
+        <div 
+          ref={chldrenContainerRef}
+          className={css`
+            width: 100%;
+            height: 100%;
+            clip-path: url(#${maskId});
+            /* Copying styles from #content */
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+            /* We want background image & clip take the whole height, 
+            but the page itself should account for padding-bottom that comes from the navbar */
+            ${breakpoints.down('md')} {
+              padding-bottom: var(--menu-offset);
+            }
+          `}
+        >
+          <svg width="0" height="0">
+            <defs>
+              <clipPath id={maskId} clipPathUnits="objectBoundingBox">
+                <ClipPath step={step$()} />
+              </clipPath>
+            </defs>
+          </svg>
+
+          {p.children}
+        </div>
+
+        {p.debug && (
+          <ControlsContainer>
+            <button onClick={() => location.replace('/')}>Navigate Home</button>
+            <button onClick={startAnimation}>{step$() === totalAdditionalSteps ? 'Reset' : 'Animate'}</button>
+            <div style={{width: '20px', textAlign: 'center', display: 'inline-block'}}>{step$()}</div>
+            <button onClick={step$.increment}>Increment</button>
+            <button onClick={step$.decrement}>Decrement</button>
+          </ControlsContainer>
+        )}
       </div>
-
-        <ControlsContainer>
-          <button onClick={() => location.replace('/')}>Navigate Home</button>
-          <button onClick={startAnimation}>{step$() === totalAdditionalSteps ? 'Reset' : 'Animate'}</button>
-          <div style={{width: '20px', textAlign: 'center', display: 'inline-block'}}>{step$()}</div>
-          <button onClick={step$.increment}>Increment</button>
-          <button onClick={step$.decrement}>Decrement</button>
-        </ControlsContainer>
-
-        <svg width="0" height="0">
-          <defs>
-            <clipPath id={maskId} clipPathUnits="objectBoundingBox">
-              <ClipPath step={step$()} />
-            </clipPath>
-          </defs>
-        </svg>
     </div>
   )
 }

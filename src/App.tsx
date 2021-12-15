@@ -11,7 +11,7 @@ import { ThemeProvider } from "./theme/theme";
 import { NavIcon } from "./components/nav-icon";
 import { makeStyles } from "./utils/styles/make-styles";
 import { breakpoints } from "./utils/styles/breakpoints";
-import { isProduction } from "./constants/dev-mode";
+import { isProduction } from "./constants/env";
 import { GTag } from "./components/g-tag";
 import { Particles } from "./components/particles";
 import { PageTransition } from './components/page-transition'
@@ -101,6 +101,8 @@ const App: Component = () => {
             <nav 
               class={styles.nav}
             >
+              {/* TODO: navbar */}
+              {/* https://www.youtube.com/watch?v=ArTVfdHOB-M&ab_channel=OnlineTutorials */}
               <NavIcon.Home/>
               <NavIcon.About/>
               <NavIcon.Skills/>

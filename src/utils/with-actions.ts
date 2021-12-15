@@ -22,5 +22,5 @@ export const withActions = <T, TActions extends Record<string, Function>>(
   [get, set]: [Accessor<T>, Setter<T>],
   mapSet: (set: Setter<T>) => TActions
 ): Accessor<T> & TActions => {
-  return Object.assign(get, mapSet(set))
+  return Object.assign(() => get(), mapSet(set))
 }

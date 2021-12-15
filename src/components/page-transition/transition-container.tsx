@@ -1,7 +1,9 @@
 import { children, createComputed, createRoot, createSignal, For, JSXElement, on, onCleanup, onMount, untrack } from "solid-js"
 import { call, last } from "../../utils/lodash"
-import { withActions } from "../../utils/withActions"
+import { withActions } from "../../utils/with-actions"
 import { Mask } from './page-transition'
+
+const DEBUG = false
 
 export const TransitionContainer = (p: {children: JSXElement}): JSXElement => {
   const propsChildren = children(() => p.children)
@@ -10,18 +12,21 @@ export const TransitionContainer = (p: {children: JSXElement}): JSXElement => {
     return () => ++id
   })
 
+
   type Child = {el: JSXElement, id: number, dispose?: () => void }
   const elements$ = withActions(
-    // createSignal<Child[]>([
-    //   {el: propsChildren(), id: getNextId()}
-    // ]), 
-    createSignal<Child[]>([
-      {el: (
-        <TransitionPage 
-          onFilled={() => {}}
-        >{propsChildren()}</TransitionPage>
-      ), id: getNextId()}
-    ]), 
+    DEBUG
+      ? createSignal<Child[]>([
+        {el: (
+          <TransitionPage 
+            onFilled={() => {}}
+            debug={DEBUG}
+          >{propsChildren()}</TransitionPage>
+        ), id: getNextId()}
+      ])
+      : createSignal<Child[]>([
+        {el: propsChildren(), id: getNextId()}
+      ]), 
     (set) => ({
       remove: (id: number) => 
         set(v => {
@@ -51,6 +56,7 @@ export const TransitionContainer = (p: {children: JSXElement}): JSXElement => {
             if (!currChildId) return;
             elements$.remove(currChildId)
           }}
+          debug={DEBUG}
         >{child}</TransitionPage>
       ), dispose]
     })
@@ -65,7 +71,7 @@ export const TransitionContainer = (p: {children: JSXElement}): JSXElement => {
   )
 }
 
-const TransitionPage = (p: {children: JSXElement, onFilled: () => void}): JSXElement => {
+const TransitionPage = (p: {children: JSXElement, onFilled: () => void, debug?: boolean}): JSXElement => {
   const [transitioned, setTransitioned] = createSignal(false)
   // wrapping in children as a workaround for a bug inside Solid.js
   // https://github.com/solidjs/solid/issues/731
@@ -75,6 +81,7 @@ const TransitionPage = (p: {children: JSXElement, onFilled: () => void}): JSXEle
       <Mask 
         onFilled={p.onFilled}
         onDone={() => setTransitioned(true)} 
+        debug={p.debug}
       >{p.children}</Mask>
     )
   )
