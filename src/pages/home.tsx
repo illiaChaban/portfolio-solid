@@ -55,8 +55,6 @@ const Home = () => {
  
   const navigate = useNavigate()
 
-  // log.onCleanup('cleanup home')
-
   return (
     <div class={cx(styles.homeText, 'padding-15 body-tags')}>
       <div class={cx(styles.textContainer, "div-tags")}>

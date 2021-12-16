@@ -1,4 +1,6 @@
+import { isProduction } from "../constants/env"
+
 export const devId = (id: string) => (node: Element) => {
-  // TODO show only in dev environment
+  if (isProduction) return;
   node.setAttribute('data-test-id', id)
 } 

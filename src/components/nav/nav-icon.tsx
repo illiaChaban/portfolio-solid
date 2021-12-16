@@ -76,13 +76,9 @@ const NavIconBase = (p: {
   const removeSlashes = (str: string) => str.replace('/', '');
   const name = createMemo(() => p.name ?? removeSlashes(p.href))
 
-  // const {navigate, getPathname} = usePageTransition()
-
-  // const isActivated = createMemo(() => getPathname() === p.href)
   const location = useLocation()
   const isActivated = createMemo(() => location.pathname === p.href)
   
-
   return (
     <NavLink 
       href={p.href}
@@ -90,12 +86,6 @@ const NavIconBase = (p: {
       className={cx(styles.link, styles.iconToTextOnHover, isActivated() && styles.active)}
       style={`--hover-text: '${name()}'`}
       aria-label={`nav-menu--${name()}`}
-      // onClick={(e) => {
-      //   e.preventDefault()
-      //   const link = e.target.closest('a');
-      //   if (!link) return;
-      //   navigate(link.href)
-      // }}
     >
       <i 
         class={p.iconName} 
