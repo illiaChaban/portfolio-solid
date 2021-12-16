@@ -55,3 +55,8 @@ export const last: Last = (arr) => {
   const lastIdx = arr.length - 1
   return arr[lastIdx]
 }
+
+type KeysOfUnion<T> = T extends {} ? keyof T: never;
+export const has = <T extends {}, TKey extends KeysOfUnion<T>>(
+  obj: T, key: TKey
+): obj is T & Partial<Record<TKey, any>> => key in obj
