@@ -8,7 +8,7 @@ import Contact from './pages/contact'
 import NotFound from "./pages/not-found";
 
 import { ThemeProvider } from "./theme/theme";
-import { NavIcon } from "./components/nav-icon";
+import { NavIcon } from "./components/nav/nav-icon";
 import { makeStyles } from "./utils/styles/make-styles";
 import { breakpoints } from "./utils/styles/breakpoints";
 import { isProduction } from "./constants/env";

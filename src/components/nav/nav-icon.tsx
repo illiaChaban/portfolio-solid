@@ -1,7 +1,7 @@
 import { JSX } from "solid-js/jsx-runtime";
 import { NavLink } from 'solid-app-router'
 import { createMemo } from "solid-js";
-import { cx } from "../utils/styles";
+import { cx } from "../../utils/styles";
 import { css } from "solid-styled-components";
 import { useLocation } from "solid-app-router";
 
