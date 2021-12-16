@@ -74,10 +74,10 @@ const NavIconBase = (p: {
 }): JSX.Element => {
 
   const removeSlashes = (str: string) => str.replace('/', '');
-  const name = createMemo(() => p.name ?? removeSlashes(p.href))
+  const name = () => p.name ?? removeSlashes(p.href)
 
   const location = useLocation()
-  const isActivated = createMemo(() => location.pathname === p.href)
+  const isActivated = () => location.pathname === p.href
   
   return (
     <NavLink 
