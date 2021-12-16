@@ -3,6 +3,15 @@ export function assert(condition: unknown, msg?: string): asserts condition {
   throw new Error(msg ?? 'Assertion failed')
 }
 
+/** 
+ * Use sparingly as it doesn't actually enforce the value. 
+ * Use only when avoiding error is better than throwing 
+ * */
+export function assertLog(condition: unknown, msg?: string): asserts condition {
+  if (condition) return;
+  console.error(msg ?? 'Assertion failed')
+}
+
 export function returnAsserted<T>(val: T | null | undefined | 0, msg?: string): T {
   assert(val, msg)
   return val

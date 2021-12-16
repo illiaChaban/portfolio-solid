@@ -8,14 +8,13 @@ import Contact from './pages/contact'
 import NotFound from "./pages/not-found";
 
 import { ThemeProvider } from "./theme/theme";
-import { NavIcon } from "./components/nav-icon";
+import { NavIcon } from "./components/nav/nav-icon";
 import { makeStyles } from "./utils/styles/make-styles";
 import { breakpoints } from "./utils/styles/breakpoints";
-import { isProduction } from "./constants/dev-mode";
+import { isProduction } from "./constants/env";
 import { GTag } from "./components/g-tag";
 import { Particles } from "./components/particles";
-import { PageTransitionProvider, usePageTransition } from "./contexts/page-transition";
-
+import { PageTransition } from './components/page-transition'
 
 const styles = makeStyles({
   menu: {
@@ -102,6 +101,8 @@ const App: Component = () => {
             <nav 
               class={styles.nav}
             >
+              {/* TODO: navbar */}
+              {/* https://www.youtube.com/watch?v=ArTVfdHOB-M&ab_channel=OnlineTutorials */}
               <NavIcon.Home/>
               <NavIcon.About/>
               <NavIcon.Skills/>
@@ -115,14 +116,16 @@ const App: Component = () => {
             // id="content" 
             className={styles.content}
           >
-            <Routes>
-              <Route path="/" element={<Home/>} />
-              <Route path="/about" element={<About/>} />
-              <Route path="/skills" element={<Skills/>} />
-              <Route path="/projects" element={<Projects/>} />
-              <Route path="/contact" element={<Contact/>} />
-              <Route path="/*all" element={<NotFound />} />
-            </Routes>
+            <PageTransition>
+              <Routes>
+                <Route path="/" element={<Home/>} />
+                <Route path="/about" element={<About/>} />
+                <Route path="/skills" element={<Skills/>} />
+                <Route path="/projects" element={<Projects/>} />
+                <Route path="/contact" element={<Contact/>} />
+                <Route path="/*all" element={<NotFound />} />
+              </Routes>
+            </PageTransition>
           </div>
 
       </main>
@@ -135,9 +138,7 @@ export default () => (
   <ThemeProvider>
     {isProduction && <GTag/>}
     <Router>
-      <PageTransitionProvider>
-        <App />
-      </PageTransitionProvider>
+      <App />
     </Router>
   </ThemeProvider>
 );

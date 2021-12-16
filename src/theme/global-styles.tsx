@@ -1,5 +1,4 @@
 import { createGlobalStyles } from "solid-styled-components";
-import InkImg from '../contexts/page-transition/ink-11.png' // 11, 14
 
 export const GlobalStyles = createGlobalStyles`
   html, body {

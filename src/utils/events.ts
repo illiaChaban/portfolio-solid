@@ -1,30 +1,34 @@
+import { onCleanup } from "solid-js"
 import { Unsubscribe } from "../types"
 
-export const bindEvent = (
-  el: Element, 
-  eventName: string, 
-  callback: (e: unknown) => void
-): Unsubscribe => {
-  el.addEventListener(eventName, callback)
-  return () => el.removeEventListener(eventName, callback)
+interface BindEvent<TReturn> {
+  (
+    el: Element | Window, 
+    eventName: string, 
+    callback: (e: unknown) => void,
+    options?: AddEventListenerOptions,
+  ): TReturn
+}
+export const bindEvent: BindEvent<Unsubscribe> = (
+  el, 
+  eventName, 
+  callback,
+  options?,
+) => {
+  el.addEventListener(eventName, callback, options)
+  return () => el.removeEventListener(eventName, callback, options)
 }
 
-export const bindEventOnce = (
-  el: Element, 
-  eventName: string, 
-  callback: (e: unknown) => void
-): void => {
-  let unsubscriber: Unsubscribe
-  const updatedCallback = (e: unknown) => {
-    callback(e)
-    unsubscriber?.()
-  }
-  unsubscriber = bindEvent(el, eventName, updatedCallback)
-}
+export const bindEventWithCleanup: BindEvent<void> = (...args) => {
+  const unsubscribe = bindEvent(...args)
+  onCleanup(unsubscribe)
+} 
 
 export const waitForEvent = (
-  el: Element, 
+  el: Element | Window, 
   eventName: string
 ): Promise<unknown> => {
-  return new Promise((res) => bindEventOnce(el, eventName, res))
+  return new Promise((res) => {
+    bindEvent(el, eventName, res, { once: true })
+  })
 }
