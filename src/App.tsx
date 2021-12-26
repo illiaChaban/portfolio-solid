@@ -15,6 +15,7 @@ import { isProduction } from "./constants/env";
 import { GTag } from "./components/g-tag";
 import { Particles } from "./components/particles";
 import { PageTransition } from './components/page-transition'
+import { Navbar } from "./components/nav/navbar";
 
 const styles = makeStyles({
   menu: {
@@ -49,29 +50,6 @@ const styles = makeStyles({
       }
     }
   },
-  nav: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-
-    textAlign: 'center',
-    height: '210px',
-    width: '100%',
-
-    [breakpoints.down('md')]: {
-      flexDirection: 'row',
-      minWidth: '250px',
-      width: '42%',
-      overflow: 'hidden',
-      textAlign: 'center',
-      height: '60px',
-
-      '&:after': {
-
-      }, 
-    }
-  },
   content: {
     boxSizing: 'border-box',
     width: '100%',
@@ -98,19 +76,8 @@ const App: Component = () => {
           <div 
             class={styles.menu}
           >
-            <nav 
-              class={styles.nav}
-            >
-              {/* TODO: navbar */}
-              {/* https://www.youtube.com/watch?v=ArTVfdHOB-M&ab_channel=OnlineTutorials */}
-              <NavIcon.Home/>
-              <NavIcon.About/>
-              <NavIcon.Skills/>
-              <NavIcon.Projects/>
-              <NavIcon.Contact/>
-            </nav>
+            <Navbar />
           </div>
-
 
           <div 
             // id="content" 
