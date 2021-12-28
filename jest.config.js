@@ -1,9 +1,9 @@
 /*
- * For a detailed explanation regarding each configuration property and type check, visit:
+ * For a detailed explanation regarding each configuration property, visit:
  * https://jestjs.io/docs/configuration
  */
 
-export default {
+module.exports = {
   // All imported modules in your tests should be mocked automatically
   // automock: false,
 
@@ -93,12 +93,7 @@ export default {
   // notifyMode: "failure-change",
 
   // A preset that is used as a base for Jest's configuration
-  // preset: undefined,
-  presets: [
-    ['@babel/preset-env', {targets: {node: 'current'}}],
-    '@babel/preset-typescript',
-    "solid-jest/preset/browser",
-  ],
+  preset: "solid-jest/preset/browser",
 
   // Run tests from one or more projects
   // projects: undefined,
@@ -142,7 +137,7 @@ export default {
   // snapshotSerializers: [],
 
   // The test environment that will be used for testing
-  testEnvironment: "jsdom",
+  // testEnvironment: "jsdom",
 
   // Options that will be passed to the testEnvironment
   // testEnvironmentOptions: {},
