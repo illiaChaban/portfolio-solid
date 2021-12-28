@@ -11,7 +11,15 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "typescript": "^4.4.3",
+    "@babel/core": "^7.16.5",
+    "@babel/preset-env": "^7.16.5",
+    "@babel/preset-typescript": "^7.16.5",
+    "@types/jest": "^27.0.3",
+    "babel-jest": "^27.4.5",
+    "jest": "^27.4.5",
+    "solid-jest": "^0.2.0",
+    "ts-jest": "^27.1.2",
+    "typescript": "^4.5.4",
     "vite": "^2.5.7",
     "vite-plugin-solid": "^2.0.3"
   },
@@ -20,7 +28,6 @@
     "pipe-ts": "0.0.9",
     "solid-app-router": "^0.1.7",
     "solid-js": "^1.2.3",
-    "solid-styled-components": "^0.27.3",
-    "ts-jest": "^27.1.2"
+    "solid-styled-components": "^0.27.3"
   }
 }
