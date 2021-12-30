@@ -4,10 +4,10 @@ import { devId } from "../../directives/dev-id"
 import { useAtom } from "../../hooks/use-atom"
 import { use } from "../../hooks/use-directives"
 import { assert } from "../../utils/assert"
-import { call } from "../../utils/lodash"
+import { call, mapValues } from "../../utils/lodash"
 import { log } from "../../utils/log"
 import { breakpoints, makeStyles } from "../../utils/styles"
-import { buildCurve, cubicBezierCircle, getCircleCurveMultiplier, oneLine, toRadians } from "./path-utils"
+import { Curve, curveToString, getCircleCurveMultiplier, mirrorCurve, oneLine, square, toRadians } from "./path-utils"
 import { NavIcon } from "./nav-icon"
 
 const NavContainer = styled('nav')({
@@ -70,25 +70,30 @@ export const Navbar = () => {
   const radius = circleWidth / 2
 
   const index$ = useAtom<number>()
-  const precurveHeight = 8
-  const startPoint = () => -precurveHeight + (index$() ?? 0) * circleWidth
-
-  // console.log(oneLine(`clip-path: path(
-  //   'M0,0 h${startPoint()-2}
-  //     a${radius},${radius} 0 1,0 ${circleWidth},0 h${
-  //     width - startPoint() - circleWidth
-  //   } v60 h-${width} z'
-  // );`))
-
-  console.log(
-    cubicBezierCircle(90, 40),
-    cubicBezierCircle(180, 40),
-  )
+  const precurveSize = 8
+  const startPoint$ = () => -(precurveSize+2) + (index$() ?? 0) * circleWidth
 
   const angle = 90
   const curveMultiplier = pipeWith(angle, toRadians, getCircleCurveMultiplier)
 
-  buildCurve(80, 40)
+  const curves = call(() => {
+    const pre: Curve = [
+      Math.round(precurveSize/2+1),.5,
+      precurveSize-1, precurveSize - Math.round(precurveSize/2),
+      precurveSize,precurveSize,
+    ]
+    const preMid: Curve = [
+      3.5,radius * curveMultiplier-7,
+      radius * (1 - curveMultiplier)-2.5,radius - precurveSize + .5,
+      radius,radius - precurveSize + .5,
+    ]
+    const postMid = mirrorCurve(preMid)
+    const post = mirrorCurve(pre)
+
+    return mapValues({pre, preMid, postMid, post}, curveToString)
+  })
+
+
   return (
   
     <NavContainerNew 
@@ -102,7 +107,6 @@ export const Navbar = () => {
         width: `${width}px`,
 
       })}
-      // style={"clip-path: path('M0,0 a30,30 0 1,0 80,0 h220 v60 h-300 z');"}
     >
 
       <div
@@ -113,36 +117,20 @@ export const Navbar = () => {
           position: absolute;
           height: 100%;
           width: 100%;
-          /* left: 0; */
         `}
-          // 
-          // l7,7
-          // a${29},${25} 0 1,0 ${circleWidth},0
-          // a29,25 0 1,0 ${circleWidth},0
-          // s 27,52 ${circleWidth},0
-          // a${radius},${radius} 0 1,0 ${circleWidth},0
-          // ${cubicBezierCircle(-180, 40)}
-
-          // s 5,-1 5,5
-          // a8,8 0 0,1 7,-7
-
+          // v 2
+          // ${square(3)}
+          // v -2
 
         style={oneLine(`clip-path: path('
           M0,0
-          h${startPoint()+2}
-          c 
-          ${Math.round(precurveHeight/2+1)},.5 
-          ${precurveHeight-1}, ${precurveHeight - Math.round(precurveHeight/2)}
-          ${precurveHeight},${precurveHeight}
-          c 
-          3,${radius * curveMultiplier-7} 
-          ${radius * (1 - curveMultiplier)-4},${radius - precurveHeight} 
-          ${radius},${radius - precurveHeight} 
-          c 
-          ${radius * curveMultiplier},0 
-          ${radius},-${radius * (1-curveMultiplier)}, 
-          ${radius},-${radius}
-          h${width - startPoint() - circleWidth}
+          h${startPoint$()+2}
+          ${curves.pre}
+          ${curves.preMid}
+
+          ${curves.postMid}
+          ${curves.post}
+          h${width - startPoint$() - circleWidth - precurveSize * 2}
           v60 
           h-${width} 
           z
