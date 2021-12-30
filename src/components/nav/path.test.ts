@@ -1,4 +1,5 @@
 import {mirrorCurve} from './path-utils'
+import { describe, expect, it } from 'vitest'
 
 describe('Path transforms', () => {
 
@@ -18,12 +19,13 @@ describe('Path transforms', () => {
     expect(
       mirrorCurve([3,1, 4,3, 5,5])
     ).toEqual([1, -2, 2, -4, 5,-5])
+
   })
 
 
   // it('Should flip vertical curve', () => {
   //   expect(
-  //     flipCurve([0, 3, -2, 5, -5, 5])
+  //     mirrorCurve([0, 3, -2, 5, -5, 5])
   //   ).toEqual([ 5, 5])
   // })
 

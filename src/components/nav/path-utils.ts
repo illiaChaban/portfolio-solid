@@ -85,4 +85,3 @@ export const buildCurve = (halfCircleAngle: number, radius: number): string => {
 
   `)
 }
-
