@@ -12,6 +12,7 @@ export const oneLine = (str: string) => str.split('\n').join(' ')
 
 /**
  * More info:
+ * https://stackoverflow.com/questions/30277646/svg-convert-arcs-to-cubic-bezier
  * https://spencermortensen.com/articles/bezier-circle/
  * https://pomax.github.io/bezierinfo/#circles_cubic
  * https://stackoverflow.com/questions/1734745/how-to-create-circle-with-b%C3%A9zier-curves

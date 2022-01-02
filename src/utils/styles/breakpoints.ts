@@ -7,11 +7,17 @@ const _breakpoints = {
   lg: 1200,
   xl: 1536,
 }
-type Breakpoint = keyof typeof _breakpoints | number
+export type Breakpoint = keyof typeof _breakpoints | number
 const getBreakpoint = (val: Breakpoint): number => 
   isNumber(val) ? val : _breakpoints[val]
 
 export const breakpoints = {
-  up: (val: Breakpoint) => `@media (min-width: ${getBreakpoint(val)}px)`,
-  down: (val: Breakpoint) => `@media (max-width: ${getBreakpoint(val)}px)`,
+  up: (
+    val: Breakpoint, 
+    withMedia = true,
+  ) => `${withMedia ? '@media ' : ''}(min-width: ${getBreakpoint(val)}px)`,
+  down: (
+    val: Breakpoint, 
+    withMedia = true,
+  ) => `${withMedia ? '@media ' : ''}(max-width: ${getBreakpoint(val)}px)`,
 }

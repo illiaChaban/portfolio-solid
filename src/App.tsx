@@ -18,38 +18,6 @@ import { PageTransition } from './components/page-transition'
 import { Navbar } from "./components/nav/navbar";
 
 const styles = makeStyles({
-  menu: {
-    background: '#181818', /* #2f2f2f */
-    color: 'var(--color-subtle)',
-    width: 'var(--menu-offset)',
-    height: '100%',
-    position: 'fixed',
-    top: 0,
-    zIndex: 3,
-
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-
-    '.modern-theme &': {
-      background: 'rgba(0,0,0,.4)',
-      borderRight: '1px solid var(--color-subtle)',
-    },
-
-    [breakpoints.down('md')]: {
-      width: '100%',
-      height: 'var(--menu-offset)',
-      minHeight: 0,
-      bottom: 0,
-      top: 'auto',
-
-      '.modern-theme &': {
-        background: 'rgba(0,0,0,.8)',
-        borderRight: 'none',
-        borderTop: '1px solid var(--color-subtle)',
-      }
-    }
-  },
   content: {
     boxSizing: 'border-box',
     width: '100%',
@@ -73,11 +41,8 @@ const App: Component = () => {
       <Particles />
       <main>
 
-          <div 
-            class={styles.menu}
-          >
-            <Navbar />
-          </div>
+
+          <Navbar />
 
           <div 
             // id="content" 

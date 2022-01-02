@@ -1,10 +1,12 @@
 import { JSX } from "solid-js/jsx-runtime";
 import { NavLink } from 'solid-app-router'
 import { createEffect, createMemo, on } from "solid-js";
-import { cx } from "../../utils/styles";
+import { breakpoints, cx } from "../../utils/styles";
 import { css } from "solid-styled-components";
 import { useLocation } from "solid-app-router";
 import { Icon } from "../icon";
+import { useAtom } from "../../hooks/use-atom";
+import { log } from "../../utils/log";
 
 const styles = {
   link: css`
@@ -24,42 +26,46 @@ const styles = {
   iconToTextOnHover: css`
     position: relative;
 
-    i {
-      &::after {
-        content: var(--hover-text, 'navigate');
-        font-size: 0.7rem;
-        letter-spacing: 1px;
-        position: absolute;
-        display: block;
-
-        top: 50%;
-        left: 50%;
-
-        -webkit-transform: translate(-50%, -50%);
-                transform: translate(-50%, -50%);
-
-        opacity: 0;
-        color: var(--color-highlight);
-        text-transform: uppercase;
-        font-family: 'Inconsolata', monospace;
-        font-weight: 100;
+    @media (hover: hover) 
+      and (pointer: fine) 
+    {
+      i {
+        &::after {
+          content: var(--hover-text, 'navigate');
+          font-size: 0.7rem;
+          letter-spacing: 1px;
+          position: absolute;
+          display: block;
+  
+          top: 50%;
+          left: 50%;
+  
+          -webkit-transform: translate(-50%, -50%);
+                  transform: translate(-50%, -50%);
+  
+          opacity: 0;
+          color: var(--color-highlight);
+          text-transform: uppercase;
+          font-family: 'Inconsolata', monospace;
+          font-weight: 100;
+        }
+  
+        &::before,
+        &::after
+        {
+          -webkit-transition: opacity .2s ease-out;
+          transition: opacity .2s ease-out;
+        }
+  
       }
-
-      &::before,
-      &::after
-      {
-        -webkit-transition: opacity .2s ease-out;
-        transition: opacity .2s ease-out;
-      }
-
-    }
-
-    &:hover i {
-      &::before {
-        opacity: 0;
-      }
-      &::after {
-        opacity: 1;
+  
+      &:hover i {
+        &::before {
+          opacity: 0;
+        }
+        &::after {
+          opacity: 1;
+        }
       }
     }
 
@@ -68,15 +74,15 @@ const styles = {
 
 
 
-const NavIconBase = (p: {
+type IconBaseProps = {
   href: string, 
   end?: boolean,
   name?: string,
   children: JSX.Element,
   onActivate?: () => void,
-  // iconName: string
-  // iconClassName?: string
-}): JSX.Element => {
+  showNameOnHover?: boolean,
+}
+const NavIconBase = (p: IconBaseProps): JSX.Element => {
 
   const removeSlashes = (str: string) => str.replace('/', '');
   const name = () => p.name ?? removeSlashes(p.href)
@@ -87,7 +93,7 @@ const NavIconBase = (p: {
   createEffect(on(isActivated, (isActive) => {
     isActive && p.onActivate?.()
   }))
-  
+
   return (
     <div
       className={cx(
@@ -100,32 +106,33 @@ const NavIconBase = (p: {
 
         `,
         css`
-          background: ${isActivated() ? 'blue' : 'red'};
+          /* background: ${isActivated() ? 'black' : 'black'}; */
         `,
         isActivated() && css`
           /* position: relative; */
-          transform: translateY(-32px);
+          transform: translateY(-27px);
+
         `,
       )}
     >
       <NavLink 
         href={p.href}
         end={p.end}
-        className={cx(styles.link, styles.iconToTextOnHover, isActivated() && styles.active)}
+        className={cx(
+          styles.link, 
+          styles.iconToTextOnHover, 
+          isActivated() && styles.active
+        )}
         style={`--hover-text: '${name()}'`}
         aria-label={`nav-menu--${name()}`}
       >
-        {/* <i 
-          class={p.iconName} 
-          className={p.iconClassName}
-        /> */}
         {p.children}
       </NavLink>
     </div>
   )
 }
 
-type Props = {onActivate?: () => void,}
+type Props = Pick<IconBaseProps, 'onActivate' | 'showNameOnHover'>
 export const NavIcon = {
   Home: (p: Props) => (
     <NavIconBase href="/" end name="home" onActivate={p.onActivate}>

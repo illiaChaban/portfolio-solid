@@ -9,6 +9,34 @@ import { log } from "../../utils/log"
 import { breakpoints, makeStyles } from "../../utils/styles"
 import { Curve, curveToString, getCircleCurveMultiplier, mirrorCurve, oneLine, square, toRadians } from "./path-utils"
 import { NavIcon } from "./nav-icon"
+import { useMediaQuery } from "../../hooks/use-media-query"
+
+const MenuContainer = styled('div')({
+  // background: '#181818', /* #2f2f2f */
+  // color: 'var(--color-subtle)',
+  color: 'black',
+  width: 'var(--menu-offset)',
+  height: '100%',
+  position: 'fixed',
+  top: 0,
+  zIndex: 3,
+
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  borderRight: '1px solid var(--color-subtle)',
+
+  [breakpoints.down('md')]: {
+    width: '100%',
+    height: 'var(--menu-offset)',
+    minHeight: 0,
+    bottom: 0,
+    top: 'auto',
+
+    borderRight: 'none',
+    borderTop: '1px solid var(--color-subtle)',
+  }
+})
 
 const NavContainer = styled('nav')({
   display: 'flex',
@@ -35,7 +63,7 @@ const NavContainer = styled('nav')({
 })
 
 const NavContainerNew = styled('nav')`
-  height: 60px;
+  height: 50px;
   position: relative;
 ` 
 // const styles = makeStyles({
@@ -65,6 +93,8 @@ const NavContainerNew = styled('nav')`
 // })
 
 export const Navbar = () => {
+  const isDesktop$ = useMediaQuery('md')
+
   const width = 300
   const circleWidth = 60
   const radius = circleWidth / 2
@@ -95,95 +125,58 @@ export const Navbar = () => {
 
 
   return (
-  
-    <NavContainerNew 
-      className={css({
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        alignItems: 'center',
-      
-        textAlign: 'center',
-        width: `${width}px`,
+    <MenuContainer>
+      {/* https://www.youtube.com/watch?v=ArTVfdHOB-M&ab_channel=OnlineTutorials */}
+      <NavContainerNew 
+        className={css({
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'space-around',
+          alignItems: 'center',
+        
+          textAlign: 'center',
+          width: `${width}px`,
 
-      })}
-    >
+        })}
+      >
 
-      <div
-        className={css`
-          background: yellow;
-          border-radius: 16px;
-          background: yellow;
-          position: absolute;
-          height: 100%;
-          width: 100%;
-        `}
-          // v 2
-          // ${square(3)}
-          // v -2
+        <div
+          className={css`
+            border-radius: 16px;
+            background: #7fffff9e;
+            backdrop-filter: blur(2px);
+            position: absolute;
+            height: 100%;
+            width: 100%;
+          `}
+            // v 2
+            // ${square(3)}
+            // v -2
 
-        style={oneLine(`clip-path: path('
-          M0,0
-          h${startPoint$()+2}
-          ${curves.pre}
-          ${curves.preMid}
+          style={oneLine(`clip-path: path('
+            M0,0
+            h${startPoint$()+2}
+            ${curves.pre}
+            ${curves.preMid}
 
-          ${curves.postMid}
-          ${curves.post}
-          h${width - startPoint$() - circleWidth - precurveSize * 2}
-          v60 
-          h-${width} 
-          z
-        ');`)}
-        // style="clip-path: url(#nav-clip)"
-      />
-      {/* <svg width="0" height="0">
-        <defs>
-          <clipPath id={"nav-clip"}>
-            <path d={oneLine(`
-               M0,0
-               h${startPoint()}
-               a${radius},${radius} 0 1,0 ${circleWidth},0
-               h${width - startPoint() - circleWidth}
-               v60 
-               h-${width} 
-               z
-              `)}
-            />
-            <path d={oneLine(`
-               M0,0
-               h${startPoint()-7}
-               a8,8 0 0,1 7,7
-               h${circleWidth}
-               a8,8 0 0,1 7,7
-               h${width - startPoint() - circleWidth -7}
-               v60
-               h-${width} 
-               z
-              `)}
-            />
-          </clipPath>
-        </defs>
-      </svg> */}
-
-      {[
-        NavIcon.Home,
-        NavIcon.About,
-        NavIcon.Skills,
-        NavIcon.Projects,
-        NavIcon.Contact,
-      ].map((Icon, i) => <Icon onActivate={() => index$(i)} />)}
-      {/* <NavIcon.Home onActivate={() => index$(0)}/>
-      <NavIcon.About onActivate={() => index$(1)}/>
-      <NavIcon.Skills onActivate={() => index$(2)}/>
-      <NavIcon.Projects onActivate={() => index$(3)}/>
-      <NavIcon.Contact onActivate={() => index$(4)}/> */}
-    </NavContainerNew>
-    // <nav 
-    //   class={styles.nav}
-    // >
-      // {/* TODO: navbar */}
-      // {/* https://www.youtube.com/watch?v=ArTVfdHOB-M&ab_channel=OnlineTutorials */}
+            ${curves.postMid}
+            ${curves.post}
+            h${width - startPoint$() - circleWidth - precurveSize * 2}
+            v60 
+            h-${width} 
+            z
+          ');`)}
+        />
+        {[
+          NavIcon.Home,
+          NavIcon.About,
+          NavIcon.Skills,
+          NavIcon.Projects,
+          NavIcon.Contact,
+        ].map((Icon, i) => <Icon onActivate={() => index$(i)} />)}
+      </NavContainerNew>
+    </MenuContainer>
 
   )
 }
+
