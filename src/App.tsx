@@ -16,6 +16,7 @@ import { GTag } from "./components/g-tag";
 import { Particles } from "./components/particles";
 import { PageTransition } from './components/page-transition'
 import { Navbar } from "./components/nav/navbar";
+import { Navbar2 } from "./components/nav/navbar2";
 
 const styles = makeStyles({
   content: {
@@ -42,7 +43,7 @@ const App: Component = () => {
       <main>
 
 
-          <Navbar />
+          <Navbar2 />
 
           <div 
             // id="content" 

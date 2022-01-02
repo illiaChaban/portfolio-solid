@@ -19,9 +19,42 @@ const styles = {
     line-height: 51px;
     width: 100%;
     font-family: 'Inconsolata', monospace;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   `,
   active: css`
-    color: var(--color-highlight, orange);
+    background: var(--navbar-highlight);
+    color: black;
+    border-bottom-right-radius: 50%;
+    border-bottom-left-radius: 50%;
+    /* border-top-left-radius: 16px;
+    border-top-right-radius: 16px; */
+    /* border-bottom-left-radius: 50%; */
+    &::before {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      left: calc(-50% - -7px);
+      top: 0px;
+      border-radius: 50%;
+      box-shadow: 14px -12px 0 2px var(--navbar-highlight);
+      z-index: -1;
+    }
+    &::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      right: calc(-50% - -7px);
+      /* background: yellow; */
+      top: 0px;
+      border-radius: 50%;
+      box-shadow: -14px -12px 0 2px var(--navbar-highlight);
+      z-index: -1;
+    }
+    /* color: var(--color-highlight, orange); */
   `,
   iconToTextOnHover: css`
     position: relative;
@@ -95,40 +128,20 @@ const NavIconBase = (p: IconBaseProps): JSX.Element => {
   }))
 
   return (
-    <div
-      className={cx(
-        css`
-          border-radius: 50%;
-          width: 50px;
-          height: 50px;
-          z-index: 1;
-          transition: transform .2s;
-
-        `,
-        css`
-          /* background: ${isActivated() ? 'black' : 'black'}; */
-        `,
-        isActivated() && css`
-          /* position: relative; */
-          transform: translateY(-27px);
-
-        `,
-      )}
-    >
       <NavLink 
         href={p.href}
         end={p.end}
         className={cx(
           styles.link, 
           styles.iconToTextOnHover, 
-          isActivated() && styles.active
+          // isActivated() && styles.active
         )}
+        activeClass={styles.active}
         style={`--hover-text: '${name()}'`}
         aria-label={`nav-menu--${name()}`}
       >
         {p.children}
       </NavLink>
-    </div>
   )
 }
 
