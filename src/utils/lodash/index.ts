@@ -1,3 +1,5 @@
+export * from './extract'
+
 // Lodash like helper. Couldn't figure out why the dev env loads the whole lodash library
 
 export const mapValues = <T extends {}, TResult>(
@@ -60,3 +62,23 @@ type KeysOfUnion<T> = T extends {} ? keyof T: never;
 export const has = <T extends {}, TKey extends KeysOfUnion<T>>(
   obj: T, key: TKey
 ): obj is T & Partial<Record<TKey, any>> => key in obj
+
+
+type Debounced<Targs extends any[]> = {
+  (...args: Targs): void,
+  cancel: () => void
+} 
+export const debounce = <Targs extends any[]>(
+  time: number,
+  fn: (...args: Targs) => unknown, 
+): Debounced<Targs> => {
+  let timeoutId: number
+  const cancel = () => clearTimeout(timeoutId)
+  const debounced = (...args: Targs) => {
+    cancel()
+    timeoutId = setTimeout(() => fn(...args), time)
+  }
+
+  return Object.assign(debounced, {cancel})
+}
+

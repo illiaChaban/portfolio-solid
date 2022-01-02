@@ -4,17 +4,19 @@ import { devId } from "../../directives/dev-id"
 import { useAtom } from "../../hooks/use-atom"
 import { use } from "../../hooks/use-directives"
 import { assert } from "../../utils/assert"
-import { call, mapValues } from "../../utils/lodash"
+import { call, extractFloat, mapValues } from "../../utils/lodash"
 import { log } from "../../utils/log"
 import { breakpoints, makeStyles } from "../../utils/styles"
 import { Curve, curveToString, getCircleCurveMultiplier, mirrorCurve, oneLine, square, toRadians } from "./path-utils"
 import { NavIcon } from "./nav-icon"
 import { useMediaQuery } from "../../hooks/use-media-query"
+import { useRef } from "../../hooks/use-ref"
+import { useComputedStyles } from "../../hooks/use-computed-styles"
 
 const MenuContainer = styled('div')({
   // background: '#181818', /* #2f2f2f */
-  // color: 'var(--color-subtle)',
-  color: 'black',
+  color: 'var(--color-subtle)',
+  // color: 'black',
   width: 'var(--menu-offset)',
   height: '100%',
   position: 'fixed',
@@ -95,13 +97,13 @@ const NavContainerNew = styled('nav')`
 export const Navbar = () => {
   const isDesktop$ = useMediaQuery('md')
 
-  const width = 300
+  const navWidth = 300
   const circleWidth = 60
   const radius = circleWidth / 2
 
   const index$ = useAtom<number>()
   const precurveSize = 8
-  const startPoint$ = () => -(precurveSize+2) + (index$() ?? 0) * circleWidth
+  const startPoint$ = () => -(precurveSize) + (index$() ?? 0) * circleWidth
 
   const angle = 90
   const curveMultiplier = pipeWith(angle, toRadians, getCircleCurveMultiplier)
@@ -123,6 +125,34 @@ export const Navbar = () => {
     return mapValues({pre, preMid, postMid, post}, curveToString)
   })
 
+  const backdropRef = useRef()
+  const backdropWidth$ = call(() => {
+    const styles$ = useComputedStyles(backdropRef)
+    return () => extractFloat(styles$()?.width) ?? 0
+  })
+  const backdropPadding$ = () => {
+    const width = backdropWidth$()
+    if (!width) return 0;
+    const padding = (width - navWidth) / 2
+    return padding;
+  }
+  log.accessors({backdropRefWidth$: backdropWidth$})
+
+  const clipPath$ = () => oneLine(`clip-path: path('
+    M0,0
+    h${backdropPadding$()}
+    h${startPoint$()}
+    ${curves.pre}
+    ${curves.preMid}
+
+    ${curves.postMid}
+    ${curves.post}
+    h${navWidth - startPoint$() - circleWidth - precurveSize * 2}
+    h${backdropPadding$()}
+    v60 
+    h-${backdropWidth$()}
+    z
+  ');`)
 
   return (
     <MenuContainer>
@@ -135,45 +165,63 @@ export const Navbar = () => {
           alignItems: 'center',
         
           textAlign: 'center',
-          width: `${width}px`,
+          width: '100%',
+          height: '100%',
+          // width: `${width}px`,
 
         })}
       >
 
         <div
+          ref={backdropRef}
           className={css`
-            border-radius: 16px;
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
             background: #7fffff9e;
             backdrop-filter: blur(2px);
             position: absolute;
             height: 100%;
             width: 100%;
+            /* width: ${navWidth}px; */
+            background: var(--color-highlight);
           `}
             // v 2
             // ${square(3)}
             // v -2
 
-          style={oneLine(`clip-path: path('
-            M0,0
-            h${startPoint$()+2}
-            ${curves.pre}
-            ${curves.preMid}
-
-            ${curves.postMid}
-            ${curves.post}
-            h${width - startPoint$() - circleWidth - precurveSize * 2}
-            v60 
-            h-${width} 
-            z
-          ');`)}
-        />
-        {[
-          NavIcon.Home,
-          NavIcon.About,
-          NavIcon.Skills,
-          NavIcon.Projects,
-          NavIcon.Contact,
-        ].map((Icon, i) => <Icon onActivate={() => index$(i)} />)}
+          style={clipPath$()}
+        >
+          <div 
+            class={css`
+              border-top-left-radius: 16px;
+              border-top-right-radius: 16px;
+              background: #262323;
+              height: calc(100% - 1px);
+              position: absolute;
+              bottom: 0;
+              width: 100%;
+            `}
+            style={clipPath$()}
+          />
+        </div>
+        <div class={css({
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-around',
+            alignItems: 'center',
+          
+            textAlign: 'center',
+            width: `${navWidth}px`,
+            '-webkit-tap-highlight-color': 'rgba(0,0,0,0)',
+          })}>
+          {[
+            NavIcon.Home,
+            NavIcon.About,
+            NavIcon.Skills,
+            NavIcon.Projects,
+            NavIcon.Contact,
+          ].map((Icon, i) => <Icon onActivate={() => index$(i)} />)}
+        </div>
       </NavContainerNew>
     </MenuContainer>
 
