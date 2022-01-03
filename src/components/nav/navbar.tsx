@@ -12,7 +12,7 @@ import { NavIcon } from "./nav-icon"
 import { useMediaQuery } from "../../hooks/use-media-query"
 import { useRef } from "../../hooks/use-ref"
 import { useComputedStyles } from "../../hooks/use-computed-styles"
-import { Accessor } from "solid-js"
+import { Accessor, createComputed, on } from "solid-js"
 
 const MenuContainer = styled('div')({
   // background: '#181818', /* #2f2f2f */
@@ -103,8 +103,23 @@ export const Navbar = () => {
   const radius = circleWidth / 2
 
   const index$ = useAtom<number>()
+  const animatedIndex$ = useAtom<number>()
+  createComputed(on(index$, (i) => {
+    if (i === undefined) return;
+    // if (animatedIndex$() === undefined) return animatedIndex$(i);
+    // animate2(animatedIndex$ as Accessor<number>, i, 150, animatedIndex$)
+
+    const animatedI = animatedIndex$()
+    if (animatedI === undefined) return animatedIndex$(i);
+
+    const change = Math.abs(animatedI - i)
+    animate(animatedI, i, Math.min(change * 50, 150), animatedIndex$)
+
+    // animatedIndex$(i)
+  }))
+
   const precurveSize = 8
-  const startPoint$ = () => -(precurveSize) + (index$() ?? 0) * circleWidth
+  const startPoint$ = () => -(precurveSize) + (animatedIndex$ () ?? 0) * circleWidth
 
   const angle = 90
   const curveMultiplier = pipeWith(angle, toRadians, getCircleCurveMultiplier)
@@ -137,7 +152,6 @@ export const Navbar = () => {
     const padding = (width - navWidth) / 2
     return padding;
   }
-  log.accessors({backdropRefWidth$: backdropWidth$})
 
   const clipPath$ = () => oneLine(`clip-path: path('
     M0,0
@@ -244,7 +258,7 @@ const animate = (
   time: number,
   callback: (newValue: number) => void,
 ) => {
-  const startTimestamp = Date.now()
+  let startTimestamp: number
 
   const {nextStep, cancel} = call(() => {
     let currentAnimationId: number
@@ -258,9 +272,12 @@ const animate = (
 
   function step(timestamp: number) {
     const valueChange = to - from
-    const multiplier = (timestamp - startTimestamp) / time
-    const value = valueChange * multiplier
-    value >= to
+    const multiplier = startTimestamp
+      ? (timestamp - startTimestamp) / time
+      : (startTimestamp = timestamp, 1000 / 60 / time)
+    const value = from + valueChange * Math.min(multiplier, 1)
+    // console.log({value, valueChange, multiplier, timestamp, startTimestamp, time, from ,to})
+    value === to
       ? callback(to)
       : (callback(value), nextStep())
   }
@@ -275,25 +292,22 @@ const animate2 = (
   to: number,
   time: number,
   updateValue: (newValue: number) => void,
-  currentTime = Date.now(),
+  currentTime?: number,
 ) => {
-  if (time <= 0) return
-  // const startTimestamp = Date.now()
-
-  // const {nextStep, cancel} = call(() => {
-  //   let currentAnimationId: number
-  //   const nextStep = () => {
-  //     currentAnimationId = requestAnimationFrame(step)
-  //   }
-  //   const cancel = () => currentAnimationId && cancelAnimationFrame(currentAnimationId)
-  //   return {nextStep, cancel}
-  // })
+  // log('animate2', {currValue: currValue(), to, time})
+  if (
+    currValue() === to
+    || time <= 0 
+  ) return
+  
 
   requestAnimationFrame((timestamp) => {
-    const timeChange = timestamp - currentTime
-    const totalValueChange = to - currValue()
+    const value = currValue()
+    const timeChange = currentTime ? timestamp - currentTime : 1000 / 60
+    const totalValueChange = to - value
     const valueChange = totalValueChange * timeChange / time
-    updateValue(valueChange)
+    console.log({now: performance.now(),value, timeChange, totalValueChange, valueChange, currentTime, timestamp})
+    updateValue(value + valueChange)
     animate2(
       currValue,
       to,
@@ -303,18 +317,6 @@ const animate2 = (
     )
       
   })
-
-
-  // function step(timestamp: number) {
-  //   const valueChange = to - from
-  //   const multiplier = (timestamp - startTimestamp) / time
-  //   const value = valueChange * multiplier
-  //   value >= to
-  //     ? callback(to)
-  //     : (callback(value), nextStep())
-  // }
-
-  // nextStep()
 
   // return cancel
 }
