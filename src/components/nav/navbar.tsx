@@ -6,12 +6,13 @@ import { use } from "../../hooks/use-directives"
 import { assert } from "../../utils/assert"
 import { call, extractFloat, mapValues } from "../../utils/lodash"
 import { log } from "../../utils/log"
-import { breakpoints, makeStyles } from "../../utils/styles"
+import { breakpoints, cx, makeStyles } from "../../utils/styles"
 import { Curve, curveToString, getCircleCurveMultiplier, mirrorCurve, oneLine, square, toRadians } from "./path-utils"
 import { NavIcon } from "./nav-icon"
 import { useMediaQuery } from "../../hooks/use-media-query"
 import { useRef } from "../../hooks/use-ref"
 import { useComputedStyles } from "../../hooks/use-computed-styles"
+import { Accessor } from "solid-js"
 
 const MenuContainer = styled('div')({
   // background: '#181818', /* #2f2f2f */
@@ -26,7 +27,7 @@ const MenuContainer = styled('div')({
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-  borderRight: '1px solid var(--color-subtle)',
+  // borderRight: '1px solid var(--color-subtle)',
 
   [breakpoints.down('md')]: {
     width: '100%',
@@ -36,7 +37,7 @@ const MenuContainer = styled('div')({
     top: 'auto',
 
     borderRight: 'none',
-    borderTop: '1px solid var(--color-subtle)',
+    // borderTop: '1px solid var(--color-subtle)',
   }
 })
 
@@ -169,29 +170,38 @@ export const Navbar = () => {
           height: '100%',
           // width: `${width}px`,
 
+          
         })}
       >
 
-        <div
-          ref={backdropRef}
-          className={css`
-            border-top-left-radius: 16px;
-            border-top-right-radius: 16px;
-            background: #7fffff9e;
-            backdrop-filter: blur(2px);
-            position: absolute;
-            height: 100%;
-            width: 100%;
-            /* width: ${navWidth}px; */
-            background: var(--color-highlight);
-          `}
-            // v 2
-            // ${square(3)}
-            // v -2
+        <div class={css`
+          width: 100%;
+          height: 100%;
+          position: absolute;
+          filter: drop-shadow(0px -1px 3px var(--color-highlight));
 
-          style={clipPath$()}
-        >
-          <div 
+        `}>
+
+          <div
+            ref={backdropRef}
+            className={css`
+              border-top-left-radius: 16px;
+              border-top-right-radius: 16px;
+              /* background: #7fffff9e; */
+              backdrop-filter: blur(2px);
+              height: 100%;
+              width: 100%;
+              /* width: ${navWidth}px; */
+              /* background: var(--color-highlight); */
+              background: #262323;
+            `}
+              // v 2
+              // ${square(3)}
+              // v -2
+
+            style={clipPath$()}
+          />
+          {/* <div 
             class={css`
               border-top-left-radius: 16px;
               border-top-right-radius: 16px;
@@ -202,7 +212,7 @@ export const Navbar = () => {
               width: 100%;
             `}
             style={clipPath$()}
-          />
+          /> */}
         </div>
         <div class={css({
             display: 'flex',
@@ -228,3 +238,83 @@ export const Navbar = () => {
   )
 }
 
+const animate = (
+  from: number,
+  to: number,
+  time: number,
+  callback: (newValue: number) => void,
+) => {
+  const startTimestamp = Date.now()
+
+  const {nextStep, cancel} = call(() => {
+    let currentAnimationId: number
+    const nextStep = () => {
+      currentAnimationId = requestAnimationFrame(step)
+    }
+    const cancel = () => currentAnimationId && cancelAnimationFrame(currentAnimationId)
+    return {nextStep, cancel}
+  })
+
+
+  function step(timestamp: number) {
+    const valueChange = to - from
+    const multiplier = (timestamp - startTimestamp) / time
+    const value = valueChange * multiplier
+    value >= to
+      ? callback(to)
+      : (callback(value), nextStep())
+  }
+
+  nextStep()
+
+  return cancel
+}
+
+const animate2 = (
+  currValue: Accessor<number>,
+  to: number,
+  time: number,
+  updateValue: (newValue: number) => void,
+  currentTime = Date.now(),
+) => {
+  if (time <= 0) return
+  // const startTimestamp = Date.now()
+
+  // const {nextStep, cancel} = call(() => {
+  //   let currentAnimationId: number
+  //   const nextStep = () => {
+  //     currentAnimationId = requestAnimationFrame(step)
+  //   }
+  //   const cancel = () => currentAnimationId && cancelAnimationFrame(currentAnimationId)
+  //   return {nextStep, cancel}
+  // })
+
+  requestAnimationFrame((timestamp) => {
+    const timeChange = timestamp - currentTime
+    const totalValueChange = to - currValue()
+    const valueChange = totalValueChange * timeChange / time
+    updateValue(valueChange)
+    animate2(
+      currValue,
+      to,
+      time - timeChange,
+      updateValue,
+      timestamp,
+    )
+      
+  })
+
+
+  // function step(timestamp: number) {
+  //   const valueChange = to - from
+  //   const multiplier = (timestamp - startTimestamp) / time
+  //   const value = valueChange * multiplier
+  //   value >= to
+  //     ? callback(to)
+  //     : (callback(value), nextStep())
+  // }
+
+  // nextStep()
+
+  // return cancel
+}
