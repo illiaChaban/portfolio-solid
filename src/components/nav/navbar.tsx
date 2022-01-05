@@ -10,10 +10,9 @@ import { breakpoints, cx, makeStyles } from "../../utils/styles"
 import { Curve, curveToString, getCircleCurveMultiplier, mirrorCurve, oneLine, square, toRadians } from "./path-utils"
 import { NavIcon } from "./nav-icon"
 import { useMediaQuery } from "../../hooks/use-media-query"
-import { useRef } from "../../hooks/use-ref"
+import { Ref, useRef } from "../../hooks/use-ref"
 import { useComputedStyles } from "../../hooks/use-computed-styles"
 import { Accessor, batch, createComputed, createMemo, on, Setter } from "solid-js"
-import { animateSteps } from "../page-transition/page-transition"
 
 const MenuContainer = styled('div')({
   // background: '#181818', /* #2f2f2f */
@@ -41,6 +40,9 @@ const MenuContainer = styled('div')({
     // borderTop: '1px solid var(--color-subtle)',
   }
 })
+
+// FIXME: add longer navbar off-screen to avoid
+// showing background on "bouncing overscroll"
 
 const NavContainer = styled('nav')({
   display: 'flex',
@@ -96,66 +98,18 @@ const NavContainerNew = styled('nav')`
 //   },
 // })
 
+const navWidth = 300
+
+
 export const Navbar = () => {
   const isDesktop$ = useMediaQuery('md')
 
-  const navWidth = 300
-  const circleWidth = 60
-  const radius = circleWidth / 2
 
   const index$ = useAtom<number>()
   const animationDuration$ = useAnimationDuration(index$)
 
-  const precurveSize = 8
-  const startPoint$ = () => -(precurveSize) + (index$ () ?? 0) * circleWidth
-
-  const angle = 90
-  const curveMultiplier = pipeWith(angle, toRadians, getCircleCurveMultiplier)
-
-  const curves = call(() => {
-    const pre: Curve = [
-      Math.round(precurveSize/2+1),.5,
-      precurveSize-1, precurveSize - Math.round(precurveSize/2),
-      precurveSize,precurveSize,
-    ]
-    const preMid: Curve = [
-      3.5,radius * curveMultiplier-7,
-      radius * (1 - curveMultiplier)-2.5,radius - precurveSize + .5,
-      radius,radius - precurveSize + .5,
-    ]
-    const postMid = mirrorCurve(preMid)
-    const post = mirrorCurve(pre)
-
-    return mapValues({pre, preMid, postMid, post}, curveToString)
-  })
-
   const backdropRef = useRef()
-  const backdropWidth$ = call(() => {
-    const styles$ = useComputedStyles(backdropRef)
-    return () => extractFloat(styles$()?.width) ?? 0
-  })
-  const backdropPadding$ = () => {
-    const width = backdropWidth$()
-    if (!width) return 0;
-    const padding = (width - navWidth) / 2
-    return padding;
-  }
-
-  const clipPath$ = () => oneLine(`clip-path: path('
-    M0,0
-    h${backdropPadding$()}
-    h${startPoint$()}
-    ${curves.pre}
-    ${curves.preMid}
-
-    ${curves.postMid}
-    ${curves.post}
-    h${navWidth - startPoint$() - circleWidth - precurveSize * 2}
-    h${backdropPadding$()}
-    v60 
-    h-${backdropWidth$()}
-    z
-  ');`)
+  const clipPath$ = useClipPath(backdropRef, index$)
 
 
   return (
@@ -188,14 +142,11 @@ export const Navbar = () => {
             ref={backdropRef}
             className={cx(
               css`
-                border-top-left-radius: 16px;
-                border-top-right-radius: 16px;
-                /* background: #7fffff9e; */
+                /* border-top-left-radius: 16px;
+                border-top-right-radius: 16px; */
                 backdrop-filter: blur(2px);
                 height: 100%;
                 width: 100%;
-                /* width: ${navWidth}px; */
-                /* background: var(--color-highlight); */
                 background: #262323;
               `, 
               css`transition: clip-path ${animationDuration$() / 1000}s ease-out;`
@@ -245,23 +196,71 @@ export const Navbar = () => {
 
 const useAnimationDuration = (index$: Accessor<number | undefined>) => {
   const animationDuration$ = useAtom<number>(0)
-  createComputed((prevI?: number) => {
-    const i = index$()
+  createComputed(on(index$, (i, prevI) => {
     if (i === undefined || prevI === undefined) {
-      animationDuration$(0)
-    } else {
-      const change = Math.abs(i - prevI)
-      animationDuration$(Math.min(change * 50, 150)) 
+      return animationDuration$(0)
     }
+    const change = Math.abs(i - prevI)
     animationDuration$(
-      i === undefined || prevI === undefined
-        ? 0
-        : call(() => {
-          const change = Math.abs(i - prevI)
-          return range(80, 150)(change * 50) 
-        })
+      range(90, 175)(change * 50)
     )
-    return i
-  })
+  }))
   return animationDuration$
+}
+
+const useClipPath = (elRef: Ref, index$: Accessor<number | undefined>) => {
+  const circleWidth = 60
+  const radius = circleWidth / 2
+
+  const precurveSize = 8
+  const startPoint$ = () => -(precurveSize) + (index$() ?? 0) * circleWidth
+
+  const angle = 90
+  const curveMultiplier = pipeWith(angle, toRadians, getCircleCurveMultiplier)
+
+  const curves = call(() => {
+    const pre: Curve = [
+      Math.round(precurveSize/2+1),.5,
+      precurveSize-1, precurveSize - Math.round(precurveSize/2),
+      precurveSize,precurveSize,
+    ]
+    const preMid: Curve = [
+      3.5,radius * curveMultiplier-7,
+      radius * (1 - curveMultiplier)-2.5,radius - precurveSize + .5,
+      radius,radius - precurveSize + .5,
+    ]
+    const postMid = mirrorCurve(preMid)
+    const post = mirrorCurve(pre)
+
+    return mapValues({pre, preMid, postMid, post}, curveToString)
+  })
+
+  const backdropWidth$ = call(() => {
+    const styles$ = useComputedStyles(elRef)
+    return () => extractFloat(styles$()?.width) ?? 0
+  })
+  const backdropPadding$ = () => {
+    const width = backdropWidth$()
+    if (!width) return 0;
+    const padding = (width - navWidth) / 2
+    return padding;
+  }
+
+  const clipPath$ = () => oneLine(`clip-path: path('
+    M0,0
+    h${backdropPadding$()}
+    h${startPoint$()}
+    ${curves.pre}
+    ${curves.preMid}
+
+    ${curves.postMid}
+    ${curves.post}
+    h${navWidth - startPoint$() - circleWidth - precurveSize * 2}
+    h${backdropPadding$()}
+    v60 
+    h-${backdropWidth$()}
+    z
+  ');`)
+
+  return clipPath$
 }

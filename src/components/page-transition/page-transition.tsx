@@ -20,7 +20,13 @@ import { useComputedStyles } from "../../hooks/use-computed-styles";
 
 
 export const PageTransition = (p: {children: JSX.Element}) => {
-  // TODO
+  // FIXME: page scrolling up on transition start
+  // FIXME: delay text scramble animation and others to wait for transition
+
+  // TODO:
+  // ! Allow scroll and navigation before background fades in
+  // Refactor?
+  // Mobile rotate images + clip?
   // Lazy load this transition due to clips and image size
   // Try to reduce image size
   // Use simple transition as a backup
@@ -246,7 +252,7 @@ const ControlsContainer = styled('div')`
 
 
 
-export const animateSteps = (
+const animateSteps = (
   {
     steps, 
     time, 
