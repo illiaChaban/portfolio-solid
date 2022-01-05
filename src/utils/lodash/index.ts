@@ -1,4 +1,5 @@
 export * from './extract'
+export * from './range'
 
 // Lodash like helper. Couldn't figure out why the dev env loads the whole lodash library
 

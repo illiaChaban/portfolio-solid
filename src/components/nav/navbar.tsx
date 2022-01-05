@@ -4,7 +4,7 @@ import { devId } from "../../directives/dev-id"
 import { useAtom } from "../../hooks/use-atom"
 import { use } from "../../hooks/use-directives"
 import { assert } from "../../utils/assert"
-import { call, extractFloat, mapValues } from "../../utils/lodash"
+import { call, extractFloat, mapValues, range } from "../../utils/lodash"
 import { log } from "../../utils/log"
 import { breakpoints, cx, makeStyles } from "../../utils/styles"
 import { Curve, curveToString, getCircleCurveMultiplier, mirrorCurve, oneLine, square, toRadians } from "./path-utils"
@@ -12,7 +12,8 @@ import { NavIcon } from "./nav-icon"
 import { useMediaQuery } from "../../hooks/use-media-query"
 import { useRef } from "../../hooks/use-ref"
 import { useComputedStyles } from "../../hooks/use-computed-styles"
-import { Accessor, createComputed, on } from "solid-js"
+import { Accessor, batch, createComputed, createMemo, on, Setter } from "solid-js"
+import { animateSteps } from "../page-transition/page-transition"
 
 const MenuContainer = styled('div')({
   // background: '#181818', /* #2f2f2f */
@@ -103,23 +104,25 @@ export const Navbar = () => {
   const radius = circleWidth / 2
 
   const index$ = useAtom<number>()
-  const animatedIndex$ = useAtom<number>()
-  createComputed(on(index$, (i) => {
-    if (i === undefined) return;
-    // if (animatedIndex$() === undefined) return animatedIndex$(i);
-    // animate2(animatedIndex$ as Accessor<number>, i, 150, animatedIndex$)
+  const animationDuration$ = useAnimationDuration(index$)
+  // const animatedIndex$ = useAtom<number>()
+  // createComputed(on(index$, (i) => {
+  //   if (i === undefined) return;
+  //   // if (animatedIndex$() === undefined) return animatedIndex$(i);
+  //   // animate2(animatedIndex$ as Accessor<number>, i, 150, animatedIndex$)
 
-    const animatedI = animatedIndex$()
-    if (animatedI === undefined) return animatedIndex$(i);
+  //   const animatedI = animatedIndex$()
+  //   if (animatedI === undefined) return animatedIndex$(i);
 
-    const change = Math.abs(animatedI - i)
-    animate(animatedI, i, Math.min(change * 50, 150), animatedIndex$)
+  //   const change = Math.abs(animatedI - i)
+  //   // animate(animatedI, i, Math.min(change * 50, 150), animatedIndex$)
+  //   // animate3(animatedI, i, Math.min(change * 50, 150), animatedIndex$)
 
-    // animatedIndex$(i)
-  }))
+  //   animatedIndex$(i)
+  // }))
 
   const precurveSize = 8
-  const startPoint$ = () => -(precurveSize) + (animatedIndex$ () ?? 0) * circleWidth
+  const startPoint$ = () => -(precurveSize) + (index$ () ?? 0) * circleWidth
 
   const angle = 90
   const curveMultiplier = pipeWith(angle, toRadians, getCircleCurveMultiplier)
@@ -169,6 +172,7 @@ export const Navbar = () => {
     z
   ');`)
 
+
   return (
     <MenuContainer>
       {/* https://www.youtube.com/watch?v=ArTVfdHOB-M&ab_channel=OnlineTutorials */}
@@ -193,22 +197,24 @@ export const Navbar = () => {
           height: 100%;
           position: absolute;
           filter: drop-shadow(0px -1px 3px var(--color-highlight));
-
         `}>
 
           <div
             ref={backdropRef}
-            className={css`
-              border-top-left-radius: 16px;
-              border-top-right-radius: 16px;
-              /* background: #7fffff9e; */
-              backdrop-filter: blur(2px);
-              height: 100%;
-              width: 100%;
-              /* width: ${navWidth}px; */
-              /* background: var(--color-highlight); */
-              background: #262323;
-            `}
+            className={cx(
+              css`
+                border-top-left-radius: 16px;
+                border-top-right-radius: 16px;
+                /* background: #7fffff9e; */
+                backdrop-filter: blur(2px);
+                height: 100%;
+                width: 100%;
+                /* width: ${navWidth}px; */
+                /* background: var(--color-highlight); */
+                background: #262323;
+              `, 
+              css`transition: clip-path ${animationDuration$() / 1000}s ease-out;`
+            )}
               // v 2
               // ${square(3)}
               // v -2
@@ -252,71 +258,113 @@ export const Navbar = () => {
   )
 }
 
-const animate = (
-  from: number,
-  to: number,
-  time: number,
-  callback: (newValue: number) => void,
-) => {
-  let startTimestamp: number
-
-  const {nextStep, cancel} = call(() => {
-    let currentAnimationId: number
-    const nextStep = () => {
-      currentAnimationId = requestAnimationFrame(step)
+const useAnimationDuration = (index$: Accessor<number | undefined>) => {
+  const animationDuration$ = useAtom<number>(0)
+  createComputed((prevI?: number) => {
+    const i = index$()
+    if (i === undefined || prevI === undefined) {
+      animationDuration$(0)
+    } else {
+      const change = Math.abs(i - prevI)
+      animationDuration$(Math.min(change * 50, 150)) 
     }
-    const cancel = () => currentAnimationId && cancelAnimationFrame(currentAnimationId)
-    return {nextStep, cancel}
+    animationDuration$(
+      i === undefined || prevI === undefined
+        ? 0
+        : call(() => {
+          const change = Math.abs(i - prevI)
+          return range(80, 150)(change * 50) 
+        })
+    )
+    return i
   })
-
-
-  function step(timestamp: number) {
-    const valueChange = to - from
-    const multiplier = startTimestamp
-      ? (timestamp - startTimestamp) / time
-      : (startTimestamp = timestamp, 1000 / 60 / time)
-    const value = from + valueChange * Math.min(multiplier, 1)
-    // console.log({value, valueChange, multiplier, timestamp, startTimestamp, time, from ,to})
-    value === to
-      ? callback(to)
-      : (callback(value), nextStep())
-  }
-
-  nextStep()
-
-  return cancel
+  return animationDuration$
 }
 
-const animate2 = (
-  currValue: Accessor<number>,
-  to: number,
-  time: number,
-  updateValue: (newValue: number) => void,
-  currentTime?: number,
-) => {
-  // log('animate2', {currValue: currValue(), to, time})
-  if (
-    currValue() === to
-    || time <= 0 
-  ) return
+// const animate = (
+//   from: number,
+//   to: number,
+//   time: number,
+//   callback: (newValue: number) => void,
+// ) => {
+//   let startTimestamp: number
+
+//   const {nextStep, cancel} = call(() => {
+//     let currentAnimationId: number
+//     const nextStep = () => {
+//       currentAnimationId = requestAnimationFrame(step)
+//     }
+//     const cancel = () => currentAnimationId && cancelAnimationFrame(currentAnimationId)
+//     return {nextStep, cancel}
+//   })
+
+
+//   function step(timestamp: number) {
+//     const valueChange = to - from
+//     const multiplier = startTimestamp
+//       ? (timestamp - startTimestamp) / time
+//       : (startTimestamp = timestamp, 1000 / 60 / time)
+//     const value = from + valueChange * Math.min(multiplier, 1)
+//     // console.log({value, valueChange, multiplier, timestamp, startTimestamp, time, from ,to})
+//     value === to
+//       ? callback(to)
+//       : (callback(value), nextStep())
+//   }
+
+//   nextStep()
+
+//   return cancel
+// }
+
+// // const animate2 = (
+// //   currValue: Accessor<number>,
+// //   to: number,
+// //   time: number,
+// //   updateValue: (newValue: number) => void,
+// //   currentTime?: number,
+// // ) => {
+// //   const maxFps = 1000 / 60
+
+// //   // log('animate2', {currValue: currValue(), to, time})
+// //   if (
+// //     currValue() === to
+// //     || time <= maxFps
+// //   ) return updateValue()
   
 
-  requestAnimationFrame((timestamp) => {
-    const value = currValue()
-    const timeChange = currentTime ? timestamp - currentTime : 1000 / 60
-    const totalValueChange = to - value
-    const valueChange = totalValueChange * timeChange / time
-    console.log({now: performance.now(),value, timeChange, totalValueChange, valueChange, currentTime, timestamp})
-    updateValue(value + valueChange)
-    animate2(
-      currValue,
-      to,
-      time - timeChange,
-      updateValue,
-      timestamp,
-    )
+// //   requestAnimationFrame((timestamp) => {
+// //     const value = currValue()
+// //     const timeChange = currentTime 
+// //       ? timestamp - currentTime 
+// //       : maxFps
+// //     if 
+// //     const totalValueChange = to - value
+// //     const valueChange = totalValueChange * timeChange / time
+// //     console.log({now: performance.now(),value, timeChange, totalValueChange, valueChange, currentTime, timestamp})
+// //     updateValue(value + valueChange)
+// //     animate2(
+// //       currValue,
+// //       to,
+// //       time - timeChange,
+// //       updateValue,
+// //       timestamp,
+// //     )
       
-  })
+// //   })
 
-  // return cancel
-}
+// //   // return cancel
+// // }
+
+// const animate3 = (from: number, to: number, time: number, update: Setter<number>) => {
+//   const maxFps = 1000/60
+//   const steps = Math.round(time / maxFps)
+//   const stepChange = (to - from) / steps
+
+//   animateSteps({steps, time, onStep: () => update(v => v+stepChange)})
+
+//   // setInterval(() => {
+
+//   // }, maxFps)
+// }
+
+// // const 

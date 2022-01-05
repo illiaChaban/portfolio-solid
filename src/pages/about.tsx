@@ -1,7 +1,6 @@
 import { log } from "../utils/log"
 
 const About = () => {
-  log.onCleanup('cleanup about')
   return (
     <div style={{width: '100vw', minHeight: '100vh', 
       // background: 'yellow', 
