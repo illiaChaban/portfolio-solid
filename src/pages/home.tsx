@@ -7,8 +7,8 @@ import { makeStyles } from '../theme'
 import { css } from 'solid-styled-components'
 
 const useStyles = makeStyles()({
-  homeText: ({breakpoints}) => css({
-    color: 'var(--color-main)',
+  homeText: ({breakpoints, colors}) => css({
+    color: colors.text.primary,
     fontSize: '2rem',
     fontFamily: '"Special Elite", cursive',
     fontWeight: 900,
@@ -32,9 +32,9 @@ const useStyles = makeStyles()({
       marginTop: '70px',
     }
   }),
-  subtle: ({breakpoints}) => css({
+  subtle: ({breakpoints, colors}) => css({
     fontSize: '1rem',
-    color: 'var(--color-subtle)',
+    color: colors.text.subtle1,
     fontFamily: '"Inconsolata", monospace',
     fontWeight: 100,
     margin: 0,
