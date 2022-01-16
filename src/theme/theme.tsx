@@ -3,13 +3,29 @@ import { JSX } from "solid-js/jsx-runtime";
 import { ThemeProvider as ThemeProviderBase, useTheme as useThemeBase } from 'solid-styled-components'
 import { GlobalStyles } from "./global-styles";
 
-const theme = {
+export type Theme = {
   colors: {
-    primary: 'red'
-  }
+    primary: string,
+    text: {
+      primary: string,
+      subtle1: string,
+      subtle2: string,
+    }
+  },
 }
 
 export const ThemeProvider: Component = (p): JSX.Element => {
+  const theme: Theme = {
+    colors: {
+      primary: 'var(--color-highlight)',
+      text: {
+        primary: 'var(--color-main)',
+        subtle1: 'var(--color-subtle)',
+        subtle2: 'var(--color-subtle-text)',
+      }
+    },
+  }
+  
   return (
     <ThemeProviderBase theme={theme}>
       <GlobalStyles />
@@ -18,4 +34,4 @@ export const ThemeProvider: Component = (p): JSX.Element => {
   )
 }
 
-export const useTheme: () => typeof theme = useThemeBase as any
+export const useTheme: () => Theme = useThemeBase as any

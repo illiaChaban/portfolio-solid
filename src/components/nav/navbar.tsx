@@ -6,7 +6,7 @@ import { use } from "../../hooks/use-directives"
 import { assert } from "../../utils/assert"
 import { call, extractFloat, mapValues, range } from "../../utils/lodash"
 import { log } from "../../utils/log"
-import { breakpoints, cx, makeStyles } from "../../utils/styles"
+import { breakpoints, cx } from "../../utils/styles"
 import { Curve, curveToString, getCircleCurveMultiplier, mirrorCurve, oneLine, square, toRadians } from "./path-utils"
 import { NavIcon } from "./nav-icon"
 import { useMediaQuery } from "../../hooks/use-media-query"
@@ -43,6 +43,7 @@ const MenuContainer = styled('div')({
 
 // FIXME: add longer navbar off-screen to avoid
 // showing background on "bouncing overscroll"
+// FIXME: compiling + diff browser
 
 const NavContainer = styled('nav')({
   display: 'flex',

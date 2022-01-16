@@ -1,3 +1,4 @@
+import { Button } from "../components/button"
 import { log } from "../utils/log"
 
 const About = () => {
@@ -9,6 +10,8 @@ const About = () => {
     
     }}>
       <h1 style={{margin: 0}}>About Page Hello</h1>
+      <Button onClick={() => {}}>Hello there</Button>
+
       <p>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sit amet nibh non augue scelerisque volutpat. In placerat nulla vel purus vulputate, nec bibendum ex ultrices. Suspendisse sagittis metus mauris. Mauris non odio tellus. Nunc elementum finibus mollis. Proin lacinia risus nec ante accumsan, non vulputate leo pulvinar. Vestibulum hendrerit massa viverra nisi tincidunt, sed posuere ante blandit.
 

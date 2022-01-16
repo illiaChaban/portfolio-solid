@@ -9,16 +9,17 @@ import NotFound from "./pages/not-found";
 
 import { ThemeProvider } from "./theme/theme";
 import { NavIcon } from "./components/nav/nav-icon";
-import { makeStyles } from "./utils/styles/make-styles";
 import { breakpoints } from "./utils/styles/breakpoints";
 import { isProduction } from "./constants/env";
 import { GTag } from "./components/g-tag";
 import { Particles } from "./components/particles";
 import { PageTransition } from './components/page-transition'
 import { Navbar } from "./components/nav/navbar";
+import { makeStyles } from "./theme";
+import { css } from "solid-styled-components";
 
-const styles = makeStyles({
-  content: {
+const useStyles = makeStyles()({
+  content: css({
     boxSizing: 'border-box',
     width: '100%',
     height: '100%',
@@ -32,10 +33,11 @@ const styles = makeStyles({
       paddingLeft: 0,
       paddingBottom: 'var(--menu-offset)',
     }
-  }
+  })
 })
 
 const App: Component = () => {
+  const styles = useStyles()
   return (
     <div>
       <Particles />
@@ -44,8 +46,7 @@ const App: Component = () => {
         <Navbar />
 
         <div 
-          // id="content" 
-          className={styles.content}
+          className={styles.content()}
         >
           <PageTransition>
             <Routes>

@@ -2,10 +2,12 @@ import { Button } from '../components/button'
 import { textScramble } from '../directives/text-scramble'
 import { use } from '../hooks/use-directives'
 import { breakpoints } from '../utils/styles/breakpoints'
-import { cx, makeStyles } from '../utils/styles'
+import { cx } from '../utils/styles'
+import { makeStyles } from '../theme'
+import { css } from 'solid-styled-components'
 
-const styles = makeStyles({
-  homeText: {
+const useStyles = makeStyles()({
+  homeText: css({
     color: 'var(--color-main)',
     fontSize: '2rem',
     fontFamily: '"Special Elite", cursive',
@@ -23,14 +25,14 @@ const styles = makeStyles({
     [breakpoints.down(480)]: {
       fontSize: '1.6rem',
     }
-  },
-  textContainer: {
+  }),
+  textContainer: css({
     marginLeft: '5%',
     [breakpoints.down(660)]: {
       marginTop: '70px',
     }
-  },
-  subtle: {
+  }),
+  subtle: css({
     fontSize: '1rem',
     color: 'var(--color-subtle)',
     fontFamily: '"Inconsolata", monospace',
@@ -40,25 +42,25 @@ const styles = makeStyles({
     [breakpoints.down(480)]: {
       fontSize: '0.9rem',
     }
-  },
-  btnContainer: {
+  }),
+  btnContainer: css({
     marginTop: '20px',
     marginBottom: '45px',
-  }
+  })
 })
 
 
 const Home = () => {
- 
+  const styles = useStyles()
   return (
-    <div class={cx(styles.homeText, 'padding-15 body-tags')}>
-      <div class={cx(styles.textContainer, "div-tags")}>
+    <div class={cx(styles.homeText(), 'padding-15 body-tags')}>
+      <div class={cx(styles.textContainer(), "div-tags")}>
         <h2 
           ref={use(textScramble)}
-          class={styles.subtle} 
+          class={styles.subtle()} 
         >Full Stack | TS | Angular | React Native | C# | .Net</h2>
         
-        <div className={styles.btnContainer}>
+        <div className={styles.btnContainer()}>
           <Button href="about">
             More About Me
           </Button>
