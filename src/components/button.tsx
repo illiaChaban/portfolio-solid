@@ -34,7 +34,7 @@ const useStyles = makeStyles()({
     }
 
     &:hover {
-      color: var(--body-background-color);
+      color: ${colors.background};
       /* font-weight: 900;  */ /* changes btn width on firefox */
       background: orange;
       background: radial-gradient(circle at var(--mouse-pos-x) var(--mouse-pos-y), var(--btn-color) 50%,rgba(0,0,0,0) 100%);

@@ -2,7 +2,7 @@ import { Accessor, createEffect, createMemo, createRoot, createSignal, from, obs
 import { JSX } from "solid-js/jsx-runtime";
 import { css, keyframes, styled } from "solid-styled-components";
 import { log, warn } from "../../utils/log";
-import { breakpoints, cx } from "../../utils/styles";
+import { cx, media } from "../../utils/styles";
 import { Ref, useRef } from "../../hooks/use-ref";
 import { bindEventWithCleanup } from "../../utils/events";
 import { pipe, pipeWith } from "pipe-ts";
@@ -17,6 +17,7 @@ import { assert, assertLog } from "../../utils/assert";
 import { use } from "../../hooks/use-directives";
 import { devId } from "../../directives/dev-id";
 import { useComputedStyles } from "../../hooks/use-computed-styles";
+import { useTheme } from "../../theme";
 
 
 export const PageTransition = (p: {children: JSX.Element}) => {
@@ -47,6 +48,8 @@ const getMaskId = call(() => {
 export const Mask = (p: {children: JSX.Element, onDone?: () => void, onFilled?: () => void, debug?: boolean}) => {
 
   const maskId = getMaskId()
+
+  const theme = useTheme()
 
   // get parent dimensions
   // const parentDimensions$ = call(() => {
@@ -194,7 +197,7 @@ export const Mask = (p: {children: JSX.Element, onDone?: () => void, onFilled?: 
             box-sizing: border-box;
             /* We want background image & clip take the whole height, 
             but the page itself should account for padding-bottom that comes from the navbar */
-            ${breakpoints.down('md')} {
+            ${media(theme.breakpoints.down('md'))} {
               padding-bottom: var(--menu-offset);
             }
           `}

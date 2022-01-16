@@ -9,7 +9,6 @@ import NotFound from "./pages/not-found";
 
 import { ThemeProvider } from "./theme/theme";
 import { NavIcon } from "./components/nav/nav-icon";
-import { breakpoints } from "./utils/styles/breakpoints";
 import { isProduction } from "./constants/env";
 import { GTag } from "./components/g-tag";
 import { Particles } from "./components/particles";
@@ -17,9 +16,10 @@ import { PageTransition } from './components/page-transition'
 import { Navbar } from "./components/nav/navbar";
 import { makeStyles } from "./theme";
 import { css } from "solid-styled-components";
+import { media } from "./utils/styles";
 
 const useStyles = makeStyles()({
-  content: css({
+  content: ({breakpoints}) => css({
     boxSizing: 'border-box',
     width: '100%',
     height: '100%',
@@ -29,7 +29,7 @@ const useStyles = makeStyles()({
     display: 'flex',
     flexDirection: 'column',
 
-    [breakpoints.down('md')]: {
+    [media(breakpoints.down('md'))]: {
       paddingLeft: 0,
       paddingBottom: 'var(--menu-offset)',
     }

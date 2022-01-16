@@ -6,15 +6,16 @@ import { use } from "../../hooks/use-directives"
 import { assert } from "../../utils/assert"
 import { call, extractFloat, mapValues, range } from "../../utils/lodash"
 import { log } from "../../utils/log"
-import { breakpoints, cx } from "../../utils/styles"
+import { cx, media } from "../../utils/styles"
 import { Curve, curveToString, getCircleCurveMultiplier, mirrorCurve, oneLine, square, toRadians } from "./path-utils"
 import { NavIcon } from "./nav-icon"
 import { useMediaQuery } from "../../hooks/use-media-query"
 import { Ref, useRef } from "../../hooks/use-ref"
 import { useComputedStyles } from "../../hooks/use-computed-styles"
 import { Accessor, batch, createComputed, createMemo, on, Setter } from "solid-js"
+import { Theme, useBreakpoint } from "../../theme"
 
-const MenuContainer = styled('div')({
+const MenuContainer = styled('div')((props) => ({
   // background: '#181818', /* #2f2f2f */
   color: 'var(--color-subtle)',
   // color: 'black',
@@ -29,7 +30,7 @@ const MenuContainer = styled('div')({
   alignItems: 'center',
   // borderRight: '1px solid var(--color-subtle)',
 
-  [breakpoints.down('md')]: {
+  [media((props.theme as Theme).breakpoints.down('md'))]: {
     width: '100%',
     height: 'var(--menu-offset)',
     minHeight: 0,
@@ -39,35 +40,35 @@ const MenuContainer = styled('div')({
     borderRight: 'none',
     // borderTop: '1px solid var(--color-subtle)',
   }
-})
+}))
 
 // FIXME: add longer navbar off-screen to avoid
 // showing background on "bouncing overscroll"
 // FIXME: compiling + diff browser
 
-const NavContainer = styled('nav')({
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'space-around',
-  alignItems: 'center',
+// const NavContainer = styled('nav')(({breakpoints}: Theme) => ({
+//   display: 'flex',
+//   flexDirection: 'column',
+//   justifyContent: 'space-around',
+//   alignItems: 'center',
 
-  textAlign: 'center',
-  height: '210px',
-  width: '100%',
+//   textAlign: 'center',
+//   height: '210px',
+//   width: '100%',
 
-  [breakpoints.down('md')]: {
-    flexDirection: 'row',
-    minWidth: '250px',
-    width: '42%',
-    overflow: 'hidden',
-    textAlign: 'center',
-    height: '60px',
+//   [media(breakpoints.down('md'))]: {
+//     flexDirection: 'row',
+//     minWidth: '250px',
+//     width: '42%',
+//     overflow: 'hidden',
+//     textAlign: 'center',
+//     height: '60px',
 
-    '&:after': {
+//     '&:after': {
 
-    }, 
-  }
-})
+//     }, 
+//   }
+// }))
 
 const NavContainerNew = styled('nav')`
   height: 50px;
@@ -103,8 +104,7 @@ const navWidth = 300
 
 
 export const Navbar = () => {
-  const isDesktop$ = useMediaQuery('md')
-
+  const isDesktop$ = useBreakpoint('md')
 
   const index$ = useAtom<number>()
   const animationDuration$ = useAnimationDuration(index$)

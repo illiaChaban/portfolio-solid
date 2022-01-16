@@ -1,14 +1,15 @@
 import { JSX } from "solid-js/jsx-runtime";
 import { NavLink } from 'solid-app-router'
 import { createEffect, createMemo, on } from "solid-js";
-import { breakpoints, cx } from "../../utils/styles";
+import { cx, desktopHover, media } from "../../utils/styles";
 import { css } from "solid-styled-components";
 import { useLocation } from "solid-app-router";
 import { Icon } from "../icon";
 import { useAtom } from "../../hooks/use-atom";
 import { log } from "../../utils/log";
+import { makeStyles } from "../../theme";
 
-const styles = {
+const useStyles = makeStyles()({
   link: css`
     color: inherit;
     text-decoration: none;
@@ -20,12 +21,12 @@ const styles = {
     width: 100%;
     font-family: 'Inconsolata', monospace;
   `,
-  active: css`
+  active: ({colors}) => css`
     position: relative;
-    color: var(--color-highlight, orange);
+    color: ${colors.primary};
     &::before {
       content: var(--hover-text);
-      color: var(--color-highlight);
+      color: ${colors.primary};
       position: absolute;
       left: 0;
       bottom: 0;
@@ -35,12 +36,10 @@ const styles = {
       transform: translateY(40px);
     }
   `,
-  iconToTextOnHover: css`
+  iconToTextOnHover: ({colors, breakpoints}) => css`
     position: relative;
 
-    @media (hover: hover) 
-      and (pointer: fine) 
-      and ${breakpoints.up('md')}
+    ${media(desktopHover, breakpoints.up('md'))}
     {
       i {
         &::after {
@@ -57,7 +56,7 @@ const styles = {
                   transform: translate(-50%, -50%);
   
           opacity: 0;
-          color: var(--color-highlight);
+          color: ${colors.primary};
           text-transform: uppercase;
           font-family: 'Inconsolata', monospace;
           font-weight: 100;
@@ -83,7 +82,7 @@ const styles = {
     }
 
   `
-}
+})
 
 
 
@@ -106,6 +105,8 @@ const NavIconBase = (p: IconBaseProps): JSX.Element => {
   createEffect(on(isActivated, (isActive) => {
     isActive && p.onActivate?.()
   }))
+
+  const styles = useStyles()
 
   return (
     <div
@@ -141,9 +142,9 @@ const NavIconBase = (p: IconBaseProps): JSX.Element => {
         href={p.href}
         end={p.end}
         className={cx(
-          styles.link, 
-          styles.iconToTextOnHover, 
-          isActivated() && styles.active
+          styles.link(), 
+          styles.iconToTextOnHover(), 
+          isActivated() && styles.active()
         )}
         style={`--hover-text: '${name()}'`}
         aria-label={`nav-menu--${name()}`}

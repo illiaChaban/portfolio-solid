@@ -1,12 +1,8 @@
 import { Accessor, onCleanup } from "solid-js"
-import { Breakpoint, breakpoints } from "../utils/styles"
 import { useAtom } from "./use-atom"
 
-export const useMediaQuery = (
-  breakpoint: Breakpoint, 
-  direction: 'up' | 'down' = 'up',
-): Accessor<boolean> => {
-  const query = breakpoints[direction](breakpoint, false)
+export const useMediaQuery = (...queries: string[]): Accessor<boolean> => {
+  const query = queries.join(' and ')
 
   const media = window.matchMedia(query)
 

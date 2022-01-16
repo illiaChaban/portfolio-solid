@@ -1,13 +1,13 @@
 import { Button } from '../components/button'
 import { textScramble } from '../directives/text-scramble'
 import { use } from '../hooks/use-directives'
-import { breakpoints } from '../utils/styles/breakpoints'
-import { cx } from '../utils/styles'
+// import { breakpoints } from '../utils/styles/breakpoints'
+import { cx, media } from '../utils/styles'
 import { makeStyles } from '../theme'
 import { css } from 'solid-styled-components'
 
 const useStyles = makeStyles()({
-  homeText: css({
+  homeText: ({breakpoints}) => css({
     color: 'var(--color-main)',
     fontSize: '2rem',
     fontFamily: '"Special Elite", cursive',
@@ -19,27 +19,27 @@ const useStyles = makeStyles()({
     flexDirection: 'row',
     alignItems: 'center',
     overflow: 'hidden',
-    [breakpoints.down('md')]: {
+    [media(breakpoints.down('md'))]: {
       marginLeft: 0,
     },
-    [breakpoints.down(480)]: {
+    [media(breakpoints.down(480))]: {
       fontSize: '1.6rem',
     }
   }),
-  textContainer: css({
+  textContainer: ({breakpoints}) => css({
     marginLeft: '5%',
-    [breakpoints.down(660)]: {
+    [media(breakpoints.down(660))]: {
       marginTop: '70px',
     }
   }),
-  subtle: css({
+  subtle: ({breakpoints}) => css({
     fontSize: '1rem',
     color: 'var(--color-subtle)',
     fontFamily: '"Inconsolata", monospace',
     fontWeight: 100,
     margin: 0,
     letterSpacing: '-1px',
-    [breakpoints.down(480)]: {
+    [media(breakpoints.down(480))]: {
       fontSize: '0.9rem',
     }
   }),
