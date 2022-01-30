@@ -9,42 +9,45 @@ import { log } from "../../utils/log"
 import { cx, media } from "../../utils/styles"
 import { Curve, curveToString, getCircleCurveMultiplier, mirrorCurve, oneLine, square, toRadians } from "./path-utils"
 import { NavIcon } from "./nav-icon"
-import { useMediaQuery } from "../../hooks/use-media-query"
 import { Ref, useRef } from "../../hooks/use-ref"
 import { useComputedStyles } from "../../hooks/use-computed-styles"
 import { Accessor, batch, createComputed, createMemo, on, Setter } from "solid-js"
 import { Theme, useBreakpoint } from "../../theme"
 
-const MenuContainer = styled('div')((props) => ({
-  // background: '#181818', /* #2f2f2f */
-  color: 'var(--color-subtle)',
-  // color: 'black',
-  width: 'var(--menu-offset)',
-  height: '100%',
-  position: 'fixed',
-  top: 0,
-  zIndex: 3,
+const MenuContainer = styled('div')((props) => {
+  const theme = props.theme as Theme
+  return {
+    // background: '#181818', /* #2f2f2f */
+    color: 'var(--color-subtle)',
+    // color: 'black',
+    width: theme.misc.navOffset,
+    height: '100%',
+    position: 'fixed',
+    top: 0,
+    zIndex: 3,
 
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  // borderRight: '1px solid var(--color-subtle)',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    // borderRight: '1px solid var(--color-subtle)',
 
-  [media((props.theme as Theme).breakpoints.down('md'))]: {
-    width: '100%',
-    height: 'var(--menu-offset)',
-    minHeight: 0,
-    bottom: 0,
-    top: 'auto',
+    [media(theme.breakpoints.down('md'))]: {
+      width: '100%',
+      height: theme.misc.navOffset,
+      minHeight: 0,
+      bottom: 0,
+      top: 'auto',
 
-    borderRight: 'none',
-    // borderTop: '1px solid var(--color-subtle)',
+      borderRight: 'none',
+      // borderTop: '1px solid var(--color-subtle)',
+    }
   }
-}))
+})
 
-// FIXME: add longer navbar off-screen to avoid
-// showing background on "bouncing overscroll"
 // FIXME: compiling + diff browser
+// FIXME: reduce the number of containers
+// TODO: test transparent bar
+// TODO: desktop 
 
 // const NavContainer = styled('nav')(({breakpoints}: Theme) => ({
 //   display: 'flex',
@@ -70,10 +73,19 @@ const MenuContainer = styled('div')((props) => ({
 //   }
 // }))
 
-const NavContainerNew = styled('nav')`
-  height: 50px;
-  position: relative;
-` 
+const NavContainerNew = styled('nav')({
+  // height: '50px',
+  position: 'relative',
+  display: 'flex',
+  flexDirection: 'row',
+  justifyContent: 'space-around',
+  alignItems: 'center',
+
+  textAlign: 'center',
+  width: '100%',
+  height: '100%',
+})
+
 // const styles = makeStyles({
 //   nav: {
 //     display: 'flex',
@@ -100,87 +112,25 @@ const NavContainerNew = styled('nav')`
 //   },
 // })
 
+
 const navWidth = 300
+
 
 
 export const Navbar = () => {
   const isDesktop$ = useBreakpoint('md')
 
-  const index$ = useAtom<number>()
-  const animationDuration$ = useAnimationDuration(index$)
 
-  const backdropRef = useRef()
-  const clipPath$ = useClipPath(backdropRef, index$)
+  const index$ = useAtom<number>()
 
 
   return (
     <MenuContainer>
       {/* https://www.youtube.com/watch?v=ArTVfdHOB-M&ab_channel=OnlineTutorials */}
-      <NavContainerNew 
-        className={css({
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-around',
-          alignItems: 'center',
-        
-          textAlign: 'center',
-          width: '100%',
-          height: '100%',
-          // width: `${width}px`,
+      <NavContainerNew >
+        <Bar index={index$()}/>
 
-          
-        })}
-      >
-
-        <div class={css`
-          width: 100%;
-          height: 100%;
-          position: absolute;
-          filter: drop-shadow(0px -1px 3px var(--color-highlight));
-        `}>
-
-          <div
-            ref={backdropRef}
-            className={cx(
-              css`
-                /* border-top-left-radius: 16px;
-                border-top-right-radius: 16px; */
-                backdrop-filter: blur(2px);
-                height: 100%;
-                width: 100%;
-                background: #262323;
-              `, 
-              css`transition: clip-path ${animationDuration$() / 1000}s ease-out;`
-            )}
-              // v 2
-              // ${square(3)}
-              // v -2
-
-            style={clipPath$()}
-          />
-          {/* <div 
-            class={css`
-              border-top-left-radius: 16px;
-              border-top-right-radius: 16px;
-              background: #262323;
-              height: calc(100% - 1px);
-              position: absolute;
-              bottom: 0;
-              width: 100%;
-            `}
-            style={clipPath$()}
-          /> */}
-        </div>
-        <div class={css({
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-around',
-            alignItems: 'center',
-          
-            textAlign: 'center',
-            width: `${navWidth}px`,
-            '-webkit-tap-highlight-color': 'rgba(0,0,0,0)',
-          })}>
+        <NavContainer>
           {[
             NavIcon.Home,
             NavIcon.About,
@@ -188,10 +138,52 @@ export const Navbar = () => {
             NavIcon.Projects,
             NavIcon.Contact,
           ].map((Icon, i) => <Icon onActivate={() => index$(i)} />)}
-        </div>
+        </NavContainer>
       </NavContainerNew>
     </MenuContainer>
 
+  )
+}
+
+const NavContainer = styled('div')({
+  display: 'flex',
+  flexDirection: 'row',
+  justifyContent: 'space-around',
+  alignItems: 'center',
+
+  textAlign: 'center',
+  width: `${navWidth}px`,
+  '-webkit-tap-highlight-color': 'rgba(0,0,0,0)',
+})
+
+const Bar = (p: {index: number | undefined}) => {
+  const animationDuration$ = useAnimationDuration(() => p.index)
+
+  const backdropRef = useRef()
+  const clipPath$ = useClipPath(backdropRef, () => p.index)
+
+  return (
+    <div class={css`
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      filter: drop-shadow(0px -1px 3px var(--color-highlight));
+    `}>
+
+      <div
+        ref={backdropRef}
+        className={cx(
+          css`
+            backdrop-filter: blur(2px);
+            height: 100%;
+            width: 100%;
+            background: #262323;
+          `, 
+          css`transition: clip-path ${animationDuration$() / 1000}s ease-out;`
+        )}
+        style={clipPath$()}
+      />
+    </div>
   )
 }
 

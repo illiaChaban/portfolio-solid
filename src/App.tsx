@@ -19,19 +19,19 @@ import { css } from "solid-styled-components";
 import { media } from "./utils/styles";
 
 const useStyles = makeStyles()({
-  content: ({breakpoints}) => css({
+  content: ({breakpoints, misc}) => css({
     boxSizing: 'border-box',
     width: '100%',
     height: '100%',
     position: 'relative',
-    paddingLeft: 'var(--menu-offset)',
+    paddingLeft: misc.navOffset,
     minHeight: '100vh',
     display: 'flex',
     flexDirection: 'column',
 
     [media(breakpoints.down('md'))]: {
       paddingLeft: 0,
-      paddingBottom: 'var(--menu-offset)',
+      paddingBottom: misc.navOffset,
     }
   })
 })

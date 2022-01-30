@@ -15,6 +15,10 @@ export type Theme = {
     background: string,
   },
   breakpoints: typeof breakpoints,
+  misc: {
+    // TODO: remove if possible
+    navOffset: string
+  },
 }
 
 export const ThemeProvider: Component = (p): JSX.Element => {
@@ -29,6 +33,9 @@ export const ThemeProvider: Component = (p): JSX.Element => {
       background: 'var(--body-background-color)',
     },
     breakpoints,
+    misc: {
+      navOffset: 'var(--menu-offset)'
+    }
   }
   
   return (

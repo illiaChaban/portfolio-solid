@@ -198,7 +198,7 @@ export const Mask = (p: {children: JSX.Element, onDone?: () => void, onFilled?: 
             /* We want background image & clip take the whole height, 
             but the page itself should account for padding-bottom that comes from the navbar */
             ${media(theme.breakpoints.down('md'))} {
-              padding-bottom: var(--menu-offset);
+              padding-bottom: ${theme.misc.navOffset};
             }
           `}
         >
