@@ -140,8 +140,6 @@ const NavIconBase = (p: IconBaseProps): JSX.Element => {
 
   const styles = useStyles()
 
-  log.accessors({path: () => location$.pathname, isActivated$})
-
   return (
     <div
       className={cx(

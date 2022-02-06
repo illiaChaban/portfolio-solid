@@ -17,9 +17,7 @@ import { Theme, useBreakpoint } from "../../theme"
 const MenuContainer = styled('div')((props) => {
   const theme = props.theme as Theme
   return {
-    // background: '#181818', /* #2f2f2f */
     color: 'var(--color-subtle)',
-    // color: 'black',
     width: theme.misc.navOffset,
     height: '100%',
     position: 'fixed',
@@ -29,8 +27,6 @@ const MenuContainer = styled('div')((props) => {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    // borderRight: '1px solid var(--color-subtle)',
-
 
     [media(theme.breakpoints.down('md'))]: {
       width: '100%',
@@ -40,8 +36,6 @@ const MenuContainer = styled('div')((props) => {
       top: 'auto',
 
       borderRight: 'none',
-      // flexDirection: 'row',
-      // borderTop: '1px solid var(--color-subtle)',
     }
   }
 })
@@ -51,112 +45,30 @@ const MenuContainer = styled('div')((props) => {
 // TODO: test transparent bar
 // TODO: desktop 
 
-// const NavContainer = styled('nav')(({breakpoints}: Theme) => ({
-//   display: 'flex',
-//   flexDirection: 'column',
-//   justifyContent: 'space-around',
-//   alignItems: 'center',
-
-//   textAlign: 'center',
-//   height: '210px',
-//   width: '100%',
-
-//   [media(breakpoints.down('md'))]: {
-//     flexDirection: 'row',
-//     minWidth: '250px',
-//     width: '42%',
-//     overflow: 'hidden',
-//     textAlign: 'center',
-//     height: '60px',
-
-//     '&:after': {
-
-//     }, 
-//   }
-// }))
-
-const NavContainerNew = styled('nav')({
-  // height: '50px',
-  position: 'relative',
-  display: 'flex',
-  flexDirection: 'row',
-  justifyContent: 'space-around',
-  alignItems: 'center',
-
-  textAlign: 'center',
-  width: '100%',
-  height: '100%',
-})
-
-// const styles = makeStyles({
-//   nav: {
-//     display: 'flex',
-//     flexDirection: 'column',
-//     justifyContent: 'space-around',
-//     alignItems: 'center',
-
-//     textAlign: 'center',
-//     height: '210px',
-//     width: '100%',
-
-//     [breakpoints.down('md')]: {
-//       flexDirection: 'row',
-//       minWidth: '250px',
-//       width: '42%',
-//       overflow: 'hidden',
-//       textAlign: 'center',
-//       height: '60px',
-
-//       '&:after': {
-
-//       }, 
-//     }
-//   },
-// })
-
-
 const navLength = 300
 
-
-
 export const Navbar = () => {
-  const isDesktop$ = useBreakpoint('md')
-
-
   const index$ = useAtom<number>()
-
 
   return (
     <MenuContainer>
       {/* https://www.youtube.com/watch?v=ArTVfdHOB-M&ab_channel=OnlineTutorials */}
-      {/* <NavContainerNew > */}
-        <Bar index={index$()}/>
+      <Bar index={index$()}/>
 
-        <NavContainer>
-          {[
-            NavIcon.Home,
-            NavIcon.About,
-            NavIcon.Skills,
-            NavIcon.Projects,
-            NavIcon.Contact,
-          ].map((Icon, i) => <Icon onActivate={() => index$(i)} />)}
-        </NavContainer>
-      {/* </NavContainerNew> */}
+      <NavContainer>
+        {[
+          NavIcon.Home,
+          NavIcon.About,
+          NavIcon.Skills,
+          NavIcon.Projects,
+          NavIcon.Contact,
+        ].map((Icon, i) => <Icon onActivate={() => index$(i)} />)}
+      </NavContainer>
     </MenuContainer>
 
   )
 }
 
-// const NavContainer = styled('div')({
-//   display: 'flex',
-//   flexDirection: 'row',
-//   justifyContent: 'space-around',
-//   alignItems: 'center',
-
-//   textAlign: 'center',
-//   width: `${navWidth}px`,
-//   '-webkit-tap-highlight-color': 'rgba(0,0,0,0)',
-// })
 const NavContainer = styled('div')`
   display: flex;
   flex-direction: row;
@@ -173,25 +85,6 @@ const NavContainer = styled('div')`
     flex-direction: column;
   }
 `
-
-
-
-
-
-// const NavContainer = styled('div')((props) => {
-//   const theme = props.theme as Theme
-
-//   return {
-//     display: 'flex',
-//     flexDirection: 'row',
-//     justifyContent: 'space-around',
-//     alignItems: 'center',
-
-//     textAlign: 'center',
-//     width: `${navWidth}px`,
-//     '-webkit-tap-highlight-color': 'rgba(0,0,0,0)',
-//   }
-// })
 
 const Bar = (p: {index: number | undefined}) => {
   const animationDuration$ = useAnimationDuration(() => p.index)

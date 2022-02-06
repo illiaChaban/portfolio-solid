@@ -54,7 +54,7 @@ export const App: Component = withProviders(
         <div 
           className={styles.content()}
         >
-          {/* <PageTransition> */}
+          <PageTransition>
             <Routes>
               <Route path="/" element={<Home/>} />
               <Route path="/about" element={<About/>} />
@@ -63,7 +63,7 @@ export const App: Component = withProviders(
               <Route path="/contact" element={<Contact/>} />
               <Route path="/*all" element={<NotFound />} />
             </Routes>
-          {/* </PageTransition> */}
+          </PageTransition>
         </div>
 
       </main>
