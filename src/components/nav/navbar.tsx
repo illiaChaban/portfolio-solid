@@ -1,13 +1,13 @@
-import { pipeWith } from "pipe-ts"
+import { pipe, pipeWith } from "pipe-ts"
 import { css, styled } from "solid-styled-components"
 import { devId } from "../../directives/dev-id"
 import { useAtom } from "../../hooks/use-atom"
 import { use } from "../../hooks/use-directives"
 import { assert } from "../../utils/assert"
-import { call, extractFloat, mapValues, range } from "../../utils/lodash"
+import { call, extractFloat, iif, mapValues, range } from "../../utils/lodash"
 import { log } from "../../utils/log"
 import { cx, media } from "../../utils/styles"
-import { Curve, curveToString, getCircleCurveMultiplier, mirrorCurve, oneLine, square, toRadians } from "./path-utils"
+import { Curve, curveToString, getCircleCurveMultiplier, mirrorCurve, oneLine, rotateCurve90Deg, square, toRadians } from "./path-utils"
 import { NavIcon } from "./nav-icon"
 import { Ref, useRef } from "../../hooks/use-ref"
 import { useComputedStyles } from "../../hooks/use-computed-styles"
@@ -31,6 +31,7 @@ const MenuContainer = styled('div')((props) => {
     alignItems: 'center',
     // borderRight: '1px solid var(--color-subtle)',
 
+
     [media(theme.breakpoints.down('md'))]: {
       width: '100%',
       height: theme.misc.navOffset,
@@ -39,6 +40,7 @@ const MenuContainer = styled('div')((props) => {
       top: 'auto',
 
       borderRight: 'none',
+      // flexDirection: 'row',
       // borderTop: '1px solid var(--color-subtle)',
     }
   }
@@ -113,7 +115,7 @@ const NavContainerNew = styled('nav')({
 // })
 
 
-const navWidth = 300
+const navLength = 300
 
 
 
@@ -127,7 +129,7 @@ export const Navbar = () => {
   return (
     <MenuContainer>
       {/* https://www.youtube.com/watch?v=ArTVfdHOB-M&ab_channel=OnlineTutorials */}
-      <NavContainerNew >
+      {/* <NavContainerNew > */}
         <Bar index={index$()}/>
 
         <NavContainer>
@@ -139,22 +141,57 @@ export const Navbar = () => {
             NavIcon.Contact,
           ].map((Icon, i) => <Icon onActivate={() => index$(i)} />)}
         </NavContainer>
-      </NavContainerNew>
+      {/* </NavContainerNew> */}
     </MenuContainer>
 
   )
 }
 
-const NavContainer = styled('div')({
-  display: 'flex',
-  flexDirection: 'row',
-  justifyContent: 'space-around',
-  alignItems: 'center',
+// const NavContainer = styled('div')({
+//   display: 'flex',
+//   flexDirection: 'row',
+//   justifyContent: 'space-around',
+//   alignItems: 'center',
 
-  textAlign: 'center',
-  width: `${navWidth}px`,
-  '-webkit-tap-highlight-color': 'rgba(0,0,0,0)',
-})
+//   textAlign: 'center',
+//   width: `${navWidth}px`,
+//   '-webkit-tap-highlight-color': 'rgba(0,0,0,0)',
+// })
+const NavContainer = styled('div')`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+
+  text-align: center;
+  width: ${navLength}px;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+
+  ${({theme}) => media((theme as Theme).breakpoints.up('md'))} {
+    height: ${navLength}px;
+    width: 100%;
+    flex-direction: column;
+  }
+`
+
+
+
+
+
+// const NavContainer = styled('div')((props) => {
+//   const theme = props.theme as Theme
+
+//   return {
+//     display: 'flex',
+//     flexDirection: 'row',
+//     justifyContent: 'space-around',
+//     alignItems: 'center',
+
+//     textAlign: 'center',
+//     width: `${navWidth}px`,
+//     '-webkit-tap-highlight-color': 'rgba(0,0,0,0)',
+//   }
+// })
 
 const Bar = (p: {index: number | undefined}) => {
   const animationDuration$ = useAnimationDuration(() => p.index)
@@ -201,6 +238,7 @@ const useAnimationDuration = (index$: Accessor<number | undefined>) => {
   return animationDuration$
 }
 
+type Direction = 'down' | 'right'
 const useClipPath = (elRef: Ref, index$: Accessor<number | undefined>) => {
   const circleWidth = 60
   const radius = circleWidth / 2
@@ -211,7 +249,7 @@ const useClipPath = (elRef: Ref, index$: Accessor<number | undefined>) => {
   const angle = 90
   const curveMultiplier = pipeWith(angle, toRadians, getCircleCurveMultiplier)
 
-  const curves = call(() => {
+  const curve = (direction: Direction) => {
     const pre: Curve = [
       Math.round(precurveSize/2+1),.5,
       precurveSize-1, precurveSize - Math.round(precurveSize/2),
@@ -225,35 +263,56 @@ const useClipPath = (elRef: Ref, index$: Accessor<number | undefined>) => {
     const postMid = mirrorCurve(preMid)
     const post = mirrorCurve(pre)
 
-    return mapValues({pre, preMid, postMid, post}, curveToString)
-  })
-
-  const backdropWidth$ = call(() => {
-    const styles$ = useComputedStyles(elRef)
-    return () => extractFloat(styles$()?.width) ?? 0
-  })
-  const backdropPadding$ = () => {
-    const width = backdropWidth$()
-    if (!width) return 0;
-    const padding = (width - navWidth) / 2
-    return padding;
+    return [pre, preMid, postMid, post]
+      .map(pipe(
+        iif(direction === 'down', rotateCurve90Deg), 
+        curveToString
+      ))
+      .join(' ')
   }
 
-  const clipPath$ = () => oneLine(`clip-path: path('
-    M0,0
-    h${backdropPadding$()}
-    h${startPoint$()}
-    ${curves.pre}
-    ${curves.preMid}
+  const backdropDimensions$ = call(() => {
+    const styles$ = useComputedStyles(elRef)
+    return () => ({
+      width: extractFloat(styles$()?.width) ?? 0,
+      height: extractFloat(styles$()?.height) ?? 0,
+    })
+  })
+  const getBackdropPadding = (length: number) => {
+    return length && (length - navLength) / 2
+  }
 
-    ${curves.postMid}
-    ${curves.post}
-    h${navWidth - startPoint$() - circleWidth - precurveSize * 2}
-    h${backdropPadding$()}
-    v60 
-    h-${backdropWidth$()}
-    z
-  ');`)
+  const isDesktop$ = useBreakpoint('md')
+
+  const top$ = (direction: Direction) => {
+    const length = backdropDimensions$()[direction === 'right' ? 'width' : 'height']
+    const line = direction === 'right' ? 'h' : 'v'
+    // return `v${backdropDimensions$().height}`
+    return oneLine(`
+      ${line}${getBackdropPadding(length)}
+      ${line}${startPoint$()}
+      ${curve(direction)}
+      ${line}${navLength - startPoint$() - circleWidth - precurveSize * 2}
+      ${line}${getBackdropPadding(length)}
+    `).replace('--', '')
+
+  }
+
+  const clipPath$ = () => isDesktop$()
+    ? oneLine(`clip-path: path('
+      M0,0
+      h${backdropDimensions$().width} 
+      ${log.wrapFn(top$)('down')}
+      h-${backdropDimensions$().width} 
+      z
+    ');`)
+    : oneLine(`clip-path: path('
+      M0,0
+      ${top$('right')}
+      v${backdropDimensions$().height} 
+      h-${backdropDimensions$().width}
+      z
+    ');`)
 
   return clipPath$
 }

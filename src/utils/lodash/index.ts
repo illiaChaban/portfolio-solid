@@ -83,3 +83,13 @@ export const debounce = <Targs extends any[]>(
   return Object.assign(debounced, {cancel})
 }
 
+export const identity = <T>(value: T): T => value;
+
+export const iif = <T, R1, R2 = T>(
+  condition: unknown, 
+  mapWhenTruthy: (value: T) => R1,
+  mapWhenFalsy: (value: T) => R2 = (identity as any)
+) => (value: T) => 
+    condition
+      ? mapWhenTruthy(value)
+      : mapWhenFalsy(value);

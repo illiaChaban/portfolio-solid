@@ -7,9 +7,27 @@ import { useLocation } from "solid-app-router";
 import { Icon } from "../icon";
 import { useAtom } from "../../hooks/use-atom";
 import { log } from "../../utils/log";
-import { makeStyles } from "../../theme";
+import { makeStyles, useBreakpoint } from "../../theme";
 
 const useStyles = makeStyles()({
+  container: css`
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    z-index: 1;
+    transition: transform .2s;
+  `,
+  activeContainer: ({breakpoints}) => css`
+    ${media(breakpoints.down('md'))} {
+      transform: translateY(-20px);
+    }
+    ${media(breakpoints.up('md'))} {
+      transform: translateX(27px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  `,
   link: css`
     color: inherit;
     text-decoration: none;
@@ -21,19 +39,33 @@ const useStyles = makeStyles()({
     width: 100%;
     font-family: 'Inconsolata', monospace;
   `,
-  active: ({colors}) => css`
-    position: relative;
-    color: ${colors.primary};
-    &::before {
-      content: var(--hover-text);
+  active: ({colors, breakpoints}) => css`
+    ${media(breakpoints.down('md'))} {
+      position: relative;
       color: ${colors.primary};
-      position: absolute;
-      left: 0;
-      bottom: 0;
-      width: 100%;
-      font-size: 10px;
-      text-transform: uppercase;
-      transform: translateY(40px);
+     
+      &::before {
+        content: var(--hover-text);
+        color: ${colors.primary};
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        font-size: 10px;
+        text-transform: uppercase;
+        transform: translateY(34px);
+      }
+    }
+
+    ${media(breakpoints.up('md'))} {
+      background-color: ${colors.primary};
+      color: ${colors.background};
+      border-radius: 50%;
+      width: 35px;
+      height: 35px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
   `,
   iconToTextOnHover: ({colors, breakpoints}) => css`
@@ -99,43 +131,22 @@ const NavIconBase = (p: IconBaseProps): JSX.Element => {
   const removeSlashes = (str: string) => str.replace('/', '');
   const name = () => p.name ?? removeSlashes(p.href)
 
-  const location = useLocation()
-  const isActivated = () => location.pathname === p.href
+  const location$ = useLocation()
+  const isActivated$ = () => location$.pathname === p.href
 
-  createEffect(on(isActivated, (isActive) => {
+  createEffect(on(isActivated$, (isActive) => {
     isActive && p.onActivate?.()
   }))
 
   const styles = useStyles()
 
+  log.accessors({path: () => location$.pathname, isActivated$})
+
   return (
     <div
       className={cx(
-        css`
-          border-radius: 50%;
-          width: 50px;
-          height: 50px;
-          z-index: 1;
-          transition: transform .2s;
-
-        `,
-        css`
-          /* background: ${isActivated() ? 'black' : 'black'}; */
-        `,
-        isActivated() && css`
-          /* position: relative; */
-          transform: translateY(-27px);
-          /* &::before {
-            content: 'HELLO';
-            color: var(--color-highlight);
-            position: absolute;
-            bottom: -24px;
-            width: 100%;
-            font-size: 10px;
-          } */
-
-
-        `,
+        styles.container(),
+        isActivated$() && styles.activeContainer(),
       )}
     >
       <NavLink 
@@ -143,8 +154,8 @@ const NavIconBase = (p: IconBaseProps): JSX.Element => {
         end={p.end}
         className={cx(
           styles.link(), 
-          styles.iconToTextOnHover(), 
-          isActivated() && styles.active()
+          !isActivated$() && styles.iconToTextOnHover(), 
+          isActivated$() && styles.active(),
         )}
         style={`--hover-text: '${name()}'`}
         aria-label={`nav-menu--${name()}`}
@@ -174,7 +185,7 @@ export const NavIcon = {
   ),
   Projects: (p: Props) => (
     <NavIconBase  href="/projects" onActivate={p.onActivate}>
-      <Icon name="laptop" className={css`font-size: 20px;`}/>
+      <Icon name="laptop" className={css`font-size: 0.9em;`}/>
     </NavIconBase>
   ),
   Contact: (p: Props) => (

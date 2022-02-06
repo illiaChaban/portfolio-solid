@@ -7,6 +7,10 @@ export const mirrorCurve = (curve: Curve): Curve => {
   const [x1, y1, x2, y2, xEnd, yEnd] = curve
   return [xEnd - x2, y2 - yEnd, xEnd - x1, y1 - yEnd, xEnd, -yEnd]
 }
+export const rotateCurve90Deg = (curve: Curve): Curve => {
+  const [x1, y1, x2, y2, xEnd, yEnd] = curve
+  return [-y1, x1, -y2, x2, -yEnd, xEnd]
+}
 
 export const oneLine = (str: string) => str.split('\n').join(' ')
 

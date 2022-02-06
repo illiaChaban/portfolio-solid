@@ -13,10 +13,10 @@ type Props = {name: keyof typeof icons}
   & JSX.IntrinsicElements['i']
 
 export const Icon = (p: Props) => {
-  const [p1, others] = splitProps(p, ['class', 'name'])
+  const [p1, others] = splitProps(p, ['class', 'className', 'name'])
   return (
     <i 
-      class={cx(p1.class, icons[p1.name])}
+      class={cx(p1.class, p1.className, icons[p1.name])}
       {...others}
     />
   )

@@ -1,7 +1,7 @@
-import {mirrorCurve} from './path-utils'
+import {mirrorCurve, rotateCurve90Deg} from './path-utils'
 import { describe, expect, it } from 'vitest'
 
-describe('Path transforms', () => {
+describe('Path mirroring', () => {
 
   it("Should not match", () => {
     expect(
@@ -40,4 +40,14 @@ describe('Path transforms', () => {
   //   ).toEqual([ 5, 5])
   // })
 
+})
+
+describe("Path rotating", () => {
+  it('Should rotate 90 deg', () => {
+    expect(
+      rotateCurve90Deg([0,3, 5,2, 5,5])
+    ).toEqual(
+      [-3,0, -2,5, -5,5]
+    )
+  })
 })

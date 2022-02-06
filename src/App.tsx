@@ -1,5 +1,5 @@
 import { Component } from "solid-js";
-import { Router, Routes, Route, useLocation } from "solid-app-router";
+import { Router, Routes, Route, useLocation, useNavigate } from "solid-app-router";
 import Home from './pages/home'
 import About from './pages/about'
 import Skills from './pages/skills'
@@ -17,6 +17,7 @@ import { Navbar } from "./components/nav/navbar";
 import { makeStyles } from "./theme";
 import { css } from "solid-styled-components";
 import { media } from "./utils/styles";
+import { withProviders } from "./hocs";
 
 const useStyles = makeStyles()({
   content: ({breakpoints, misc}) => css({
@@ -36,7 +37,12 @@ const useStyles = makeStyles()({
   })
 })
 
-const App: Component = () => {
+export const App: Component = withProviders(
+  ThemeProvider,
+  isProduction && GTag,
+  Router,
+)(() => {
+  
   const styles = useStyles()
   return (
     <div>
@@ -48,7 +54,7 @@ const App: Component = () => {
         <div 
           className={styles.content()}
         >
-          <PageTransition>
+          {/* <PageTransition> */}
             <Routes>
               <Route path="/" element={<Home/>} />
               <Route path="/about" element={<About/>} />
@@ -57,20 +63,11 @@ const App: Component = () => {
               <Route path="/contact" element={<Contact/>} />
               <Route path="/*all" element={<NotFound />} />
             </Routes>
-          </PageTransition>
+          {/* </PageTransition> */}
         </div>
 
       </main>
 
     </div>
   );
-};
-
-export default () => (
-  <ThemeProvider>
-    {isProduction && <GTag/>}
-    <Router>
-      <App />
-    </Router>
-  </ThemeProvider>
-);
+});

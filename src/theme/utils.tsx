@@ -12,5 +12,3 @@ export const useBreakpoint = (
 ): Accessor<boolean> => useMediaQuery(
   useTheme().breakpoints[direction](breakpoint)
 )
-
- 

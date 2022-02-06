@@ -28,7 +28,7 @@ const createHookLog = (hook: (cb: () => void) => void, logger: Logger) => (...ms
 const wrapFn = (logger: Logger) => <T extends any[], TReturn>(fn: (...args: T) => TReturn, ...logs: any[]) => {
   return (...args: T): TReturn => {
     const returnValue = fn(...args)
-    logger(...logs, {args, value: returnValue})
+    logger(...logs, {args, value: returnValue, fnName: fn.name})
     return returnValue
   }
 }
