@@ -12,9 +12,9 @@ const useStyles = makeStyles()({
     width: 50px;
     height: 50px;
     z-index: 1;
-    transition: transform .2s;
+    transition: transform 0.2s;
   `,
-  activeContainer: ({breakpoints}) => css`
+  activeContainer: ({ breakpoints }) => css`
     ${media(breakpoints.down('md'))} {
       transform: translateY(-20px);
     }
@@ -36,11 +36,11 @@ const useStyles = makeStyles()({
     width: 100%;
     font-family: 'Inconsolata', monospace;
   `,
-  active: ({colors, breakpoints}) => css`
+  active: ({ colors, breakpoints }) => css`
     ${media(breakpoints.down('md'))} {
       position: relative;
       color: ${colors.primary};
-     
+
       &::before {
         content: var(--hover-text);
         color: ${colors.primary};
@@ -65,11 +65,10 @@ const useStyles = makeStyles()({
       align-items: center;
     }
   `,
-  iconToTextOnHover: ({colors, breakpoints}) => css`
+  iconToTextOnHover: ({ colors, breakpoints }) => css`
     position: relative;
 
-    ${media(desktopHover, breakpoints.up('md'))}
-    {
+    ${media(desktopHover, breakpoints.up('md'))} {
       i {
         &::after {
           content: var(--hover-text, 'navigate');
@@ -77,29 +76,27 @@ const useStyles = makeStyles()({
           letter-spacing: 1px;
           position: absolute;
           display: block;
-  
+
           top: 50%;
           left: 50%;
-  
+
           -webkit-transform: translate(-50%, -50%);
-                  transform: translate(-50%, -50%);
-  
+          transform: translate(-50%, -50%);
+
           opacity: 0;
           color: ${colors.primary};
           text-transform: uppercase;
           font-family: 'Inconsolata', monospace;
           font-weight: 100;
         }
-  
+
         &::before,
-        &::after
-        {
-          -webkit-transition: opacity .2s ease-out;
-          transition: opacity .2s ease-out;
+        &::after {
+          -webkit-transition: opacity 0.2s ease-out;
+          transition: opacity 0.2s ease-out;
         }
-  
       }
-  
+
       &:hover i {
         &::before {
           opacity: 0;
@@ -109,47 +106,42 @@ const useStyles = makeStyles()({
         }
       }
     }
-
-  `
+  `,
 })
 
-
-
 type IconBaseProps = {
-  href: string, 
-  end?: boolean,
-  name?: string,
-  children: JSX.Element,
-  onActivate?: () => void,
-  showNameOnHover?: boolean,
+  href: string
+  end?: boolean
+  name?: string
+  children: JSX.Element
+  onActivate?: () => void
+  showNameOnHover?: boolean
 }
 const NavIconBase = (p: IconBaseProps): JSX.Element => {
-
   const removeSlashes = (str: string) => str.replace('/', '')
   const name = () => p.name ?? removeSlashes(p.href)
 
   const location$ = useLocation()
   const isActivated$ = () => location$.pathname === p.href
 
-  createEffect(on(isActivated$, (isActive) => {
-    isActive && p.onActivate?.()
-  }))
+  createEffect(
+    on(isActivated$, isActive => {
+      isActive && p.onActivate?.()
+    }),
+  )
 
   const styles = useStyles()
 
   return (
     <div
-      class={cx(
-        styles.container(),
-        isActivated$() && styles.activeContainer(),
-      )}
+      class={cx(styles.container(), isActivated$() && styles.activeContainer())}
     >
-      <NavLink 
+      <NavLink
         href={p.href}
         end={p.end}
         class={cx(
-          styles.link(), 
-          !isActivated$() && styles.iconToTextOnHover(), 
+          styles.link(),
+          !isActivated$() && styles.iconToTextOnHover(),
           isActivated$() && styles.active(),
         )}
         style={`--hover-text: '${name()}'`}
@@ -170,22 +162,27 @@ export const NavIcon = {
   ),
   About: (p: Props) => (
     <NavIconBase href="/about" onActivate={p.onActivate}>
-      <Icon name="user"/>
+      <Icon name="user" />
     </NavIconBase>
   ),
   Skills: (p: Props) => (
     <NavIconBase href="/skills" onActivate={p.onActivate}>
-      <Icon name="cog"/>
+      <Icon name="cog" />
     </NavIconBase>
   ),
   Projects: (p: Props) => (
-    <NavIconBase  href="/projects" onActivate={p.onActivate}>
-      <Icon name="laptop" class={css`font-size: 0.9em;`}/>
+    <NavIconBase href="/projects" onActivate={p.onActivate}>
+      <Icon
+        name="laptop"
+        class={css`
+          font-size: 0.9em;
+        `}
+      />
     </NavIconBase>
   ),
   Contact: (p: Props) => (
     <NavIconBase href="/contact" onActivate={p.onActivate}>
-      <Icon name="envelope"/>
+      <Icon name="envelope" />
     </NavIconBase>
   ),
 }
