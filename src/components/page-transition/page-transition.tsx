@@ -1,9 +1,8 @@
 import { Accessor, createEffect, createMemo, createRoot, createSignal, from, observable, on, onCleanup, onMount, Setter, untrack } from "solid-js";
 import { JSX } from "solid-js/jsx-runtime";
 import { css, keyframes, styled } from "solid-styled-components";
-import { Transition } from "solid-transition-group";
 import { log, warn } from "../../utils/log";
-import { breakpoints, cx } from "../../utils/styles";
+import { cx, media } from "../../utils/styles";
 import { Ref, useRef } from "../../hooks/use-ref";
 import { bindEventWithCleanup } from "../../utils/events";
 import { pipe, pipeWith } from "pipe-ts";
@@ -17,10 +16,18 @@ import { useAtom } from "../../hooks/use-atom";
 import { assert, assertLog } from "../../utils/assert";
 import { use } from "../../hooks/use-directives";
 import { devId } from "../../directives/dev-id";
+import { useComputedStyles } from "../../hooks/use-computed-styles";
+import { useTheme } from "../../theme";
 
 
 export const PageTransition = (p: {children: JSX.Element}) => {
-  // TODO
+  // FIXME: page scrolling up on transition start
+  // FIXME: delay text scramble animation and others to wait for transition
+
+  // TODO:
+  // ! Allow scroll and navigation before background fades in
+  // Refactor?
+  // Mobile rotate images + clip?
   // Lazy load this transition due to clips and image size
   // Try to reduce image size
   // Use simple transition as a backup
@@ -42,23 +49,25 @@ export const Mask = (p: {children: JSX.Element, onDone?: () => void, onFilled?: 
 
   const maskId = getMaskId()
 
+  const theme = useTheme()
+
   // get parent dimensions
-  const parentDimensions$ = call(() => {
-    const containerRef = useRef()
-    const parentRef = useRef()
-    onMount(() => {
-      const parent = containerRef.current.parentElement
-      assertLog(parent, "Parent not found")
-      parentRef.current = parent
-    })
-    const parentDimensions$ = useContentWidth(parentRef)
-    return Object.assign(
-      parentDimensions$, 
-      {calculate: (currEl: Element) => {
-        containerRef.current = currEl 
-      }}
-    )
-  })
+  // const parentDimensions$ = call(() => {
+  //   const containerRef = useRef()
+  //   const parentRef = useRef()
+  //   onMount(() => {
+  //     const parent = containerRef.current.parentElement
+  //     assertLog(parent, "Parent not found")
+  //     parentRef.current = parent
+  //   })
+  //   const parentDimensions$ = useContentWidth(parentRef)
+  //   return Object.assign(
+  //     parentDimensions$, 
+  //     {calculate: (currEl: Element) => {
+  //       containerRef.current = currEl 
+  //     }}
+  //   )
+  // })
 
   // other refs
   const inkRef = useRef()
@@ -148,7 +157,7 @@ export const Mask = (p: {children: JSX.Element, onDone?: () => void, onFilled?: 
     <div
       ref={use(
         devId("transition-mask-" + maskId), 
-        parentDimensions$.calculate,
+        // parentDimensions$.calculate,
       )}
       className={cx(
         css({
@@ -188,8 +197,8 @@ export const Mask = (p: {children: JSX.Element, onDone?: () => void, onFilled?: 
             box-sizing: border-box;
             /* We want background image & clip take the whole height, 
             but the page itself should account for padding-bottom that comes from the navbar */
-            ${breakpoints.down('md')} {
-              padding-bottom: var(--menu-offset);
+            ${media(theme.breakpoints.down('md'))} {
+              padding-bottom: ${theme.misc.navOffset};
             }
           `}
         >
@@ -218,28 +227,23 @@ export const Mask = (p: {children: JSX.Element, onDone?: () => void, onFilled?: 
   )
 }
 
-type ContentRect = {contentWidth: number, paddingLeft: number}
-const useContentWidth = (element: Ref<Element>): Accessor<ContentRect> => {
+// type ContentRect = {contentWidth: number, paddingLeft: number}
+// const useContentWidth = (element: Ref<Element>): Accessor<ContentRect> => {
+//   const styles$ = useComputedStyles(element)
 
-  const computeContentDimensions = (el: Element | undefined | null): ContentRect => {
-    // It might need to be updated to be more flexible if we add elements on the right
-    // Padding left is for the nav, which has a different placement on diff breakpoints
-    if (!el) return {contentWidth: 0, paddingLeft: 0};
-    const {paddingLeft} = getComputedStyle(el)
-    const contentWidth = el.clientWidth - parseFloat(paddingLeft)
-    return {contentWidth, paddingLeft: parseFloat(paddingLeft)}
-  }
+//   console.log('hi')
 
-  const dimensions$ = withActions(
-    createSignal<ContentRect>(computeContentDimensions(element.current)),
-    (set) => ({update: () => pipeWith(element.current, computeContentDimensions, set)})
-  )
-
-  bindEventWithCleanup(window, 'resize', dimensions$.update)
-  onMount(dimensions$.update)
-
-  return dimensions$
-}
+//   return () => {
+//     console.log('here')
+//     const styles = styles$()
+//     // It might need to be updated to be more flexible if we add elements on the right
+//     // Padding left is for the nav, which has a different placement on diff breakpoints
+//     if (!styles) return {contentWidth: 0, paddingLeft: 0};
+//     const {paddingLeft} = styles
+//     const contentWidth = element.current.clientWidth - parseFloat(paddingLeft)
+//     return {contentWidth, paddingLeft: parseFloat(paddingLeft)}
+//   }
+// }
 
 const ControlsContainer = styled('div')`
   position: fixed;
@@ -249,11 +253,6 @@ const ControlsContainer = styled('div')`
   opacity: 1;
 `
 
-
-
-// const max = (max: number) => (v: number) => Math.min(max, v)
-// const min = (min: number) => (v: number) => Math.max(min, v)
-// const range = (minNum: number, maxNum: number) => pipe(min(minNum), max(maxNum))
 
 
 const animateSteps = (

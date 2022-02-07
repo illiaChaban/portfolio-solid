@@ -25,7 +25,7 @@ export const GlobalStyles = createGlobalStyles`
   }
 
   body {
-    --menu-offset: 60px;
+    --menu-offset: 56px;
 
     --color-main: #f2f1c6;
     --color-subtle: grey;

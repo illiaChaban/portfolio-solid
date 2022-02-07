@@ -25,10 +25,10 @@ const tapLog = (logger: Logger) => <T>(...args: any[]) => tap<T>((arg) => logger
 
 const createHookLog = (hook: (cb: () => void) => void, logger: Logger) => (...msgs: any[]) => hook(() => logger(...msgs))
 
-const pipeTap = (logger: Logger) => <T extends any[], TReturn>(fn: (...args: T) => TReturn, ...logs: any[]) => {
+const wrapFn = (logger: Logger) => <T extends any[], TReturn>(fn: (...args: T) => TReturn, ...logs: any[]) => {
   return (...args: T): TReturn => {
     const returnValue = fn(...args)
-    logger(...logs, {args, value: returnValue})
+    logger(...logs, {args, value: returnValue, fnName: fn.name})
     return returnValue
   }
 }
@@ -44,7 +44,7 @@ const makeLoggerUtil = (logger: Logger) => Object.assign(
      * log.pipe(myFunction, "log message")
      * // logs --> "log message", {args, returnValue}
      */
-    pipe: pipeTap(logger),
+    wrapFn: wrapFn(logger),
     onMount: createHookLog(onMount, logger),
     onCleanup: createHookLog(onCleanup, logger),
   })

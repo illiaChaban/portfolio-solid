@@ -4,25 +4,26 @@ import { createMemo, JSX } from "solid-js";
 import { Path2, Path3, Path4, Path5, Path6, Path7, Path8, Path9, Path10, Path11,
   Path12, Path13, Path14, Path15, Path16, Path17, Path18, Path19, Path20, Path21,
   Path22, Path23, Path24, Path25 } from './assets/clips'
-import { cx, makeStyles } from "../../utils/styles";
+import { cx } from "../../utils/styles";
 import { Ref } from "../../hooks/use-ref";
 import { use } from "../../hooks/use-directives";
 import { devId } from "../../directives/dev-id";
+import { makeStyles } from "../../theme";
 
 export const framesNum = 25;
 
-const styles = makeStyles({
-  outOfRange: {
+const useStyles = makeStyles()({
+  outOfRange: css({
     background: '#0c1126',
     top: 0, bottom: 0, right: 0, left: 0,
-  },
-  inRange: {
+  }),
+  inRange: css({
     left: 0,
     height: '100%',
     width: `${framesNum * 100}%`,
     background: `url(${InkImg}) no-repeat 0 0`,
     backgroundSize: '100% 100%',
-  }
+  })
 })
 
 export const InkImage = (p: {
@@ -37,6 +38,7 @@ export const InkImage = (p: {
   const position$ = createMemo(() => p.step * frameInPercent);
   const inRange$ = createMemo(() => position$() >= 0 && position$() < 100)
 
+  const styles = useStyles()
   return (
     <div 
       ref={use(p.ref, devId('ink-mask'))}
@@ -44,8 +46,8 @@ export const InkImage = (p: {
         p.className,
         css({position: 'absolute'}),
         inRange$() 
-          ? cx(styles.inRange, css({transform: `translateX(-${position$()}%)`}))
-          : styles.outOfRange
+          ? [styles.inRange(), css({transform: `translateX(-${position$()}%)`})]
+          : styles.outOfRange()
       )}
       style={p.style} 
     />

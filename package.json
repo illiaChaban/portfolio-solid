@@ -6,19 +6,21 @@
     "start": "vite",
     "dev": "vite",
     "build": "vite build",
-    "serve": "vite preview"
+    "serve": "vite preview",
+    "test": "vitest"
   },
   "license": "MIT",
   "devDependencies": {
-    "typescript": "^4.4.3",
-    "vite": "^2.5.7",
-    "vite-plugin-solid": "^2.0.3"
+    "typescript": "^4.5.4",
+    "vite": "^2.7.9",
+    "vite-plugin-solid": "^2.1.4",
+    "vitest": "^0.0.122"
   },
   "dependencies": {
     "classnames": "^2.3.1",
     "pipe-ts": "0.0.9",
-    "solid-app-router": "^0.1.7",
-    "solid-js": "^1.2.3",
-    "solid-styled-components": "^0.27.3"
+    "solid-app-router": "0.1.7",
+    "solid-js": "^1.3.5",
+    "solid-styled-components": "^0.27.4"
   }
 }
