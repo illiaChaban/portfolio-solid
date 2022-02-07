@@ -1,17 +1,25 @@
-import { pipe, pipeWith } from 'pipe-ts'
 import { Accessor, createComputed, For, on } from 'solid-js'
 import { css, styled } from 'solid-styled-components'
 import { useAtom } from '../../hooks/use-atom'
 import { useComputedStyles } from '../../hooks/use-computed-styles'
 import { Ref, useRef } from '../../hooks/use-ref'
 import { Theme, useBreakpoint } from '../../theme'
+import { flow, pipe } from '../../utils'
 import { call, extractFloat, iif, range } from '../../utils/lodash'
 import { log } from '../../utils/log'
 import { cx, media } from '../../utils/styles'
 import { NavIcon } from './nav-icon'
-import { Curve, curveToString, getCircleCurveMultiplier, mirrorCurve, oneLine, rotateCurve90Deg, toRadians } from './path-utils'
+import {
+  Curve,
+  curveToString,
+  getCircleCurveMultiplier,
+  mirrorCurve,
+  oneLine,
+  rotateCurve90Deg,
+  toRadians,
+} from './path-utils'
 
-const MenuContainer = styled('div')((props) => {
+const MenuContainer = styled('div')(props => {
   const theme = props.theme as Theme
   return {
     color: 'var(--color-subtle)',
@@ -33,14 +41,14 @@ const MenuContainer = styled('div')((props) => {
       top: 'auto',
 
       borderRight: 'none',
-    }
+    },
   }
 })
 
 // FIXME: compiling + diff browser
 // FIXME: reduce the number of containers
 // TODO: test transparent bar
-// TODO: desktop 
+// TODO: desktop
 
 const navLength = 300
 
@@ -50,21 +58,22 @@ export const Navbar = () => {
   return (
     <MenuContainer>
       {/* https://www.youtube.com/watch?v=ArTVfdHOB-M&ab_channel=OnlineTutorials */}
-      <Bar index={index$()}/>
+      <Bar index={index$()} />
 
       <NavContainer>
-        <For each={[
-          NavIcon.Home,
-          NavIcon.About,
-          NavIcon.Skills,
-          NavIcon.Projects,
-          NavIcon.Contact,
-        ]}>
+        <For
+          each={[
+            NavIcon.Home,
+            NavIcon.About,
+            NavIcon.Skills,
+            NavIcon.Projects,
+            NavIcon.Contact,
+          ]}
+        >
           {(Icon, i) => <Icon onActivate={() => index$(i)} />}
         </For>
       </NavContainer>
     </MenuContainer>
-
   )
 }
 
@@ -76,29 +85,30 @@ const NavContainer = styled('div')`
 
   text-align: center;
   width: ${navLength}px;
-  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
-  ${({theme}) => media((theme as Theme).breakpoints.up('md'))} {
+  ${({ theme }) => media((theme as Theme).breakpoints.up('md'))} {
     height: ${navLength}px;
     width: 100%;
     flex-direction: column;
   }
 `
 
-const Bar = (p: {index: number | undefined}) => {
+const Bar = (p: { index: number | undefined }) => {
   const animationDuration$ = useAnimationDuration(() => p.index)
 
   const backdropRef = useRef()
   const clipPath$ = useClipPath(backdropRef, () => p.index)
 
   return (
-    <div class={css`
-      width: 100%;
-      height: 100%;
-      position: absolute;
-      filter: drop-shadow(0px -1px 3px var(--color-highlight));
-    `}>
-
+    <div
+      class={css`
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        filter: drop-shadow(0px -1px 3px var(--color-highlight));
+      `}
+    >
       <div
         ref={backdropRef}
         class={cx(
@@ -107,8 +117,10 @@ const Bar = (p: {index: number | undefined}) => {
             height: 100%;
             width: 100%;
             background: #262323;
-          `, 
-          css`transition: clip-path ${animationDuration$() / 1000}s ease-out;`
+          `,
+          css`
+            transition: clip-path ${animationDuration$() / 1000}s ease-out;
+          `,
         )}
         style={clipPath$()}
       />
@@ -118,15 +130,15 @@ const Bar = (p: {index: number | undefined}) => {
 
 const useAnimationDuration = (index$: Accessor<number | undefined>) => {
   const animationDuration$ = useAtom<number>(0)
-  createComputed(on(index$, (i, prevI) => {
-    if (i === undefined || prevI === undefined) {
-      return animationDuration$(0)
-    }
-    const change = Math.abs(i - prevI)
-    animationDuration$(
-      range(90, 175)(change * 50)
-    )
-  }))
+  createComputed(
+    on(index$, (i, prevI) => {
+      if (i === undefined || prevI === undefined) {
+        return animationDuration$(0)
+      }
+      const change = Math.abs(i - prevI)
+      animationDuration$(range(90, 175)(change * 50))
+    }),
+  )
   return animationDuration$
 }
 
@@ -136,30 +148,33 @@ const useClipPath = (elRef: Ref, index$: Accessor<number | undefined>) => {
   const radius = circleWidth / 2
 
   const precurveSize = 8
-  const startPoint$ = () => -(precurveSize) + (index$() ?? 0) * circleWidth
+  const startPoint$ = () => -precurveSize + (index$() ?? 0) * circleWidth
 
   const angle = 90
-  const curveMultiplier = pipeWith(angle, toRadians, getCircleCurveMultiplier)
+  const curveMultiplier = pipe(angle, toRadians, getCircleCurveMultiplier)
 
   const curve = (direction: Direction) => {
     const pre: Curve = [
-      Math.round(precurveSize/2+1),.5,
-      precurveSize-1, precurveSize - Math.round(precurveSize/2),
-      precurveSize,precurveSize,
+      Math.round(precurveSize / 2 + 1),
+      0.5,
+      precurveSize - 1,
+      precurveSize - Math.round(precurveSize / 2),
+      precurveSize,
+      precurveSize,
     ]
     const preMid: Curve = [
-      3.5,radius * curveMultiplier-7,
-      radius * (1 - curveMultiplier)-2.5,radius - precurveSize + .5,
-      radius,radius - precurveSize + .5,
+      3.5,
+      radius * curveMultiplier - 7,
+      radius * (1 - curveMultiplier) - 2.5,
+      radius - precurveSize + 0.5,
+      radius,
+      radius - precurveSize + 0.5,
     ]
     const postMid = mirrorCurve(preMid)
     const post = mirrorCurve(pre)
 
     return [pre, preMid, postMid, post]
-      .map(pipe(
-        iif(direction === 'down', rotateCurve90Deg), 
-        curveToString
-      ))
+      .map(flow(iif(direction === 'down', rotateCurve90Deg), curveToString))
       .join(' ')
   }
 
@@ -177,7 +192,8 @@ const useClipPath = (elRef: Ref, index$: Accessor<number | undefined>) => {
   const isDesktop$ = useBreakpoint('md')
 
   const top$ = (direction: Direction) => {
-    const length = backdropDimensions$()[direction === 'right' ? 'width' : 'height']
+    const length =
+      backdropDimensions$()[direction === 'right' ? 'width' : 'height']
     const line = direction === 'right' ? 'h' : 'v'
     // return `v${backdropDimensions$().height}`
     return oneLine(`
@@ -187,18 +203,18 @@ const useClipPath = (elRef: Ref, index$: Accessor<number | undefined>) => {
       ${line}${navLength - startPoint$() - circleWidth - precurveSize * 2}
       ${line}${getBackdropPadding(length)}
     `).replace('--', '')
-
   }
 
-  const clipPath$ = () => isDesktop$()
-    ? oneLine(`clip-path: path('
+  const clipPath$ = () =>
+    isDesktop$()
+      ? oneLine(`clip-path: path('
       M0,0
       h${backdropDimensions$().width} 
       ${log.wrapFn(top$)('down')}
       h-${backdropDimensions$().width} 
       z
     ');`)
-    : oneLine(`clip-path: path('
+      : oneLine(`clip-path: path('
       M0,0
       ${top$('right')}
       v${backdropDimensions$().height} 
