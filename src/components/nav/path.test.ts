@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 
 describe('Path mirroring', () => {
 
-  it("Should not match", () => {
+  it('Should not match', () => {
     expect(
       mirrorCurve([0,3, 5,2, 5,5])
     ).not.toBe([0,0, 0,0, 0,0])
@@ -42,7 +42,7 @@ describe('Path mirroring', () => {
 
 })
 
-describe("Path rotating", () => {
+describe('Path rotating', () => {
   it('Should rotate 90 deg', () => {
     expect(
       rotateCurve90Deg([0,3, 5,2, 5,5])

@@ -1,23 +1,23 @@
-import { Component } from "solid-js";
-import { Router, Routes, Route, useLocation, useNavigate } from "solid-app-router";
+import { Component } from 'solid-js'
+import { Router, Routes, Route, useLocation, useNavigate } from 'solid-app-router'
 import Home from './pages/home'
 import About from './pages/about'
 import Skills from './pages/skills'
 import Projects from './pages/projects'
 import Contact from './pages/contact'
-import NotFound from "./pages/not-found";
+import NotFound from './pages/not-found'
 
-import { ThemeProvider } from "./theme/theme";
-import { NavIcon } from "./components/nav/nav-icon";
-import { isProduction } from "./constants/env";
-import { GTag } from "./components/g-tag";
-import { Particles } from "./components/particles";
+import { ThemeProvider } from './theme/theme'
+import { NavIcon } from './components/nav/nav-icon'
+import { isProduction } from './constants/env'
+import { GTag } from './components/g-tag'
+import { Particles } from './components/particles'
 import { PageTransition } from './components/page-transition'
-import { Navbar } from "./components/nav/navbar";
-import { makeStyles } from "./theme";
-import { css } from "solid-styled-components";
-import { media } from "./utils/styles";
-import { withProviders } from "./hocs";
+import { Navbar } from './components/nav/navbar'
+import { makeStyles } from './theme'
+import { css } from 'solid-styled-components'
+import { media } from './utils/styles'
+import { withProviders } from './hocs'
 
 const useStyles = makeStyles()({
   content: ({breakpoints, misc}) => css({
@@ -50,9 +50,9 @@ export const App: Component = withProviders(
       <main>
 
         <Navbar />
-
-        <div 
-          className={styles.content()}
+          
+        <div
+          class={styles.content()}
         >
           <PageTransition>
             <Routes>
@@ -69,5 +69,5 @@ export const App: Component = withProviders(
       </main>
 
     </div>
-  );
-});
+  )
+})

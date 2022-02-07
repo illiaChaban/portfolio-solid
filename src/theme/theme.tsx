@@ -1,8 +1,8 @@
-import { Component } from "solid-js";
-import { JSX } from "solid-js/jsx-runtime";
+import { Component } from 'solid-js'
+import { JSX } from 'solid-js/jsx-runtime'
 import { ThemeProvider as ThemeProviderBase} from 'solid-styled-components'
-import { breakpoints } from "./breakpoints";
-import { GlobalStyles } from "./global-styles";
+import { breakpoints } from './breakpoints'
+import { GlobalStyles } from './global-styles'
 
 export type Theme = {
   colors: {

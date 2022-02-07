@@ -1,8 +1,8 @@
-import { Accessor } from "solid-js";
+import { Accessor } from 'solid-js'
 import { useTheme as useThemeBase, styled as styledBase, Tagged as TaggedBase, CSSAttribute, css } from 'solid-styled-components'
-import { useMediaQuery } from "../hooks/use-media-query";
-import { Breakpoint } from "./breakpoints";
-import { Theme } from "./theme";
+import { useMediaQuery } from '../hooks/use-media-query'
+import { Breakpoint } from './breakpoints'
+import { Theme } from './theme'
 
 export const useTheme: () => Theme = useThemeBase as any
 

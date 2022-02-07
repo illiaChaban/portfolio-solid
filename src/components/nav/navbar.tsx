@@ -1,18 +1,15 @@
-import { pipe, pipeWith } from "pipe-ts"
-import { css, styled } from "solid-styled-components"
-import { devId } from "../../directives/dev-id"
-import { useAtom } from "../../hooks/use-atom"
-import { use } from "../../hooks/use-directives"
-import { assert } from "../../utils/assert"
-import { call, extractFloat, iif, mapValues, range } from "../../utils/lodash"
-import { log } from "../../utils/log"
-import { cx, media } from "../../utils/styles"
-import { Curve, curveToString, getCircleCurveMultiplier, mirrorCurve, oneLine, rotateCurve90Deg, square, toRadians } from "./path-utils"
-import { NavIcon } from "./nav-icon"
-import { Ref, useRef } from "../../hooks/use-ref"
-import { useComputedStyles } from "../../hooks/use-computed-styles"
-import { Accessor, batch, createComputed, createMemo, on, Setter } from "solid-js"
-import { Theme, useBreakpoint } from "../../theme"
+import { pipe, pipeWith } from 'pipe-ts'
+import { Accessor, createComputed, For, on } from 'solid-js'
+import { css, styled } from 'solid-styled-components'
+import { useAtom } from '../../hooks/use-atom'
+import { useComputedStyles } from '../../hooks/use-computed-styles'
+import { Ref, useRef } from '../../hooks/use-ref'
+import { Theme, useBreakpoint } from '../../theme'
+import { call, extractFloat, iif, range } from '../../utils/lodash'
+import { log } from '../../utils/log'
+import { cx, media } from '../../utils/styles'
+import { NavIcon } from './nav-icon'
+import { Curve, curveToString, getCircleCurveMultiplier, mirrorCurve, oneLine, rotateCurve90Deg, toRadians } from './path-utils'
 
 const MenuContainer = styled('div')((props) => {
   const theme = props.theme as Theme
@@ -56,13 +53,15 @@ export const Navbar = () => {
       <Bar index={index$()}/>
 
       <NavContainer>
-        {[
+        <For each={[
           NavIcon.Home,
           NavIcon.About,
           NavIcon.Skills,
           NavIcon.Projects,
           NavIcon.Contact,
-        ].map((Icon, i) => <Icon onActivate={() => index$(i)} />)}
+        ]}>
+          {(Icon, i) => <Icon onActivate={() => index$(i)} />}
+        </For>
       </NavContainer>
     </MenuContainer>
 
@@ -102,7 +101,7 @@ const Bar = (p: {index: number | undefined}) => {
 
       <div
         ref={backdropRef}
-        className={cx(
+        class={cx(
           css`
             backdrop-filter: blur(2px);
             height: 100%;

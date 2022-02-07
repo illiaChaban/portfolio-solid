@@ -1,13 +1,10 @@
-import { JSX } from "solid-js/jsx-runtime";
-import { NavLink } from 'solid-app-router'
-import { createEffect, createMemo, on } from "solid-js";
-import { cx, desktopHover, media } from "../../utils/styles";
-import { css } from "solid-styled-components";
-import { useLocation } from "solid-app-router";
-import { Icon } from "../icon";
-import { useAtom } from "../../hooks/use-atom";
-import { log } from "../../utils/log";
-import { makeStyles, useBreakpoint } from "../../theme";
+import { NavLink, useLocation } from 'solid-app-router'
+import { createEffect, on } from 'solid-js'
+import { JSX } from 'solid-js/jsx-runtime'
+import { css } from 'solid-styled-components'
+import { makeStyles } from '../../theme'
+import { cx, desktopHover, media } from '../../utils/styles'
+import { Icon } from '../icon'
 
 const useStyles = makeStyles()({
   container: css`
@@ -128,7 +125,7 @@ type IconBaseProps = {
 }
 const NavIconBase = (p: IconBaseProps): JSX.Element => {
 
-  const removeSlashes = (str: string) => str.replace('/', '');
+  const removeSlashes = (str: string) => str.replace('/', '')
   const name = () => p.name ?? removeSlashes(p.href)
 
   const location$ = useLocation()
@@ -142,7 +139,7 @@ const NavIconBase = (p: IconBaseProps): JSX.Element => {
 
   return (
     <div
-      className={cx(
+      class={cx(
         styles.container(),
         isActivated$() && styles.activeContainer(),
       )}
@@ -150,7 +147,7 @@ const NavIconBase = (p: IconBaseProps): JSX.Element => {
       <NavLink 
         href={p.href}
         end={p.end}
-        className={cx(
+        class={cx(
           styles.link(), 
           !isActivated$() && styles.iconToTextOnHover(), 
           isActivated$() && styles.active(),
@@ -183,7 +180,7 @@ export const NavIcon = {
   ),
   Projects: (p: Props) => (
     <NavIconBase  href="/projects" onActivate={p.onActivate}>
-      <Icon name="laptop" className={css`font-size: 0.9em;`}/>
+      <Icon name="laptop" class={css`font-size: 0.9em;`}/>
     </NavIconBase>
   ),
   Contact: (p: Props) => (

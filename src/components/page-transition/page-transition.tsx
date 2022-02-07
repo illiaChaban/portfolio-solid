@@ -1,23 +1,23 @@
-import { Accessor, createEffect, createMemo, createRoot, createSignal, from, observable, on, onCleanup, onMount, Setter, untrack } from "solid-js";
-import { JSX } from "solid-js/jsx-runtime";
-import { css, keyframes, styled } from "solid-styled-components";
-import { log, warn } from "../../utils/log";
-import { cx, media } from "../../utils/styles";
-import { Ref, useRef } from "../../hooks/use-ref";
-import { bindEventWithCleanup } from "../../utils/events";
-import { pipe, pipeWith } from "pipe-ts";
+import { Accessor, createEffect, createMemo, createRoot, createSignal, from, observable, on, onCleanup, onMount, Setter, untrack, Show } from 'solid-js'
+import { JSX } from 'solid-js/jsx-runtime'
+import { css, keyframes, styled } from 'solid-styled-components'
+import { log, warn } from '../../utils/log'
+import { cx, media } from '../../utils/styles'
+import { Ref, useRef } from '../../hooks/use-ref'
+import { bindEventWithCleanup } from '../../utils/events'
+import { pipe, pipeWith } from 'pipe-ts'
 import {InkImage, ClipPath, framesNum as inkFramesNum} from './ink-masks'
-import { call, tap } from "../../utils/lodash";
-import { Cleanup, Unsubscribe } from "../../types";
-import { Cleanups } from "../../utils/cleanups";
+import { call, tap } from '../../utils/lodash'
+import { Cleanup, Unsubscribe } from '../../types'
+import { Cleanups } from '../../utils/cleanups'
 import { TransitionContainer } from './transition-container'
-import { withActions } from "../../utils/with-actions";
-import { useAtom } from "../../hooks/use-atom";
-import { assert, assertLog } from "../../utils/assert";
-import { use } from "../../hooks/use-directives";
-import { devId } from "../../directives/dev-id";
-import { useComputedStyles } from "../../hooks/use-computed-styles";
-import { useTheme } from "../../theme";
+import { withActions } from '../../utils/with-actions'
+import { useAtom } from '../../hooks/use-atom'
+import { assert, assertLog } from '../../utils/assert'
+import { use } from '../../hooks/use-directives'
+import { devId } from '../../directives/dev-id'
+import { useComputedStyles } from '../../hooks/use-computed-styles'
+import { useTheme } from '../../theme'
 
 
 export const PageTransition = (p: {children: JSX.Element}) => {
@@ -93,12 +93,12 @@ export const Mask = (p: {children: JSX.Element, onDone?: () => void, onFilled?: 
   })
 
   createEffect(on(animationCount, (_, _2, prevCleanups: Cleanups | void): Cleanups | void => {
-    if (p.debug && !animationCount()) return;
+    if (p.debug && !animationCount()) return
 
     if (step$() === totalAdditionalSteps) {
       prevCleanups?.execute()
       step$.reset()
-      return;
+      return
     }
 
     const backgroundInTime = 800
@@ -156,16 +156,16 @@ export const Mask = (p: {children: JSX.Element, onDone?: () => void, onFilled?: 
   return (
     <div
       ref={use(
-        devId("transition-mask-" + maskId), 
+        devId('transition-mask-' + maskId), 
         // parentDimensions$.calculate,
       )}
-      className={cx(
+      class={cx(
         css({
           position: 'fixed',
           top: 0,
           right: 0,
-          width: "100vw",
-          height: "100vh",
+          width: '100vw',
+          height: '100vh',
           overflow: 'hidden',
           boxSizing: 'border-box',
           // For mobile view, show the whole thing
@@ -174,7 +174,7 @@ export const Mask = (p: {children: JSX.Element, onDone?: () => void, onFilled?: 
         }),
       )}
     >
-      <div className={css`
+      <div class={css`
         flex-grow: 1;
         overflow: hidden;
         position: relative;
@@ -187,7 +187,7 @@ export const Mask = (p: {children: JSX.Element, onDone?: () => void, onFilled?: 
 
         <div 
           ref={chldrenContainerRef}
-          className={css`
+          class={css`
             width: 100%;
             height: 100%;
             clip-path: url(#${maskId});
@@ -213,15 +213,13 @@ export const Mask = (p: {children: JSX.Element, onDone?: () => void, onFilled?: 
           {p.children}
         </div>
 
-        {p.debug && (
-          <ControlsContainer>
-            <button onClick={() => location.replace('/')}>Navigate Home</button>
-            <button onClick={startAnimation}>{step$() === totalAdditionalSteps ? 'Reset' : 'Animate'}</button>
-            <div style={{width: '20px', textAlign: 'center', display: 'inline-block'}}>{step$()}</div>
-            <button onClick={step$.increment}>Increment</button>
-            <button onClick={step$.decrement}>Decrement</button>
-          </ControlsContainer>
-        )}
+        {<Show when={p.debug}>{<ControlsContainer>
+          <button onClick={() => location.replace('/')}>Navigate Home</button>
+          <button onClick={startAnimation}>{step$() === totalAdditionalSteps ? 'Reset' : 'Animate'}</button>
+          <div style={{width: '20px', textAlign: 'center', display: 'inline-block'}}>{step$()}</div>
+          <button onClick={step$.increment}>Increment</button>
+          <button onClick={step$.decrement}>Decrement</button>
+        </ControlsContainer>}</Show>}
       </div>
     </div>
   )
@@ -297,7 +295,7 @@ const animateSteps = (
       stepsLeft--
       onStep()
       !stepsLeft && onDone?.()
-    };
+    }
     
     stepsLeft && nextStep()
   }

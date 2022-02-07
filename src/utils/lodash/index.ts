@@ -1,9 +1,11 @@
+import { AnyFunc, AnyObj } from '../../types'
+
 export * from './extract'
 export * from './range'
 
 // Lodash like helper. Couldn't figure out why the dev env loads the whole lodash library
 
-export const mapValues = <T extends {}, TResult>(
+export const mapValues = <T extends AnyObj, TResult>(
   object: T, 
   mapper: (val: T[keyof T], key: keyof T) => TResult
 ): {[K in keyof T]: TResult} => {
@@ -19,7 +21,7 @@ export const isNumber = (val: unknown): val is number => {
   return typeof val === 'number'
 }
 
-export const isFunction = (val: unknown): val is Function => {
+export const isFunction = (val: unknown): val is AnyFunc => {
   return typeof val === 'function'
 }
 
@@ -27,11 +29,11 @@ export const isArray = (val: unknown): val is any[] => {
   return Array.isArray(val)
 }
 
-export const isObject = (val: unknown): val is {} => {
+export const isObject = (val: unknown): val is AnyObj => {
   return typeof val === 'object' && val !== null && !isArray(val)
 }
 
-export const pick = <T extends {}, TKeys extends keyof T>(obj: T, keys: TKeys[]): Pick<T, TKeys> => {
+export const pick = <T extends AnyObj, TKeys extends keyof T>(obj: T, keys: TKeys[]): Pick<T, TKeys> => {
   return keys.reduce((newObj, key) => {
     newObj[key] = obj[key]
     return newObj
@@ -59,8 +61,8 @@ export const last: Last = (arr) => {
   return arr[lastIdx]
 }
 
-type KeysOfUnion<T> = T extends {} ? keyof T: never;
-export const has = <T extends {}, TKey extends KeysOfUnion<T>>(
+type KeysOfUnion<T> = T extends AnyObj ? keyof T: never;
+export const has = <T extends AnyObj, TKey extends KeysOfUnion<T>>(
   obj: T, key: TKey
 ): obj is T & Partial<Record<TKey, any>> => key in obj
 
@@ -83,7 +85,7 @@ export const debounce = <Targs extends any[]>(
   return Object.assign(debounced, {cancel})
 }
 
-export const identity = <T>(value: T): T => value;
+export const identity = <T>(value: T): T => value
 
 export const iif = <T, R1, R2 = T>(
   condition: unknown, 
@@ -92,4 +94,4 @@ export const iif = <T, R1, R2 = T>(
 ) => (value: T) => 
     condition
       ? mapWhenTruthy(value)
-      : mapWhenFalsy(value);
+      : mapWhenFalsy(value)
