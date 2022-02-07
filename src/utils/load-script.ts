@@ -1,18 +1,18 @@
-let loadedScripts: Record<string, Promise<true>> = {};
+const loadedScripts: Record<string, Promise<true>> = {}
 
-export const loadScript = ( src: string ) => {
-  if ( !(src in loadedScripts) ) {
-    loadedScripts[src] = new Promise( (resolve,reject) => {
-      let s = document.createElement('script');
-      s.setAttribute('src', src);
-      s.setAttribute('type', 'text/javascript');
+export const loadScript = (src: string) => {
+  if (!(src in loadedScripts)) {
+    loadedScripts[src] = new Promise((resolve, reject) => {
+      const s = document.createElement('script')
+      s.setAttribute('src', src)
+      s.setAttribute('type', 'text/javascript')
       s.onload = () => {
         // console.log("LOADED SCRIPT src = " + src)
         resolve(true)
-      };
-      s.onerror = reject;
-      document.body.appendChild(s);
+      }
+      s.onerror = reject
+      document.body.appendChild(s)
     })
   }
-  return loadedScripts[src];
-};
+  return loadedScripts[src]
+}

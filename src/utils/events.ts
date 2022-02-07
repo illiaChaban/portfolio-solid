@@ -1,17 +1,17 @@
-import { onCleanup } from "solid-js"
-import { Unsubscribe } from "../types"
+import { onCleanup } from 'solid-js'
+import { Unsubscribe } from '../types'
 
 interface BindEvent<TReturn> {
   (
-    el: Element | Window, 
-    eventName: string, 
+    el: Element | Window,
+    eventName: string,
     callback: (e: unknown) => void,
     options?: AddEventListenerOptions,
   ): TReturn
 }
 export const bindEvent: BindEvent<Unsubscribe> = (
-  el, 
-  eventName, 
+  el,
+  eventName,
   callback,
   options?,
 ) => {
@@ -22,13 +22,13 @@ export const bindEvent: BindEvent<Unsubscribe> = (
 export const bindEventWithCleanup: BindEvent<void> = (...args) => {
   const unsubscribe = bindEvent(...args)
   onCleanup(unsubscribe)
-} 
+}
 
 export const waitForEvent = (
-  el: Element | Window, 
-  eventName: string
+  el: Element | Window,
+  eventName: string,
 ): Promise<unknown> => {
-  return new Promise((res) => {
+  return new Promise(res => {
     bindEvent(el, eventName, res, { once: true })
   })
 }

@@ -289,11 +289,7 @@ const animateSteps = ({
       currentAnimationId = requestAnimationFrame(step)
     }
     const cancel = () =>
-      currentAnimationId &&
-      cancelAnimationFrame(currentAnimationId) &&
-      true &&
-      true &&
-      true
+      currentAnimationId && cancelAnimationFrame(currentAnimationId)
     return { nextStep, cancel }
   })
 
