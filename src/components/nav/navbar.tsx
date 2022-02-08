@@ -1,9 +1,8 @@
 import { Accessor, createComputed, For, on } from 'solid-js'
-import { css, styled } from 'solid-styled-components'
 import { useAtom } from '../../hooks/use-atom'
 import { useComputedStyles } from '../../hooks/use-computed-styles'
 import { Ref, useRef } from '../../hooks/use-ref'
-import { Theme, useBreakpoint } from '../../theme'
+import { css, styled, useBreakpoint } from '../../theme'
 import { flow, pipe } from '../../utils'
 import { call, extractFloat, iif, range } from '../../utils/lodash'
 import { log } from '../../utils/log'
@@ -19,31 +18,28 @@ import {
   toRadians,
 } from './path-utils'
 
-const MenuContainer = styled('div')(props => {
-  const theme = props.theme as Theme
-  return {
-    color: 'var(--color-subtle)',
-    width: theme.misc.navOffset,
-    height: '100%',
-    position: 'fixed',
-    top: 0,
-    zIndex: 3,
+const MenuContainer = styled('div')(({ theme }) => ({
+  color: 'var(--color-subtle)',
+  width: theme.misc.navOffset,
+  height: '100%',
+  position: 'fixed',
+  top: 0,
+  zIndex: 3,
 
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
 
-    [media(theme.breakpoints.down('md'))]: {
-      width: '100%',
-      height: theme.misc.navOffset,
-      minHeight: 0,
-      bottom: 0,
-      top: 'auto',
+  [media(theme.breakpoints.down('md'))]: {
+    width: '100%',
+    height: theme.misc.navOffset,
+    minHeight: 0,
+    bottom: 0,
+    top: 'auto',
 
-      borderRight: 'none',
-    },
-  }
-})
+    borderRight: 'none',
+  },
+}))
 
 // FIXME: compiling + diff browser
 // FIXME: reduce the number of containers
@@ -87,7 +83,7 @@ const NavContainer = styled('div')`
   width: ${navLength}px;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
-  ${({ theme }) => media((theme as Theme).breakpoints.up('md'))} {
+  ${p => media(p.theme.breakpoints.up('md'))} {
     height: ${navLength}px;
     width: 100%;
     flex-direction: column;
@@ -210,7 +206,7 @@ const useClipPath = (elRef: Ref, index$: Accessor<number | undefined>) => {
       ? oneLine(`clip-path: path('
       M0,0
       h${backdropDimensions$().width} 
-      ${log.wrapFn(top$)('down')}
+      ${top$('down')}
       h-${backdropDimensions$().width} 
       z
     ');`)

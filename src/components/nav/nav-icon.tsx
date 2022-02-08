@@ -1,8 +1,7 @@
 import { NavLink, useLocation } from 'solid-app-router'
 import { createEffect, on } from 'solid-js'
 import { JSX } from 'solid-js/jsx-runtime'
-import { css } from 'solid-styled-components'
-import { makeStyles } from '../../theme'
+import { css, makeStyles } from '../../theme'
 import { cx, desktopHover, media } from '../../utils/styles'
 import { Icon } from '../icon'
 

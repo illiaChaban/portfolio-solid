@@ -1,4 +1,4 @@
-import { createGlobalStyles } from "solid-styled-components";
+import { createGlobalStyles } from './type-overrides'
 
 export const GlobalStyles = createGlobalStyles`
   html, body {

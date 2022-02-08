@@ -1,24 +1,28 @@
 import { Component } from 'solid-js'
 import { JSX } from 'solid-js/jsx-runtime'
-import { ThemeProvider as ThemeProviderBase} from 'solid-styled-components'
+// eslint-disable-next-line no-restricted-imports
+import { ThemeProvider as ThemeProviderBase } from 'solid-styled-components'
 import { breakpoints } from './breakpoints'
 import { GlobalStyles } from './global-styles'
 
 export type Theme = {
   colors: {
-    primary: string,
+    primary: string
     text: {
-      primary: string,
-      subtle1: string,
-      subtle2: string,
-    },
-    background: string,
-  },
-  breakpoints: typeof breakpoints,
+      primary: string
+      subtle1: string
+      subtle2: string
+    }
+    background: string
+    accent: {
+      black: string
+    }
+  }
+  breakpoints: typeof breakpoints
   misc: {
     // TODO: remove if possible
     navOffset: string
-  },
+  }
 }
 
 export const ThemeProvider: Component = (p): JSX.Element => {
@@ -31,13 +35,16 @@ export const ThemeProvider: Component = (p): JSX.Element => {
         subtle2: 'var(--color-subtle-text)',
       },
       background: 'var(--body-background-color)',
+      accent: {
+        black: 'black',
+      },
     },
     breakpoints,
     misc: {
-      navOffset: 'var(--menu-offset)'
-    }
+      navOffset: 'var(--menu-offset)',
+    },
   }
-  
+
   return (
     <ThemeProviderBase theme={theme}>
       <GlobalStyles />

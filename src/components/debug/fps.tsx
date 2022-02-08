@@ -1,6 +1,6 @@
-import { createComputed, createEffect, createMemo } from "solid-js"
-import { css } from "solid-styled-components"
-import { useAtom } from "../../hooks/use-atom"
+import { createComputed, createEffect, createMemo } from 'solid-js'
+import { useAtom } from '../../hooks/use-atom'
+import { css } from '../../theme'
 
 export const Fps = () => {
   const fps$ = useAtom<number>()
@@ -16,35 +16,26 @@ export const Fps = () => {
   })
 
   return (
-    <div class={css`
-      position: fixed;
-      top: 0;
-      left: 0;
-      background: black;
-      border-radius: 16px;
-      min-height: 50px;
-      min-width: 50px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 5000;
-    `}>
-
-      FPS: {fps$()}<br/>
+    <div
+      class={css`
+        position: fixed;
+        top: 0;
+        left: 0;
+        background: black;
+        border-radius: 16px;
+        min-height: 50px;
+        min-width: 50px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 5000;
+      `}
+    >
+      FPS: {fps$()}
+      <br />
       Min fps: {minFps$()}
     </div>
   )
-}
-
-const getFps = async () => {
-  return new Promise((res) => {
-    requestAnimationFrame(time => {
-      requestAnimationFrame(time2 => {
-        const diff = time2 - time
-        res(1000 / diff)
-      })
-    })
-  })
 }
 
 const trackFps = (onCalc: (time: number) => void, time?: number) => {

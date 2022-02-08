@@ -1,4 +1,3 @@
-import { css } from 'solid-styled-components'
 import InkImg from './assets/ink.png'
 import { createMemo, JSX } from 'solid-js'
 import {
@@ -31,7 +30,7 @@ import { cx } from '../../utils/styles'
 import { Ref } from '../../hooks/use-ref'
 import { use } from '../../hooks/use-directives'
 import { devId } from '../../directives/dev-id'
-import { makeStyles } from '../../theme'
+import { css, makeStyles } from '../../theme'
 
 export const framesNum = 25
 

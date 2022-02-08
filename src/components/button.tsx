@@ -1,12 +1,11 @@
-import { Link, LinkProps } from "solid-app-router";
-import { JSX } from "solid-js"
-import { css } from 'solid-styled-components'
-import { useAtom } from "../hooks/use-atom";
-import { makeStyles } from "../theme";
-import { has } from "../utils/lodash";
+import { Link, LinkProps } from 'solid-app-router'
+import { JSX } from 'solid-js'
+import { useAtom } from '../hooks/use-atom'
+import { css, makeStyles } from '../theme'
+import { has } from '../utils/lodash'
 
 const useStyles = makeStyles()({
-  btn: ({colors}) => css`
+  btn: ({ colors }) => css`
     --mouse-pos-x: 0px;
     --mouse-pos-y: 0px;
     --btn-color: ${colors.primary};
@@ -20,8 +19,8 @@ const useStyles = makeStyles()({
     padding: 8px 12px;
     border-radius: 5px;
     border: 1px solid var(--btn-color);
-    
-    font-family: 'Saira', Helvetica, Arial, sans-serif; 
+
+    font-family: 'Saira', Helvetica, Arial, sans-serif;
     font-size: 1.5rem;
 
     display: inline-block;
@@ -37,38 +36,43 @@ const useStyles = makeStyles()({
       color: ${colors.background};
       /* font-weight: 900;  */ /* changes btn width on firefox */
       background: orange;
-      background: radial-gradient(circle at var(--mouse-pos-x) var(--mouse-pos-y), var(--btn-color) 50%,rgba(0,0,0,0) 100%);
+      background: radial-gradient(
+        circle at var(--mouse-pos-x) var(--mouse-pos-y),
+        var(--btn-color) 50%,
+        rgba(0, 0, 0, 0) 100%
+      );
     }
-  `
+  `,
 })
 
 type ButtonProps = {
-  children: JSX.Element, 
-} & ({
-  onClick: JSX.DOMAttributes<HTMLButtonElement>['onClick'],
-} | {
-  href: LinkProps['href'],
-  onClick?: LinkProps['onClick'],
-})
+  children: JSX.Element
+} & (
+  | {
+      onClick: JSX.DOMAttributes<HTMLButtonElement>['onClick']
+    }
+  | {
+      href: LinkProps['href']
+      onClick?: LinkProps['onClick']
+    }
+)
 export const Button = (p: ButtonProps): JSX.Element => {
-
-  type MousePosition = {x: number, y: number};
-  const mousePosition$ = useAtom<MousePosition>({x: 0, y: 0})
+  type MousePosition = { x: number; y: number }
+  const mousePosition$ = useAtom<MousePosition>({ x: 0, y: 0 })
   const trackMousePosition = (e: MouseEvent) => {
-    mousePosition$({x: e.offsetX, y: e.offsetY});
-  };
+    mousePosition$({ x: e.offsetX, y: e.offsetY })
+  }
 
-  const Component = has(p, 'href') 
+  const Component = has(p, 'href')
     ? (props: LinkProps) => <Link {...props} />
     : (props: JSX.DOMAttributes<HTMLButtonElement>) => <button {...props} />
 
   const styles = useStyles()
 
   return (
-    <Component 
+    <Component
       class={styles.btn()}
       onMouseMove={trackMousePosition}
-      
       onClick={p.onClick as any}
       href={(p as any).href}
       style={`
@@ -80,5 +84,3 @@ export const Button = (p: ButtonProps): JSX.Element => {
     </Component>
   )
 }
-
-

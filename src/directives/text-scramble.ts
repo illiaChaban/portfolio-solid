@@ -1,27 +1,25 @@
 // Original text scramble is taken from codepen. Pen by Lorenzo
 // https://codepen.io/lollocll/pen/qPmLMr
-// Thanks! 
-
-import { onMount } from "solid-js";
+// Thanks!
 
 // Was updated by me for my needs :)
 class TextScramble {
-  constructor(el: Element, config={}) {
-    this.el = el;
+  constructor(el: Element, config = {}) {
+    this.el = el
     this.doodles = '!<>-_\\/[]{}—=+*^?#________'
-    this.update = this.update.bind(this);
-    this.animate = this.animate.bind(this);
+    this.update = this.update.bind(this)
+    this.animate = this.animate.bind(this)
 
     // configuration
-    this.phrases = config.phrases || [ this.el.innerText ];
-    this.infinite = config.infinite || false;
-    this.interval = config.interval || 2500;
-    this.currIndex = 0;
+    this.phrases = config.phrases || [this.el.innerText]
+    this.infinite = config.infinite || false
+    this.interval = config.interval || 2500
+    this.currIndex = 0
   }
   setText(newText) {
     const oldText = this.el.innerText
     const length = Math.max(oldText.length, newText.length)
-    const promise = new Promise((resolve) => this.resolve = resolve)
+    const promise = new Promise(resolve => (this.resolve = resolve))
     this.queue = []
     for (let i = 0; i < length; i++) {
       const from = oldText[i] || ''
@@ -45,7 +43,7 @@ class TextScramble {
         output += to
       } else if (this.frame >= start) {
         if (!char || Math.random() < 0.28) {
-          char = this.getDoodle();
+          char = this.getDoodle()
           this.queue[i].char = char
         }
         output += `<span class='doodle'>${char}</span>`
@@ -67,17 +65,18 @@ class TextScramble {
   animate() {
     if (this.currIndex < this.phrases.length) {
       this.setText(this.phrases[this.currIndex]).then(() => {
-        this.currIndex++;
-        if (this.infinite) this.currIndex %= this.phrases.length;
-        setTimeout( this.animate, this.interval);
+        this.currIndex++
+        if (this.infinite) this.currIndex %= this.phrases.length
+        setTimeout(this.animate, this.interval)
       })
     } else {
       // reset animator till next call
-      this.currIndex = 0;
+      this.currIndex = 0
     }
   }
 }
 
-export const textScramble = (node: Element) => {
-  new TextScramble(node).animate()
+export const textScramble = (node: Element, delay = 0) => {
+  const scramble = new TextScramble(node)
+  setTimeout(scramble.animate, delay)
 }
