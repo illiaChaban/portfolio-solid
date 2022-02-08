@@ -38,7 +38,8 @@
 		// ],
 		"no-restricted-imports": [
 			"error",
-			"pipe-ts"
+			"pipe-ts",
+			"solid-styled-components"
 		],
 		"max-len": [
 			"warn"
