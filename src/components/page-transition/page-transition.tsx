@@ -8,7 +8,7 @@ import { Cleanup } from '../../types'
 import { pipe } from '../../utils'
 import { assertLog } from '../../utils/assert'
 import { Cleanups } from '../../utils/cleanups'
-import { call } from '../../utils/lodash'
+import { scope } from '../../utils/lodash'
 import { cx, media } from '../../utils/styles'
 import { withActions } from '../../utils/with-actions'
 import { ClipPath, framesNum as inkFramesNum, InkImage } from './ink-masks'
@@ -30,7 +30,7 @@ export const PageTransition = (p: { children: JSX.Element }) => {
   return <TransitionContainer>{p.children}</TransitionContainer>
 }
 
-const getMaskId = call(() => {
+const getMaskId = scope(() => {
   let id = 0
   return () => (++id).toString()
 })
@@ -68,7 +68,7 @@ export const Mask = (p: {
   const chldrenContainerRef = useRef()
 
   // describe animation
-  const [animationCount, startAnimation] = call(() => {
+  const [animationCount, startAnimation] = scope(() => {
     const [animationCount, setAnimationCount] = createSignal(0)
     return [animationCount, () => setAnimationCount(v => v + 1)]
   })
@@ -277,12 +277,12 @@ const animateSteps = ({
   onDone?: () => void
   onStep: () => void
 }): Cleanup => {
-  const interval = call(() => {
+  const interval = scope(() => {
     const totalIntervals = steps - 1
     return time / totalIntervals
   })
 
-  const { nextStep, cancel } = call(() => {
+  const { nextStep, cancel } = scope(() => {
     let currentAnimationId: number
     const nextStep = () => {
       currentAnimationId = requestAnimationFrame(step)
@@ -296,7 +296,7 @@ const animateSteps = ({
   let stepsLeft = steps
 
   function step(timestamp: number) {
-    const intervalElapsed = call(() => {
+    const intervalElapsed = scope(() => {
       const currentStepIdx = steps - stepsLeft
       if (!startTimestamp) {
         assertLog(currentStepIdx === 0)

@@ -9,8 +9,11 @@ export const Link = styled('a')`
   color: ${({ color, theme }: StyledProps<{ color?: 'primary' | 'text' }>) =>
     color === 'text' ? theme.colors.text.primary : theme.colors.primary};
 
+  display: inline-block;
+
   &:hover {
     color: ${p => p.theme.colors.accent.black};
+    transform: scale(1.1);
   }
   &::after,
   &::before {

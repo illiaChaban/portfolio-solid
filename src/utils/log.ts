@@ -1,4 +1,5 @@
 import { createEffect, onCleanup, onMount } from 'solid-js'
+import { AnyFunc } from '../types'
 import { isFunction, isObject, mapValues, tap } from './lodash'
 
 type Logger = (...data: any[]) => void
@@ -34,12 +35,12 @@ const createHookLog =
 
 const wrapFn =
   (logger: Logger) =>
-  <T extends any[], TReturn>(fn: (...args: T) => TReturn, ...logs: any[]) => {
-    return (...args: T): TReturn => {
+  <T extends AnyFunc>(fn: T, ...logs: any[]): T => {
+    return ((...args) => {
       const returnValue = fn(...args)
       logger(...logs, { args, value: returnValue, fnName: fn.name })
       return returnValue
-    }
+    }) as T
   }
 
 const makeLoggerUtil = (logger: Logger) =>
@@ -48,11 +49,6 @@ const makeLoggerUtil = (logger: Logger) =>
     accessors: createLogAccessors(logger),
     /** Logs intermediate value with string message and passes through the value */
     tap: tapLog(logger),
-    /** Pipe function:
-     * @example
-     * log.pipe(myFunction, "log message")
-     * // logs --> "log message", {args, returnValue}
-     */
     wrapFn: wrapFn(logger),
     onMount: createHookLog(onMount, logger),
     onCleanup: createHookLog(onCleanup, logger),

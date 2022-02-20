@@ -10,7 +10,7 @@ import {
   onMount,
   untrack,
 } from 'solid-js'
-import { call, last } from '../../utils/lodash'
+import { scope, last } from '../../utils/lodash'
 import { withActions } from '../../utils/with-actions'
 import { Mask } from './page-transition'
 
@@ -20,7 +20,7 @@ export const TransitionContainer = (p: {
   children: JSXElement
 }): JSXElement => {
   const propsChildren = children(() => p.children)
-  const getNextId = call(() => {
+  const getNextId = scope(() => {
     let id = 0
     return () => ++id
   })

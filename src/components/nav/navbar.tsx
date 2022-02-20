@@ -1,10 +1,10 @@
 import { Accessor, createComputed, For, on } from 'solid-js'
 import { useAtom } from '../../hooks/use-atom'
-import { useComputedStyles } from '../../hooks/use-computed-styles'
+import { useComputedStyles } from '../../hooks'
 import { Ref, useRef } from '../../hooks/use-ref'
 import { css, styled, useBreakpoint } from '../../theme'
 import { flow, pipe } from '../../utils'
-import { call, extractFloat, iif, range } from '../../utils/lodash'
+import { scope, extractFloat, iif, range } from '../../utils/lodash'
 import { log } from '../../utils/log'
 import { cx, media } from '../../utils/styles'
 import { NavIcon } from './nav-icon'
@@ -174,7 +174,7 @@ const useClipPath = (elRef: Ref, index$: Accessor<number | undefined>) => {
       .join(' ')
   }
 
-  const backdropDimensions$ = call(() => {
+  const backdropDimensions$ = scope(() => {
     const styles$ = useComputedStyles(elRef)
     return () => ({
       width: extractFloat(styles$()?.width) ?? 0,

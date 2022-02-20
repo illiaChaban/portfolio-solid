@@ -1,9 +1,9 @@
 import { Accessor, createSignal, onMount } from 'solid-js'
-import { pipe } from '../utils'
-import { bindEventWithCleanup } from '../utils/events'
-import { debounce } from '../utils/lodash'
-import { withActions } from '../utils/with-actions'
-import { Ref } from './use-ref'
+import { pipe } from '../../utils'
+import { bindEventWithCleanup } from '../../utils/events'
+import { debounce } from '../../utils/lodash'
+import { withActions } from '../../utils/with-actions'
+import { Ref } from '../use-ref'
 
 export const useComputedStyles = (
   element: Ref<Element>,

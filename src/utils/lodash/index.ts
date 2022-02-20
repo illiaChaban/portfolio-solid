@@ -43,7 +43,7 @@ export const pick = <T extends AnyObj, TKeys extends keyof T>(
   }, {} as Pick<T, TKeys>)
 }
 
-export const call = <T>(callback: () => T): T => callback()
+export const scope = <T>(callback: () => T): T => callback()
 
 export const combine =
   <T>(...callbacks: ((arg: T) => unknown)[]) =>
@@ -73,22 +73,63 @@ export const has = <T extends AnyObj, TKey extends KeysOfUnion<T>>(
   key: TKey,
 ): obj is T & Partial<Record<TKey, any>> => key in obj
 
-type Debounced<Targs extends any[]> = {
+type TimedFn<Targs extends any[]> = {
   (...args: Targs): void
   cancel: () => void
 }
-export const debounce = <Targs extends any[]>(
+export const debounce = <TArgs extends any[]>(
   time: number,
-  fn: (...args: Targs) => unknown,
-): Debounced<Targs> => {
+  fn: (...args: TArgs) => unknown,
+): TimedFn<TArgs> => {
   let timeoutId: number
   const cancel = () => clearTimeout(timeoutId)
-  const debounced = (...args: Targs) => {
+  const debounced = (...args: TArgs) => {
     cancel()
     timeoutId = setTimeout(() => fn(...args), time)
   }
 
   return Object.assign(debounced, { cancel })
+}
+
+/** Invokes the function on initial call and throttles every next call */
+export const throttle = <TArgs extends any[]>(
+  time: number,
+  fn: (...args: TArgs) => unknown,
+): TimedFn<TArgs> => {
+  let timeoutId: number | undefined
+  let currArgs: TArgs
+  let lastArgs: TArgs
+
+  const wrappedFn = (args: TArgs) => {
+    fn(...args)
+    lastArgs = args
+  }
+
+  const throttled = (...args: TArgs) => {
+    currArgs = args
+
+    const wasScheduled = !!timeoutId
+    if (wasScheduled) return
+
+    const callAndSchedule = () => {
+      const beenCalled = lastArgs === currArgs
+      if (beenCalled) {
+        timeoutId = undefined
+        return
+      }
+
+      wrappedFn(currArgs)
+      timeoutId = setTimeout(callAndSchedule, time)
+    }
+    callAndSchedule()
+  }
+
+  return Object.assign(throttled, {
+    cancel: () => {
+      clearTimeout(timeoutId)
+      timeoutId = undefined
+    },
+  })
 }
 
 export const identity = <T>(value: T): T => value

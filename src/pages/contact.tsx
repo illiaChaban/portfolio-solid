@@ -18,7 +18,6 @@ const Contact = () => {
             align-items: center;
             color: var(--color-main);
             flex-direction: column;
-            z-index: 1;
             padding-left: 25px;
           `}
         >

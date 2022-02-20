@@ -2,10 +2,10 @@ import { onCleanup } from 'solid-js'
 import { Unsubscribe } from '../types'
 
 interface BindEvent<TReturn> {
-  (
+  <TEvent = unknown>(
     el: Element | Window,
     eventName: string,
-    callback: (e: unknown) => void,
+    callback: (e: TEvent) => void,
     options?: AddEventListenerOptions,
   ): TReturn
 }
