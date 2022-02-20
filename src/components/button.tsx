@@ -30,8 +30,8 @@ const backgroundStyle = css`
 
 const useStyles = makeStyles()({
   btn: ({ colors }) => css`
-    --mouse-pos-x: 0px;
-    --mouse-pos-y: 0px;
+    --gradient-pos-x: 0px;
+    --gradient-pos-y: 0px;
     --btn-color: ${colors.primary};
     --gradient-scale: 0.5;
 
@@ -55,6 +55,8 @@ const useStyles = makeStyles()({
     cursor: pointer;
     outline: none;
 
+    transition: color 0.4s;
+
     &:focus {
       box-shadow: 0 0 20px 1px var(--btn-color);
     }
@@ -65,20 +67,18 @@ const useStyles = makeStyles()({
 
     & .${backgroundStyle} {
       background: radial-gradient(
-        circle at var(--mouse-pos-x) var(--mouse-pos-y),
+        circle at var(--gradient-pos-x) var(--gradient-pos-y),
         var(--btn-color) 0%,
         rgba(0, 0, 0, 0) 70%
       );
-      opacity: 0.4;
     }
     &:hover .${backgroundStyle} {
       /* font-weight: 900;  */ /* changes btn width on firefox */
       background: radial-gradient(
-        circle at var(--mouse-pos-x) var(--mouse-pos-y),
+        circle at var(--gradient-pos-x) var(--gradient-pos-y),
         var(--btn-color) calc(100% * var(--gradient-scale)),
         rgba(0, 0, 0, 0) 100%
       );
-      opacity: 1;
     }
 
     /* background: radial-gradient(
@@ -106,54 +106,57 @@ export const Button = (p: ButtonProps): JSX.Element => {
   const mousePosition$ = withActions(
     createSignal<MousePosition>({ x: 0, y: 0 }),
     set => ({
-      track: throttle(
-        20,
-        (e: MouseEvent) => set({ x: e.clientX, y: e.clientY }),
-        // set({ x: e.offsetX, y: e.offsetY }),
+      track: throttle(20, (e: MouseEvent) =>
+        set({ x: e.clientX, y: e.clientY }),
       ),
     }),
   )
 
   const ref = useRef()
   const boundingRect$ = useBoundingRect(ref)
-  const gradientPosition$ = () => {
+  const gradient$ = (): { x: number; y: number; opacity: number } => {
     const rect = boundingRect$()
-    if (!rect) return { x: 0, y: 0 }
+    if (!rect) return { x: 0, y: 0, opacity: 0 }
     const { x, y } = mousePosition$()
     const { left, right, top, bottom, width, height } = rect
-    const yBuffer = 100
-    const xBuffer = 150
+    const buffer = 100
+
+    // type Position =
+    //   | 'topLeft'
+    //   | 'top'
+    //   | 'topRight'
+    //   | 'left'
+    //   | 'inside'
+    //   | 'right'
+    //   | 'bottomLeft'
+    //   | 'bottom'
+    //   | 'bottomRight'
+
+    const distanceToElement = distanceToRect({ x, y }, rect)
+
     return {
       x:
-        x > right + xBuffer
-          ? width + xBuffer
-          : x < left - xBuffer
-          ? -xBuffer
+        x > right + buffer
+          ? width + buffer
+          : x < left - buffer
+          ? -buffer
           : x - left,
       y:
-        y < top - yBuffer
-          ? -yBuffer
-          : y > bottom + yBuffer
-          ? height + yBuffer
+        y < top - buffer
+          ? -buffer
+          : y > bottom + buffer
+          ? height + buffer
           : y - top,
+      opacity:
+        distanceToElement > buffer
+          ? 0
+          : distanceToElement === 0
+          ? 1
+          : (buffer - distanceToElement) / buffer,
     }
   }
 
   log.accessors({ boundingRect$ })
-
-  // const isInRect$ = () => {
-  //   const rect = boundingRect$()
-  //   if (rect) {
-  //     const { x, y } = mousePosition$()
-  //     const { left, right, top, bottom } = rect
-  //     const inside = x >= left && x <= right && y >= top && y <= bottom
-  //     console.log({ x, y, left, right, top, bottom, inside })
-  //     return inside
-  //   }
-  //   return false
-  // }
-
-  // log.accessors({ isInRect$ })
 
   const Component = has(p, 'href')
     ? (props: LinkProps) => <Link {...props} />
@@ -161,46 +164,13 @@ export const Button = (p: ButtonProps): JSX.Element => {
 
   const styles = useStyles()
 
-  const hovering$ = useAtom(false)
+  // const hovering$ = useAtom(false)
 
-  // const mousePositionOutside$ = withActions(
-  //   createSignal<MousePosition>({ x: 0, y: 0 }),
-  //   set => ({
-  //     track: throttle(10, (e: MouseEvent) =>
-  //       set({ x: e.offsetX, y: e.offsetY }),
-  //     ),
-  //   }),
-  // )
   bindEventWithCleanup(window, 'mousemove', mousePosition$.track)
-  // document.addEventListener('mousemove', mousePosition$.track)
-  // onCleanup
 
-  // const gradientScale$ = useAtom(0.5)
+  // log.accessors({ opacity: () => gradient$().opacity })
 
-  // createEffect(
-  //   on(hovering$, hovering => {
-  //     if (hovering) {
-  //       gradientScale$(0)
-  //       const id = setInterval(() => {
-  //         const scale = gradientScale$()
-  //         if (scale >= 0.5) {
-  //           clearInterval(id)
-  //           gradientScale$(0.5)
-  //           return
-  //         }
-  //         const newScale = scale + 0.005
-  //         gradientScale$(newScale)
-  //       }, 5)
-  //       onCleanup(() => clearInterval(id))
-  //     }
-  //   }),
-  // )
-  // log.accessors({ boundingRect$ })
-  // log.accessors({ hovering$ })
-  // log.accessors({ gradientPosition$ })
-  createEffect(() => console.log(gradientPosition$().x, gradientPosition$().y))
-  // log.accessors({ mousePosition$ })
-  // log.accessors({ gradientScale$ })
+  // createEffect(() => console.log(gradientPosition$().x, gradientPosition$().y))
 
   return (
     <>
@@ -210,17 +180,21 @@ export const Button = (p: ButtonProps): JSX.Element => {
         // onMouseMove={mousePosition$.track}
         onClick={p.onClick as any}
         href={(p as any).href}
-        onMouseOver={() => hovering$(true)}
-        onMouseOut={() => hovering$(false)}
+        // onMouseOver={() => hovering$(true)}
+        // onMouseOut={() => hovering$(false)}
         style={`
-        --mouse-pos-x: ${gradientPosition$().x}px; 
-        --mouse-pos-y: ${gradientPosition$().y}px;
-      `}
+          --gradient-pos-x: ${gradient$().x}px; 
+          --gradient-pos-y: ${gradient$().y}px;
+        `}
       >
-        <div class={backgroundStyle} />
+        <div
+          class={backgroundStyle}
+          style={`
+          opacity: ${gradient$().opacity};
+        `}
+        />
         {p.children}
       </Component>
-      {/* <DebugCursor /> */}
     </>
   )
 }
@@ -229,7 +203,6 @@ const DebugCursor = () => {
   const mouse$ = useAtom<MouseEvent>()
 
   bindEventWithCleanup(document, 'mousemove', (e: MouseEvent) => {
-    // const { x, y, clientX, clientY, pageX, pageY, offsetX, offsetY } = e
     mouse$(e)
   })
 
@@ -256,16 +229,6 @@ const DebugCursor = () => {
           const { x, y, clientX, clientY, pageX, pageY, offsetX, offsetY } =
             mouse
 
-          // return JSON.stringify({
-          //   x,
-          //   y,
-          //   clientX,
-          //   clientY,
-          //   pageX,
-          //   pageY,
-          //   offsetX,
-          //   offsetY,
-          // })
           return [
             { x, y },
             { clientX, clientY },
@@ -277,6 +240,41 @@ const DebugCursor = () => {
   )
 }
 
-// const linear = (time, ) => {
-//   requ
-// }
+type Point = { x: number; y: number }
+const distanceToPoint =
+  (point1: Point) =>
+  (point2: Point): number => {
+    const a = point1.x - point2.x
+    const b = point1.y - point2.y
+    // console.log({ a, b, a2: a ** 2, b2: b ** 2 })
+    return Math.sqrt(a ** 2 + b ** 2)
+  }
+
+type Rect = { top: number; bottom: number; left: number; right: number }
+const distanceToRect = (point: Point, rect: Rect): number => {
+  const { x, y } = point
+  const { top, bottom, right, left } = rect
+  type Position = {
+    x: 'left' | 'inside' | 'right'
+    y: 'top' | 'inside' | 'bottom'
+  }
+  const pos: Position = {
+    x: x < left ? 'left' : x > right ? 'right' : 'inside',
+    y: y < top ? 'top' : y > bottom ? 'bottom' : 'inside',
+  }
+  type StringPosition = `${Position['x']}${Position['y']}`
+
+  const distanceTo = distanceToPoint(point)
+  const positionToDistance: Record<StringPosition, () => number> = {
+    insidetop: () => top - y,
+    insidebottom: () => y - bottom,
+    insideinside: () => 0,
+    leftinside: () => left - x,
+    lefttop: () => distanceTo({ x: left, y: top }),
+    leftbottom: () => distanceTo({ x: left, y: bottom }),
+    rightinside: () => x - right,
+    righttop: () => distanceTo({ x: right, y: top }),
+    rightbottom: () => distanceTo({ x: right, y: bottom }),
+  }
+  return positionToDistance[`${pos.x}${pos.y}`]()
+}
