@@ -1,39 +1,13 @@
 import { Link, LinkProps } from 'solid-app-router'
-import {
-  createEffect,
-  createMemo,
-  createSignal,
-  JSX,
-  on,
-  onCleanup,
-} from 'solid-js'
-import { useBoundingRect, useRef } from '../hooks'
-import { useAtom } from '../hooks/use-atom'
-import { css, makeStyles, styled } from '../theme'
-import {
-  bindEventWithCleanup,
-  debounce,
-  log,
-  throttle,
-  withActions,
-} from '../utils'
-import { has, scope } from '../utils/lodash'
-
-const backgroundStyle = css`
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  left: 0;
-  top: 0;
-  z-index: -1;
-`
+import { createRoot, createSignal, JSX } from 'solid-js'
+import { use, useBoundingRect, useRef } from '../hooks'
+import { css, keyframes, makeStyles, styled } from '../theme'
+import { bindEventWithCleanup, log, throttle, withActions } from '../utils'
+import { has, range } from '../utils/lodash'
 
 const useStyles = makeStyles()({
   btn: ({ colors }) => css`
-    --gradient-pos-x: 0px;
-    --gradient-pos-y: 0px;
     --btn-color: ${colors.primary};
-    --gradient-scale: 0.5;
 
     position: relative;
 
@@ -54,6 +28,7 @@ const useStyles = makeStyles()({
     text-transform: uppercase;
     cursor: pointer;
     outline: none;
+    overflow: hidden;
 
     transition: color 0.4s;
 
@@ -63,30 +38,8 @@ const useStyles = makeStyles()({
 
     &:hover {
       color: ${colors.background};
-    }
-
-    & .${backgroundStyle} {
-      background: radial-gradient(
-        circle at var(--gradient-pos-x) var(--gradient-pos-y),
-        var(--btn-color) 0%,
-        rgba(0, 0, 0, 0) 70%
-      );
-    }
-    &:hover .${backgroundStyle} {
       /* font-weight: 900;  */ /* changes btn width on firefox */
-      background: radial-gradient(
-        circle at var(--gradient-pos-x) var(--gradient-pos-y),
-        var(--btn-color) calc(100% * var(--gradient-scale)),
-        rgba(0, 0, 0, 0) 100%
-      );
     }
-
-    /* background: radial-gradient(
-      circle at 0 0,
-      var(--btn-color) 0%,
-      rgba(0, 0, 0, 0) 50%
-    ); */
-    /* animation: all 1s; */
   `,
 })
 
@@ -94,7 +47,7 @@ type ButtonProps = {
   children: JSX.Element
 } & (
   | {
-      onClick: JSX.DOMAttributes<HTMLButtonElement>['onClick']
+      onClick?: JSX.DOMAttributes<HTMLButtonElement>['onClick']
     }
   | {
       href: LinkProps['href']
@@ -102,11 +55,10 @@ type ButtonProps = {
     }
 )
 export const Button = (p: ButtonProps): JSX.Element => {
-  type MousePosition = { x: number; y: number }
   const mousePosition$ = withActions(
-    createSignal<MousePosition>({ x: 0, y: 0 }),
+    createSignal<Point>({ x: 0, y: 0 }),
     set => ({
-      track: throttle(20, (e: MouseEvent) =>
+      track: throttle(10, (e: MouseEvent) =>
         set({ x: e.clientX, y: e.clientY }),
       ),
     }),
@@ -114,25 +66,24 @@ export const Button = (p: ButtonProps): JSX.Element => {
 
   const ref = useRef()
   const boundingRect$ = useBoundingRect(ref)
-  const gradient$ = (): { x: number; y: number; opacity: number } => {
+  const gradient$ = (): Record<
+    'x' | 'y' | 'opacity' | 'from' | 'to',
+    number
+  > => {
     const rect = boundingRect$()
-    if (!rect) return { x: 0, y: 0, opacity: 0 }
+    if (!rect) return { x: 0, y: 0, opacity: 0, from: 0, to: 0 }
     const { x, y } = mousePosition$()
     const { left, right, top, bottom, width, height } = rect
     const buffer = 100
 
-    // type Position =
-    //   | 'topLeft'
-    //   | 'top'
-    //   | 'topRight'
-    //   | 'left'
-    //   | 'inside'
-    //   | 'right'
-    //   | 'bottomLeft'
-    //   | 'bottom'
-    //   | 'bottomRight'
-
     const distanceToElement = distanceToRect({ x, y }, rect)
+
+    const closeness =
+      distanceToElement > buffer
+        ? 0
+        : distanceToElement === 0
+        ? 1
+        : (buffer - distanceToElement) / buffer
 
     return {
       x:
@@ -147,16 +98,11 @@ export const Button = (p: ButtonProps): JSX.Element => {
           : y > bottom + buffer
           ? height + buffer
           : y - top,
-      opacity:
-        distanceToElement > buffer
-          ? 0
-          : distanceToElement === 0
-          ? 1
-          : (buffer - distanceToElement) / buffer,
+      opacity: closeness === 1 ? 1 : closeness * 0.5,
+      from: closeness === 1 ? 0.5 : closeness * 0.1,
+      to: closeness === 1 ? 1 : range(0.3, 0.7)(closeness),
     }
   }
-
-  log.accessors({ boundingRect$ })
 
   const Component = has(p, 'href')
     ? (props: LinkProps) => <Link {...props} />
@@ -164,34 +110,25 @@ export const Button = (p: ButtonProps): JSX.Element => {
 
   const styles = useStyles()
 
-  // const hovering$ = useAtom(false)
-
   bindEventWithCleanup(window, 'mousemove', mousePosition$.track)
-
-  // log.accessors({ opacity: () => gradient$().opacity })
-
-  // createEffect(() => console.log(gradientPosition$().x, gradientPosition$().y))
 
   return (
     <>
       <Component
-        ref={ref}
+        ref={use(ref, ripple)}
         class={styles.btn()}
-        // onMouseMove={mousePosition$.track}
         onClick={p.onClick as any}
         href={(p as any).href}
-        // onMouseOver={() => hovering$(true)}
-        // onMouseOut={() => hovering$(false)}
-        style={`
-          --gradient-pos-x: ${gradient$().x}px; 
-          --gradient-pos-y: ${gradient$().y}px;
-        `}
       >
-        <div
-          class={backgroundStyle}
+        <Backdrop
           style={`
-          opacity: ${gradient$().opacity};
-        `}
+            opacity: ${gradient$().opacity};
+            background: radial-gradient(
+              circle at ${gradient$().x}px ${gradient$().y}px,
+              var(--btn-color) calc(100% * ${gradient$().from}),
+              rgba(0, 0, 0, 0) calc(100% * ${gradient$().to})
+            );
+          `}
         />
         {p.children}
       </Component>
@@ -199,46 +136,59 @@ export const Button = (p: ButtonProps): JSX.Element => {
   )
 }
 
-const DebugCursor = () => {
-  const mouse$ = useAtom<MouseEvent>()
+const Backdrop = styled('div')`
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: -1;
+  pointer-events: none;
+`
 
-  bindEventWithCleanup(document, 'mousemove', (e: MouseEvent) => {
-    mouse$(e)
+const ripple = (button: HTMLElement) => {
+  const boundingRect$ = useBoundingRect(useRef(button))
+  bindEventWithCleanup(button, 'click', (e: MouseEvent) => {
+    const diameter = Math.max(button.clientWidth, button.clientHeight)
+    const radius = diameter / 2
+
+    const rect = boundingRect$()!
+
+    const duration = 600
+
+    const [rippleEl, dispose] = createRoot(dispose => [
+      <Ripple
+        style={`
+          width: ${diameter}px;
+          height: ${diameter}px;
+          left: ${e.clientX - (rect.left + radius)}px;
+          top: ${e.clientY - (rect.top + radius)}px;
+          animation-duration: ${duration}ms;
+        `}
+      />,
+      dispose,
+    ])
+
+    button.append(rippleEl as HTMLElement)
+    setTimeout(() => {
+      dispose()
+      ;(rippleEl as HTMLElement).remove()
+    }, duration)
   })
-
-  return (
-    <div
-      class={css`
-        display: block;
-        position: fixed;
-        top: var(--mouse-y);
-        left: var(--mouse-x);
-        background-color: red;
-        width: 10px;
-        height: 10px;
-        font-size: 16px;
-      `}
-      style={`
-        --mouse-x: ${mouse$()?.pageX ?? 0}px; 
-        --mouse-y: ${mouse$()?.pageY ?? 0}px;
-      `}
-    >
-      {scope(() => {
-        const mouse = mouse$()
-        if (mouse) {
-          const { x, y, clientX, clientY, pageX, pageY, offsetX, offsetY } =
-            mouse
-
-          return [
-            { x, y },
-            { clientX, clientY },
-            { pageX, pageY },
-          ].map((x, i) => <p>{JSON.stringify(x)}</p>)
-        }
-      })}
-    </div>
-  )
 }
+
+const Ripple = styled('span')`
+  position: absolute;
+  border-radius: 50%;
+  transform: scale(0);
+  animation: ${keyframes`
+    to {
+      transform: scale(4);
+      opacity: 0;
+    }
+  `} linear;
+  background-color: rgba(0, 0, 0, 0.3);
+`
 
 type Point = { x: number; y: number }
 const distanceToPoint =
@@ -246,7 +196,6 @@ const distanceToPoint =
   (point2: Point): number => {
     const a = point1.x - point2.x
     const b = point1.y - point2.y
-    // console.log({ a, b, a2: a ** 2, b2: b ** 2 })
     return Math.sqrt(a ** 2 + b ** 2)
   }
 

@@ -3,7 +3,7 @@ import { Unsubscribe } from '../types'
 
 interface BindEvent<TReturn> {
   <TEvent = unknown>(
-    el: Element | Window,
+    el: Element | Window | Document,
     eventName: string,
     callback: (e: TEvent) => void,
     options?: AddEventListenerOptions,
@@ -15,8 +15,8 @@ export const bindEvent: BindEvent<Unsubscribe> = (
   callback,
   options?,
 ) => {
-  el.addEventListener(eventName, callback, options)
-  return () => el.removeEventListener(eventName, callback, options)
+  el.addEventListener(eventName, callback as any, options)
+  return () => el.removeEventListener(eventName, callback as any, options)
 }
 
 export const bindEventWithCleanup: BindEvent<void> = (...args) => {

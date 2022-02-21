@@ -5,8 +5,8 @@ import { debounce } from '../../utils/lodash'
 import { withActions } from '../../utils/with-actions'
 import { Ref } from '../use-ref'
 
-export const useBoundingRect = (
-  element: Ref<Element>,
+export const useBoundingRect = <T extends Element>(
+  element: Ref<T>,
 ): Accessor<DOMRect | undefined> => {
   const styles$ = withActions(createSignal<DOMRect>(), set => ({
     update: () => pipe(element.current.getBoundingClientRect(), set),

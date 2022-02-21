@@ -1,7 +1,7 @@
 import { isArray } from '../utils/lodash'
 
-type Directive<T> = (node: Element, argument: T) => void
-type SimpleDirective = (node: Element) => void
+type Directive<T> = (node: HTMLElement, argument: T) => void
+type SimpleDirective = (node: HTMLElement) => void
 type DirectiveWithArg<T> = [Directive<T>, T]
 
 /**
@@ -17,7 +17,7 @@ type DirectiveWithArg<T> = [Directive<T>, T]
  */
 export const getUseDirectives =
   (...directives: (SimpleDirective | DirectiveWithArg<any> | undefined)[]) =>
-  (node: Element) => {
+  (node: HTMLElement) => {
     directives.forEach(arg => {
       const [directive, argument] = isArray(arg) ? arg : [arg, undefined]
 
