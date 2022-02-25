@@ -6,11 +6,8 @@ import {
   For,
   JSXElement,
   on,
-  onCleanup,
-  onMount,
-  untrack,
 } from 'solid-js'
-import { scope, last } from '../../utils/lodash'
+import { last, scope } from '../../utils/lodash'
 import { withActions } from '../../utils/with-actions'
 import { Mask } from './page-transition'
 

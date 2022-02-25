@@ -1,11 +1,8 @@
 import { Button } from '../components/button'
 import { textScramble } from '../directives/text-scramble'
 import { use } from '../hooks/use-directives'
-// import { breakpoints } from '../utils/styles/breakpoints'
+import { css, makeStyles } from '../theme'
 import { cx, media } from '../utils/styles'
-import { css, makeStyles, styled } from '../theme'
-import { useIsRouting } from 'solid-app-router'
-import { log } from '../utils'
 
 const useStyles = makeStyles()({
   homeText: ({ breakpoints, colors }) =>

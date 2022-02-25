@@ -27,6 +27,10 @@ export const PageTransition = (p: { children: JSX.Element }) => {
   // Use simple transition as a backup
   // Show a banner "advanced transition loaded/loading" when it's ready
   // + "try to navigate to a different page"
+
+  // TODO/FIXME: try to use page owner in transition and see if it would
+  // fix effects bug, where it's disposed too quickly before the page is
+  // is actually animated off the screen (because Router disposed of it)
   return <TransitionContainer>{p.children}</TransitionContainer>
 }
 

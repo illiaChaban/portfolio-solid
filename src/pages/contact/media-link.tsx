@@ -13,6 +13,7 @@ import {
   makeStyles,
   Theme,
   useTheme,
+  withClass,
 } from '../../theme'
 import { use, useMediaQuery } from '../../hooks'
 import { StyledProps } from '../../theme'
@@ -108,45 +109,47 @@ const styles = scope(() => {
   }
 })
 
-export const MediaLink = (
-  p: OmitSafe<ComponentProps<typeof MediaLinkBase>, 'target' | 'rel' | 'ref'>,
-) => {
-  const [props, linkProps] = splitProps(p, ['children'])
+export const MediaLink = withClass('media-link')(
+  (p: OmitSafe<ComponentProps<typeof LinkBase>, 'target' | 'rel' | 'ref'>) => {
+    const [props, linkProps] = splitProps(p, ['children'])
 
-  return (
-    <MediaLinkBase
-      {...linkProps}
-      target="_blank"
-      rel="noopener"
-      ref={use(delayNavigationOnMobile(200))}
-    >
-      <div>
-        <For each={range(4)}>
-          {i => (
-            <Tile
-              class={styles.tileDynamic({
-                index: i,
-              })}
-            />
-          )}
-        </For>
-        <Tile
-          // TODO: try to upgrade solid-styled-components OR open an issue
-          // eslint-disable-next-line solid/no-react-specific-props
-          class={cx(styles.tileDynamic({ index: 4 }))}
-        >
-          {props.children}
-        </Tile>
-      </div>
-    </MediaLinkBase>
-  )
-}
+    return (
+      <LinkBase
+        {...linkProps}
+        target="_blank"
+        rel="noopener"
+        ref={use(delayNavigationOnMobile(200))}
+      >
+        <div>
+          <For each={range(4)}>
+            {i => (
+              <Tile
+                class={styles.tileDynamic({
+                  index: i,
+                })}
+              />
+            )}
+          </For>
+          <Tile
+            // TODO: try to upgrade solid-styled-components OR open an issue
+            // eslint-disable-next-line solid/no-react-specific-props
+            class={cx(styles.tileDynamic({ index: 4 }))}
+          >
+            {props.children}
+          </Tile>
+        </div>
+      </LinkBase>
+    )
+  },
+)
+
+const Tiles = (p: { children?: JSXElement }) => {}
 
 const Tile = (p: { children?: JSXElement; class?: string }) => (
   <span class={cx(styles.tileStatic, p.class)}>{p.children}</span>
 )
 
-const MediaLinkBase = styled('a')`
+const LinkBase = styled('a')`
   color: ${({ theme }) => theme.colors.text.primary};
   font-family: 'Inconsolata', 'Saira', monospace;
   transition: all 100ms;
@@ -203,17 +206,6 @@ const MediaLinkBase = styled('a')`
     left: calc((100% - var(--transformed-box-diagonal-length)) / 2);
   } */
 `
-
-const withClasses =
-  <TProps extends { class?: string }>(
-    Component: FC<TProps>,
-    ...classes: (string | ((theme: Theme, props: TProps) => string))[]
-  ) =>
-  (props: TProps) => {
-    const theme = useTheme()
-    const mappedClasses = classes.map(c => (isString(c) ? c : c(theme, props)))
-    return <Component {...props} class={cx(...mappedClasses, props.class)} />
-  }
 
 // const tileStatic = css`
 //   position: absolute;
