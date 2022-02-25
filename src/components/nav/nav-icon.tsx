@@ -2,7 +2,7 @@ import { NavLink, useLocation } from 'solid-app-router'
 import { createEffect, on } from 'solid-js'
 import { JSX } from 'solid-js/jsx-runtime'
 import { css, makeStyles } from '../../theme'
-import { cx, desktopHover, media } from '../../utils/styles'
+import { cx, hoverMedia, media } from '../../utils/styles'
 import { Icon } from '../icon'
 
 const useStyles = makeStyles()({
@@ -67,7 +67,7 @@ const useStyles = makeStyles()({
   iconToTextOnHover: ({ colors, breakpoints }) => css`
     position: relative;
 
-    ${media(desktopHover, breakpoints.up('md'))} {
+    ${media(hoverMedia, breakpoints.up('md'))} {
       i {
         &::after {
           content: var(--hover-text, 'navigate');

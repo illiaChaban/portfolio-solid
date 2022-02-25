@@ -2,8 +2,8 @@ import { Link, LinkProps } from 'solid-app-router'
 import { createRoot, createSignal, JSX } from 'solid-js'
 import { use, useBoundingRect, useRef } from '../hooks'
 import { css, keyframes, makeStyles, styled } from '../theme'
-import { bindEventWithCleanup, log, throttle, withActions } from '../utils'
-import { has, range } from '../utils/lodash'
+import { bindEventWithCleanup, throttle, withActions } from '../utils'
+import { has, minMax } from '../utils/lodash'
 
 const useStyles = makeStyles()({
   btn: ({ colors }) => css`
@@ -100,7 +100,7 @@ export const Button = (p: ButtonProps): JSX.Element => {
           : y - top,
       opacity: closeness === 1 ? 1 : closeness * 0.5,
       from: closeness === 1 ? 0.5 : closeness * 0.1,
-      to: closeness === 1 ? 1 : range(0.3, 0.7)(closeness),
+      to: closeness === 1 ? 1 : minMax(0.3, 0.7)(closeness),
     }
   }
 

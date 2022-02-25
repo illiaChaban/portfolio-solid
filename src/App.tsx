@@ -1,28 +1,20 @@
+import { Route, Router, Routes } from 'solid-app-router'
 import { Component } from 'solid-js'
-import {
-  Router,
-  Routes,
-  Route,
-  useLocation,
-  useNavigate,
-} from 'solid-app-router'
-import Home from './pages/home'
-import About from './pages/about'
-import Skills from './pages/skills'
-import Projects from './pages/projects'
-import Contact from './pages/contact'
-import NotFound from './pages/not-found'
-
-import { ThemeProvider } from './theme/theme'
-import { NavIcon } from './components/nav/nav-icon'
-import { isProduction } from './constants/env'
 import { GTag } from './components/g-tag'
-import { Particles } from './components/particles'
-import { PageTransition } from './components/page-transition'
 import { Navbar } from './components/nav/navbar'
-import { css, makeStyles } from './theme'
-import { media } from './utils/styles'
+import { PageTransition } from './components/page-transition'
+import { Particles } from './components/particles'
+import { isProduction } from './constants/env'
 import { withProviders } from './hocs'
+import About from './pages/about'
+import Contact from './pages/contact'
+import Home from './pages/home'
+import NotFound from './pages/not-found'
+import Projects from './pages/projects'
+import Skills from './pages/skills'
+import { css, makeStyles } from './theme'
+import { ThemeProvider } from './theme/theme'
+import { media } from './utils/styles'
 
 const useStyles = makeStyles()({
   content: ({ breakpoints, misc }) =>

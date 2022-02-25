@@ -1,7 +1,7 @@
 import { AnyFunc, AnyObj } from '../../types'
 
 export * from './extract'
-export * from './range'
+export * from './min-max'
 export * from './get'
 
 // Lodash like helper. Couldn't figure out why the dev env loads the whole lodash library
@@ -31,6 +31,16 @@ export const isArray = (val: unknown): val is any[] => {
 
 export const isObject = (val: unknown): val is AnyObj => {
   return typeof val === 'object' && val !== null && !isArray(val)
+}
+
+export const isString = (val: unknown): val is string => {
+  return typeof val === 'string'
+}
+
+export const negate = <TArgs extends any[]>(
+  fn: (...args: TArgs) => boolean,
+): ((...args: TArgs) => boolean) => {
+  return (...args) => !fn(...args)
 }
 
 export const pick = <T extends AnyObj, TKeys extends keyof T>(
@@ -142,3 +152,16 @@ export const iif =
   ) =>
   (value: T) =>
     condition ? mapWhenTruthy(value) : mapWhenFalsy(value)
+
+export const range: {
+  (to: number): number[]
+  (from: number, to: number): number[]
+} = (fromOrTo: number, maybeTo?: number) => {
+  const from = defined(maybeTo) ? fromOrTo : 0
+  const to = defined(maybeTo) ? maybeTo : fromOrTo
+  return new Array(to - from).fill(0).map((_, i) => from + i)
+}
+
+const defined = <T>(val: T): val is Exclude<T, undefined> => {
+  return val !== undefined
+}

@@ -1,7 +1,8 @@
-import { Accessor, onCleanup } from "solid-js"
-import { useAtom } from "./use-atom"
+import { Accessor, onCleanup } from 'solid-js'
+import { useAtom } from './use-atom'
 
 export const useMediaQuery = (...queries: string[]): Accessor<boolean> => {
+  console.log('use media query')
   const query = queries.join(' and ')
 
   const media = window.matchMedia(query)
@@ -14,4 +15,3 @@ export const useMediaQuery = (...queries: string[]): Accessor<boolean> => {
 
   return () => matches$()
 }
-

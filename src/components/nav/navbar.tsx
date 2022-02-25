@@ -1,11 +1,10 @@
 import { Accessor, createComputed, For, on } from 'solid-js'
-import { useAtom } from '../../hooks/use-atom'
 import { useComputedStyles } from '../../hooks'
+import { useAtom } from '../../hooks/use-atom'
 import { Ref, useRef } from '../../hooks/use-ref'
 import { css, styled, useBreakpoint } from '../../theme'
 import { flow, pipe } from '../../utils'
-import { scope, extractFloat, iif, range } from '../../utils/lodash'
-import { log } from '../../utils/log'
+import { extractFloat, iif, minMax, scope } from '../../utils/lodash'
 import { cx, media } from '../../utils/styles'
 import { NavIcon } from './nav-icon'
 import {
@@ -132,7 +131,7 @@ const useAnimationDuration = (index$: Accessor<number | undefined>) => {
         return animationDuration$(0)
       }
       const change = Math.abs(i - prevI)
-      animationDuration$(range(90, 175)(change * 50))
+      animationDuration$(minMax(90, 175)(change * 50))
     }),
   )
   return animationDuration$

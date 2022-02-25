@@ -1,5 +1,6 @@
-import { Link } from '../components'
-import { css, useTheme } from '../theme'
+import { Icon, Link } from '../../components'
+import { css } from '../../theme'
+import { MediaLink } from './media-link'
 
 const Contact = () => {
   return (
@@ -51,55 +52,35 @@ const Contact = () => {
                 Atlanta, GA
               </h2>
             </div>
-            <div class="links flex">
-              <a
+            <div
+              class={css`
+                display: flex;
+                justify-content: space-between;
+                font-size: 2rem;
+                padding-top: 15px;
+                /* aligning for border 1px */
+                padding-bottom: 2px;
+                width: 100%;
+              `}
+            >
+              <MediaLink
                 href="https://www.linkedin.com/in/illia-chaban/"
-                target="_blank"
-                rel="noopener"
                 aria-label="my-linkedin"
               >
-                <div>
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                  <span>
-                    <i class="fab fa-linkedin-in"></i>
-                  </span>
-                </div>
-              </a>
-              <a
+                <Icon name="linkedIn" />
+              </MediaLink>
+              <MediaLink
                 href="https://github.com/illiaChaban"
-                target="_blank"
-                rel="noopener"
                 aria-label="my-github"
               >
-                <div>
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                  <span>
-                    <i class="fab fa-github"></i>
-                  </span>
-                </div>
-              </a>
-              <a
+                <Icon name="github" />
+              </MediaLink>
+              <MediaLink
                 href="https://codepen.io/illia_chaban/"
-                target="_blank"
-                rel="noopener"
                 aria-label="my-codepen"
               >
-                <div>
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                  <span>
-                    <i class="fab fa-codepen"></i>
-                  </span>
-                </div>
-              </a>
+                <Icon name="codepen" />
+              </MediaLink>
             </div>
           </div>
         </div>
