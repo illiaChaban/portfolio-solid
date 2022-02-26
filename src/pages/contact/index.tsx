@@ -1,8 +1,10 @@
 import { Icon, Link } from '../../components'
-import { css } from '../../theme'
+import { css, useTheme } from '../../theme'
+import { cx } from '../../utils'
 import { MediaLink } from './media-link'
 
 const Contact = () => {
+  const { sharedStyles } = useTheme()
   return (
     <div
       class={css`
@@ -10,7 +12,7 @@ const Contact = () => {
         flex-grow: 1;
       `}
     >
-      <div class="flex flex-1 body-tags" id="contact">
+      <div class={cx('flex flex-1', sharedStyles.tags.body)} id="contact">
         <div
           id="contact-info"
           class={css`

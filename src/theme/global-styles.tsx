@@ -1,5 +1,76 @@
 import { createGlobalStyles } from './type-overrides'
 
+const tagStyles = `
+  .h1-tags,
+  .body-tags,
+  .div-tags,
+  .div-tags-end
+  {
+    position: relative;
+  }
+
+  .content .div-tags-end {
+    padding-bottom: 25px;
+  }
+
+  .body-tags {
+    padding: 45px 0;
+  }
+
+  .h1-tags::after,
+  .h1-tags::before,
+  .body-tags::after,
+  .body-tags::before,
+  .div-tags::after,
+  .div-tags::before,
+  .div-tags-end::after
+  {
+    color: var(--color-subtle);
+    position: absolute;
+    left: 0;
+    font-family: 'League Script', 'Courier New', 'Inconsolata', cursive;
+    font-weight: 900;
+    font-size: .8rem;
+    text-transform: none;
+  }
+
+  .body-tags::before {
+    content: '<body>';
+    top: 20px;
+  }
+  .body-tags::after {
+    content: '</body>';
+    bottom: 20px;
+  }
+  .body-tags::before,
+  .body-tags::after
+  {
+    left: 2%;
+  }
+
+  .h1-tags::before {
+    content: "<h1>";
+    bottom: 100%;
+  }
+  .h1-tags::after {
+    content: "</h1>";
+    top: calc( 100% + .4rem);
+  }
+
+  .div-tags::before {
+    content: '<div>';
+    /* bottom: 100%; */
+    top: 0;
+  }
+  .div-tags::after,
+  .div-tags-end::after {
+    content: '</div>';
+    /* top: calc( 100% + .5rem ); */
+    bottom: 0px;
+  }
+
+`
+
 export const GlobalStyles = createGlobalStyles`
   html, body {
     min-height: 100vh;
@@ -126,10 +197,6 @@ export const GlobalStyles = createGlobalStyles`
     color: var(--color-highlight);
   }
 
-  /* a:hover {
-    color: var(--color-main);
-  } */
-
   .hover-underline {
     display: inline-block;
     position: relative;
@@ -188,75 +255,6 @@ export const GlobalStyles = createGlobalStyles`
     padding: 15px;
   }
 
-  .h1-tags,
-  .body-tags,
-  .div-tags,
-  .div-tags-end
-  {
-    position: relative;
-  }
-
-  .content .div-tags-end {
-    padding-bottom: 25px;
-  }
-
-  .body-tags {
-    padding: 45px 0;
-  }
-
-  .h1-tags::after,
-  .h1-tags::before,
-  .body-tags::after,
-  .body-tags::before,
-  .div-tags::after,
-  .div-tags::before,
-  .div-tags-end::after
-  {
-    color: var(--color-subtle);
-    position: absolute;
-    left: 0;
-    font-family: 'League Script', 'Courier New', 'Inconsolata', cursive;
-    font-weight: 900;
-    font-size: .8rem;
-    text-transform: none;
-  }
-
-  .body-tags::before {
-    content: '<body>';
-    top: 20px;
-  }
-  .body-tags::after {
-    content: '</body>';
-    bottom: 20px;
-  }
-  .body-tags::before,
-  .body-tags::after
-  {
-    left: 2%;
-  }
-
-
-  .h1-tags::before {
-    content: "<h1>";
-    bottom: 100%;
-  }
-  .h1-tags::after {
-    content: "</h1>";
-    top: calc( 100% + .4rem);
-  }
-
-  .div-tags::before {
-    content: '<div>';
-    /* bottom: 100%; */
-    top: 0;
-  }
-  .div-tags::after,
-  .div-tags-end::after {
-    content: '</div>';
-    /* top: calc( 100% + .5rem ); */
-    bottom: 0px;
-  }
-
   /* COLOR EXPERIMENTS */
   body.modern-theme {
     --color-subtle: #7f838a;
@@ -289,4 +287,15 @@ export const GlobalStyles = createGlobalStyles`
   h1:focus-visible {
     outline: none;
   }
+
+  ${tagStyles}
 `
+
+export const sharedStyles = {
+  tags: {
+    body: 'body-tags',
+    div: 'div-tags',
+    divEnd: 'div-tags-end',
+    h1: 'h1-tags',
+  },
+}

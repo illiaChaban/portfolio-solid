@@ -3,48 +3,32 @@ import { JSX } from 'solid-js/jsx-runtime'
 // eslint-disable-next-line no-restricted-imports
 import { ThemeProvider as ThemeProviderBase } from 'solid-styled-components'
 import { breakpoints } from './breakpoints'
-import { GlobalStyles } from './global-styles'
+import { GlobalStyles, sharedStyles } from './global-styles'
 
-export type Theme = {
+const theme = {
   colors: {
-    primary: string
+    primary: 'var(--color-highlight)',
     text: {
-      primary: string
-      subtle1: string
-      subtle2: string
-    }
-    background: string
+      primary: 'var(--color-main)',
+      subtle1: 'var(--color-subtle)',
+      subtle2: 'var(--color-subtle-text)',
+    },
+    background: 'var(--body-background-color)',
     accent: {
-      black: string
-    }
-  }
-  breakpoints: typeof breakpoints
+      black: 'black',
+    },
+  },
+  breakpoints,
+  // FIXME: remove if possible
   misc: {
-    // TODO: remove if possible
-    navOffset: string
-  }
+    navOffset: 'var(--menu-offset)',
+  },
+  sharedStyles,
 }
 
-export const ThemeProvider: Component = (p): JSX.Element => {
-  const theme: Theme = {
-    colors: {
-      primary: 'var(--color-highlight)',
-      text: {
-        primary: 'var(--color-main)',
-        subtle1: 'var(--color-subtle)',
-        subtle2: 'var(--color-subtle-text)',
-      },
-      background: 'var(--body-background-color)',
-      accent: {
-        black: 'black',
-      },
-    },
-    breakpoints,
-    misc: {
-      navOffset: 'var(--menu-offset)',
-    },
-  }
+export type Theme = typeof theme
 
+export const ThemeProvider: Component = (p): JSX.Element => {
   return (
     <ThemeProviderBase theme={theme}>
       <GlobalStyles />

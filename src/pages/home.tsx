@@ -1,7 +1,7 @@
 import { Button } from '../components/button'
 import { textScramble } from '../directives/text-scramble'
 import { use } from '../hooks/use-directives'
-import { css, makeStyles } from '../theme'
+import { css, makeStyles, useTheme } from '../theme'
 import { cx, media } from '../utils/styles'
 
 const useStyles = makeStyles()({
@@ -51,10 +51,11 @@ const useStyles = makeStyles()({
 })
 
 const Home = () => {
+  const { sharedStyles } = useTheme()
   const styles = useStyles()
   return (
-    <div class={cx(styles.homeText(), 'padding-15 body-tags')}>
-      <div class={cx(styles.textContainer(), 'div-tags')}>
+    <div class={cx(styles.homeText(), 'padding-15', sharedStyles.tags.body)}>
+      <div class={cx(styles.textContainer(), sharedStyles.tags.div)}>
         {/* TODO: add PageTransitionContext & useTransitioning -> no delay on first load */}
         <h2 ref={use([textScramble, 1000])} class={styles.subtle()}>
           Full Stack | TS | Angular | React Native | C# | .Net
