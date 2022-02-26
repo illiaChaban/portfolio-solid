@@ -44,13 +44,17 @@ const TileWrapper = styled('div')`
 const useTileStyles = () => {
   const theme = useTheme()
 
-  const colorAnimation = keyframes`
-    from {
-      color: ${theme.colors.primary}
-    }
+  const colorAnimationIn = keyframes`
     to {
       background-color: ${theme.colors.primary};
       color: ${theme.colors.background};
+    }
+  `
+
+  const colorAnimationOut = keyframes`
+    to {
+      background-color: transparent;
+      color: ${theme.colors.text.primary};
     }
   `
 
@@ -76,8 +80,10 @@ const useTileStyles = () => {
       overflow: hidden;
     }
 
+    animation-name: ${colorAnimationOut};
+
     .${MediaLink.class}:hover & {
-      animation-name: ${colorAnimation};
+      animation-name: ${colorAnimationIn};
     }
     ${range(tilesNum)
       .map(
@@ -101,3 +107,7 @@ const Tile = (p: { children?: JSXElement }) => {
   const styles = useTileStyles()
   return <span class={styles}>{p.children}</span>
 }
+
+// const hovering = (node: HTMLElement) => {
+//   node.addEventListener('mouseover')
+// }
