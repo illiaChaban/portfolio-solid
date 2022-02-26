@@ -1,5 +1,5 @@
-import { FC } from '../types'
-import { cx, scope } from '../utils'
+import { FC } from '../../types'
+import { cx, scope } from '../../utils'
 
 const getUniqueClassName = scope(() => {
   const counts: Record<string, number> = {}
@@ -11,16 +11,16 @@ const getUniqueClassName = scope(() => {
 })
 
 // TODO: using "className" instead of "class" because solid-styled-components
-// don't currently support "class"
+// doesn't currently support "class"
 /**
  * Helper method to style dependent child elements.
  * This will create a new unique className from the one provided
  *
  * @example
- * const Wrapper = withClass('wrapper)(styled('a)`display: flex;`)
+ * const Wrapper = withClass('wrapper')(styled('a')`display: flex;`)
  * const Child = styled('span')`
  *  background: white;
- *  ${Wrapper.class}:hover & {
+ *  .${Wrapper.class}:hover & {
  *    background: blue;
  *  }
  * `

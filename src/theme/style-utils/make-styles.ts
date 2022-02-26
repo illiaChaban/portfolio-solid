@@ -1,6 +1,6 @@
-import { Theme, useTheme } from '.'
-import { AnyObj } from '../types'
-import { isFunction, mapValues } from '../utils/lodash'
+import { Theme, useTheme } from '..'
+import { AnyObj } from '../../types'
+import { isFunction, mapValues } from '../../utils/lodash'
 
 type Style<TProps extends AnyObj | undefined> =
   | string
