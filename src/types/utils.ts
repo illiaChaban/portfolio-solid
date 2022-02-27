@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import { JSXElement } from 'solid-js'
 
 export type Unsubscribe = () => void
@@ -12,5 +13,6 @@ export type SimpleComponent<T extends AnyObj = EmptyObj> = (
 ) => JSXElement
 /** Stands for Functional Component from React*/
 export type FC<T extends AnyObj = EmptyObj> = SimpleComponent<T>
-// eslint-disable-next-line @typescript-eslint/ban-types
 export type OmitSafe<T extends {}, TKeys extends keyof T> = Omit<T, TKeys>
+
+export type WithOverrides<T extends {}, Y extends {}> = Omit<T, keyof Y> & Y
