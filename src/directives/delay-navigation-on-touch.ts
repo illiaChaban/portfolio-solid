@@ -1,7 +1,7 @@
 import { useMediaQuery } from '../hooks'
 import { hoverMedia, bindEventWithCleanup } from '../utils'
 
-export const delayNavigationOnMobile =
+export const delayNavigationOnTouch =
   (delay: number) => (node: HTMLAnchorElement) => {
     const hasHover$ = useMediaQuery(hoverMedia)
 

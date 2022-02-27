@@ -10,6 +10,8 @@ const icons = {
   linkedIn: 'fab fa-linkedin-in',
   github: 'fab fa-github',
   codepen: 'fab fa-codepen',
+  pdf: 'fas fa-file-pdf',
+  mapMarker: 'fas fa-map-marker-alt',
 }
 
 type Props = { name: keyof typeof icons } & JSX.IntrinsicElements['i']

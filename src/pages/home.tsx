@@ -57,7 +57,7 @@ const Home = () => {
     <div class={cx(styles.homeText(), 'padding-15', sharedStyles.tags.body)}>
       <div class={cx(styles.textContainer(), sharedStyles.tags.div)}>
         {/* TODO: add PageTransitionContext & useTransitioning -> no delay on first load */}
-        <h2 ref={use([textScramble, 1000])} class={styles.subtle()}>
+        <h2 ref={use(textScramble({ delay: 1000 }))} class={styles.subtle()}>
           Full Stack | TS | Angular | React Native | C# | .Net
         </h2>
         <div class={styles.btnContainer()}>

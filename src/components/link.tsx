@@ -1,5 +1,5 @@
 import { ComponentProps } from 'solid-js'
-import { delayNavigationOnMobile } from '../directives'
+import { delayNavigationOnTouch } from '../directives'
 import { use } from '../hooks'
 import { styled, StyledProps } from '../theme'
 
@@ -48,5 +48,5 @@ const LinkBase = styled('a')`
 `
 
 export const Link = (p: ComponentProps<typeof LinkBase>) => (
-  <LinkBase {...p} ref={use(delayNavigationOnMobile(200))} />
+  <LinkBase {...p} ref={use(delayNavigationOnTouch(200))} />
 )

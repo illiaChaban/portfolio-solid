@@ -5,7 +5,7 @@ import {
   JSXElement,
   splitProps,
 } from 'solid-js'
-import { delayNavigationOnMobile } from '../../directives'
+import { delayNavigationOnTouch } from '../../directives'
 import { use, useHovering, useRef } from '../../hooks'
 import { css, styled, useTheme, withClass } from '../../theme'
 import { OmitSafe } from '../../types'
@@ -24,7 +24,7 @@ export const MediaLink = withClass('media-link')(
         {...linkProps}
         target="_blank"
         rel="noopener"
-        ref={use(delayNavigationOnMobile(200), registerHovering)}
+        ref={use(delayNavigationOnTouch(200), registerHovering)}
       >
         <TileWrapper>
           <For each={range(tilesNum)}>

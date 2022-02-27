@@ -3,23 +3,45 @@
 // Thanks!
 
 // Was updated by me for my needs :)
-class TextScramble {
-  constructor(el: Element, config = {}) {
-    this.el = el
-    this.doodles = '!<>-_\\/[]{}—=+*^?#________'
-    this.update = this.update.bind(this)
-    this.animate = this.animate.bind(this)
 
-    // configuration
-    this.phrases = config.phrases || [this.el.innerText]
-    this.infinite = config.infinite || false
-    this.interval = config.interval || 2500
-    this.currIndex = 0
+type Config = {
+  phrases: string[]
+  interval: number
+  infinite: boolean
+  doodleStyle: string
+}
+class TextScramble {
+  private currIndex = 0
+  private doodles = '!<>-_\\/[]{}—=+*^?#________'
+
+  private config: Config
+
+  private queue: {
+    from: string
+    to: string
+    start: number
+    end: number
+    char?: string
+  }[] = []
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  private resolve!: () => void
+  private frameRequest!: number
+  private frame = 0
+
+  constructor(private el: HTMLElement, config: Partial<Config> = {}) {
+    this.config = {
+      phrases: [this.el.innerText],
+      infinite: false,
+      interval: 2500,
+      doodleStyle: '',
+      ...config,
+    }
   }
-  setText(newText) {
+  setText(newText: string) {
     const oldText = this.el.innerText
     const length = Math.max(oldText.length, newText.length)
-    const promise = new Promise(resolve => (this.resolve = resolve))
+    const promise = new Promise(resolve => (this.resolve = resolve as any))
     this.queue = []
     for (let i = 0; i < length; i++) {
       const from = oldText[i] || ''
@@ -33,10 +55,11 @@ class TextScramble {
     this.update()
     return promise
   }
-  update() {
+  update = () => {
     let output = ''
     let complete = 0
     for (let i = 0, n = this.queue.length; i < n; i++) {
+      // eslint-disable-next-line prefer-const
       let { from, to, start, end, char } = this.queue[i]
       if (this.frame >= end) {
         complete++
@@ -46,7 +69,7 @@ class TextScramble {
           char = this.getDoodle()
           this.queue[i].char = char
         }
-        output += `<span class='doodle'>${char}</span>`
+        output += `<span class='${this.config.doodleStyle}'>${char}</span>`
       } else {
         output += from
       }
@@ -62,12 +85,12 @@ class TextScramble {
   getDoodle() {
     return this.doodles[Math.floor(Math.random() * this.doodles.length)]
   }
-  animate() {
-    if (this.currIndex < this.phrases.length) {
-      this.setText(this.phrases[this.currIndex]).then(() => {
+  animate = () => {
+    if (this.currIndex < this.config.phrases.length) {
+      this.setText(this.config.phrases[this.currIndex]).then(() => {
         this.currIndex++
-        if (this.infinite) this.currIndex %= this.phrases.length
-        setTimeout(this.animate, this.interval)
+        if (this.config.infinite) this.currIndex %= this.config.phrases.length
+        setTimeout(this.animate, this.config.interval)
       })
     } else {
       // reset animator till next call
@@ -76,7 +99,12 @@ class TextScramble {
   }
 }
 
-export const textScramble = (node: Element, delay = 0) => {
-  const scramble = new TextScramble(node)
-  setTimeout(scramble.animate, delay)
+type DirectiveConfig = Partial<Config> & {
+  delay: number
 }
+export const textScramble =
+  ({ delay = 1000, ...config }: DirectiveConfig) =>
+  (node: HTMLElement) => {
+    const scramble = new TextScramble(node, config)
+    setTimeout(scramble.animate, delay)
+  }
