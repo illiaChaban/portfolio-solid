@@ -9,6 +9,7 @@ const LinkBase = styled('a')`
   display: inline-block;
   position: relative;
   transition: 0.3s;
+  text-decoration: none;
   color: ${({ color, theme }: StyledProps<{ color?: 'primary' | 'text' }>) =>
     color === 'text' ? theme.colors.text.primary : theme.colors.primary};
 

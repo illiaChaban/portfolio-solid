@@ -64,8 +64,7 @@ export const Button = (p: ButtonProps): JSX.Element => {
     }),
   )
 
-  const ref = useRef()
-  const boundingRect$ = useBoundingRect(ref)
+  const boundingRect$ = useBoundingRect()
   const gradient$ = (): Record<
     'x' | 'y' | 'opacity' | 'from' | 'to',
     number
@@ -115,7 +114,7 @@ export const Button = (p: ButtonProps): JSX.Element => {
   return (
     <>
       <Component
-        ref={use(ref, ripple)}
+        ref={use(boundingRect$.track, ripple)}
         class={styles.btn()}
         onClick={p.onClick as any}
         href={(p as any).href}
@@ -147,7 +146,9 @@ const Backdrop = styled('div')`
 `
 
 const ripple = (button: HTMLElement) => {
-  const boundingRect$ = useBoundingRect(useRef(button))
+  const boundingRect$ = useBoundingRect()
+  boundingRect$.track(button)
+
   bindEventWithCleanup(button, 'click', (e: MouseEvent) => {
     const diameter = Math.max(button.clientWidth, button.clientHeight)
     const radius = diameter / 2

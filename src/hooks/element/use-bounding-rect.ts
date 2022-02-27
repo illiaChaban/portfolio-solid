@@ -1,19 +1,22 @@
-import { Accessor, createSignal, onMount } from 'solid-js'
-import { pipe } from '../../utils'
+import { createSignal, onMount } from 'solid-js'
 import { bindEventWithCleanup } from '../../utils/events'
 import { debounce } from '../../utils/lodash'
 import { withActions } from '../../utils/with-actions'
-import { Ref } from '../use-ref'
 
-export const useBoundingRect = <T extends Element>(
-  element: Ref<T>,
-): Accessor<DOMRect | undefined> => {
-  const styles$ = withActions(createSignal<DOMRect>(), set => ({
-    update: () => pipe(element.current.getBoundingClientRect(), set),
+export const useBoundingRect = <T extends Element>() => {
+  let element: T | undefined
+
+  const rect$ = withActions(createSignal<DOMRect>(), set => ({
+    track: (el: T) => {
+      element = el
+      set(el.getBoundingClientRect())
+    },
   }))
 
-  bindEventWithCleanup(window, 'resize', debounce(100, styles$.update))
-  onMount(styles$.update)
+  const update = () => element && rect$.track(element)
 
-  return () => styles$()
+  bindEventWithCleanup(window, 'resize', debounce(100, update))
+  onMount(update)
+
+  return rect$
 }

@@ -1,4 +1,5 @@
-export type Ref<T = Element> = ((el: T) => void) & { current: T }
+export type RefSetter<T = Element> = (el: T) => void
+export type Ref<T = Element> = RefSetter<T> & { current: T }
 
 /** Workaround for type issues when passing ref variable */
 export const useRef = <T extends Element>(el?: T): Ref<T> => {
