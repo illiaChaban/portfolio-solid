@@ -2,6 +2,7 @@ import { ComponentProps } from 'solid-js'
 import { delayNavigationOnTouch } from '../directives'
 import { use } from '../hooks'
 import { styled, StyledProps } from '../theme'
+import { OmitSafe } from '../types'
 
 const padding = '4px'
 
@@ -48,6 +49,15 @@ const LinkBase = styled('a')`
   }
 `
 
-export const Link = (p: ComponentProps<typeof LinkBase>) => (
-  <LinkBase {...p} ref={use(delayNavigationOnTouch(200))} />
+export const Link = (
+  p: OmitSafe<ComponentProps<typeof LinkBase>, 'target'> & {
+    openInSameTab?: boolean
+  },
+) => (
+  <LinkBase
+    {...p}
+    target={p.openInSameTab ? '_self' : '_blank'}
+    rel={p.rel ?? 'external'}
+    ref={use(delayNavigationOnTouch(200))}
+  />
 )

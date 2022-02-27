@@ -25,11 +25,7 @@ export const ContactInfo = (p: { ref?: RefSetter<HTMLDivElement> }) => {
         `}
       >
         <LinkWrapper>
-          <Link
-            href="mailto:illia.chaban.8@gmail.com"
-            target="_blank"
-            color="text"
-          >
+          <Link href="mailto:illia.chaban.8@gmail.com" color="text">
             <Icon
               name="envelope"
               class={css`
@@ -43,7 +39,6 @@ export const ContactInfo = (p: { ref?: RefSetter<HTMLDivElement> }) => {
         <LinkWrapper>
           <Link
             href="https://docs.google.com/viewer?url=https://docs.google.com/document/d/1Q1eJ4p3lnqyGA5hYGV61Woh0eHEu0M6OcytNqIVpr0g/export?format=pdf"
-            target="_blank"
             color="text"
           >
             <Icon name="pdf" /> Resume
@@ -51,8 +46,7 @@ export const ContactInfo = (p: { ref?: RefSetter<HTMLDivElement> }) => {
         </LinkWrapper>
 
         <LinkWrapper
-          // eslint-disable-next-line solid/no-react-specific-props
-          className={css`
+          class={css`
             color: ${colors.text.subtle2};
             opacity: 0.85;
           `}

@@ -53,7 +53,7 @@ const useStyles = makeStyles()({
 
 export const InkImage = (p: {
   step: number
-  className?: string
+  class?: string
   style?: JSX.CSSProperties
   ref?: Ref<Element>
 }) => {
@@ -67,7 +67,7 @@ export const InkImage = (p: {
     <div
       ref={use(p.ref, devId('ink-mask'))}
       class={cx(
-        p.className,
+        p.class,
         css({ position: 'absolute' }),
         inRange$()
           ? [

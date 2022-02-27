@@ -17,7 +17,15 @@ export const styled: {
   ): CustomTagged<JSX.IntrinsicElements[T]>
 
   <T>(component: (props: T) => JSX.Element): CustomTagged<T>
-} = styledBase
+} =  // Fix for solid-styled-component not supporting 'class' prop
+  (tag: any) =>
+  (...args: any[]) => {
+    const Component = styledBase(tag)(...args)
+    return (props: any) => (
+      // eslint-disable-next-line solid/no-react-specific-props
+      <Component {...props} className={props.class ?? props.className} />
+    )
+  }
 
 type StyledComponent<TOriginalProps extends {}, TExtraProps extends {} = {}> = (
   props: TExtraProps & TOriginalProps,

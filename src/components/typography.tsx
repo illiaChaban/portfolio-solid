@@ -23,8 +23,6 @@ export const Heading = (
   return (
     <HeadingBase
       {...p}
-      // Workaround for solid-styled-components
-      className={p.class}
       ref={use(
         textScramble({
           delay: 1000,

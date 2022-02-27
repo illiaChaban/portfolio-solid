@@ -10,8 +10,6 @@ const getUniqueClassName = scope(() => {
   }
 })
 
-// TODO: using "className" instead of "class" because solid-styled-components
-// doesn't currently support "class"
 /**
  * Helper method to style dependent child elements.
  * This will create a new unique className from the one provided
@@ -35,7 +33,7 @@ export const withClass =
       return (
         <Component
           {...props}
-          className={cx(uniqueClassName, props.className, props.class)}
+          class={cx(uniqueClassName, props.className, props.class)}
         />
       )
     }

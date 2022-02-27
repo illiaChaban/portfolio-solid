@@ -2,18 +2,37 @@ import { Heading, Link } from '../../components'
 import { Button } from '../../components/button'
 import { textScramble } from '../../directives'
 import { use } from '../../hooks'
-import { useTheme } from '../../theme'
-import { cx } from '../../utils'
+import { styled, useTheme } from '../../theme'
+import { cx, media } from '../../utils'
 import { log } from '../../utils/log'
+
+const Content = styled('div')`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 15px;
+  padding-left: 5%;
+  min-width: 250px;
+  width: 40%;
+`
+
+const Container = styled('div')`
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: auto;
+  ${({ theme }) => media(theme.breakpoints.down(780))} {
+    flex-direction: column;
+  }
+`
 
 const About = () => {
   const { sharedStyles } = useTheme()
   return (
-    <div
-      class={cx('flex flex-1 main-container', sharedStyles.tags.body)}
-      id="about"
-    >
-      <div class="content">
+    <Container class={cx(sharedStyles.tags.body)} id="about">
+      <Content>
         <Heading class={sharedStyles.tags.h1}>About</Heading>
         <div class="div-tags-end">
           <p>
@@ -37,17 +56,8 @@ const About = () => {
             team
           </p>
           <p>
-            <span class="c-subtle-text">2020 Jul</span> - we launched
-            <a
-              href="https://tacklebox.app/"
-              target="_blank"
-              rel="noopener"
-              class="hover-underline"
-              aria-label="TackleBox"
-            >
-              TackleBox
-            </a>
-            !
+            <span class="c-subtle-text">2020 Jul</span> - we launched{' '}
+            <Link href="https://tacklebox.app/">TackleBox</Link> !
           </p>
           <p>
             <span class="c-subtle-text">2021 Jul</span> - after a great run with
@@ -55,7 +65,8 @@ const About = () => {
           </p>
           <p>
             <span class="c-subtle-text">2021 Nov</span> - Motorefi became
-            Caribou and we successefully completed the rebrand in 30 days!
+            Caribou and we successefully completed all-company rebrand in 30
+            days!
           </p>
 
           <p>
@@ -69,7 +80,7 @@ const About = () => {
             Stone Summit or taking a nap. I love naps.
           </p>
         </div>
-      </div>
+      </Content>
       <div class="art">
         <div class="art-container">
           <div id="img"></div>
@@ -82,7 +93,7 @@ const About = () => {
           <button class="btn">More wisdom</button>
         </div>
       </div>
-    </div>
+    </Container>
   )
 }
 
