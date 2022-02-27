@@ -2,16 +2,7 @@ import { For } from 'solid-js'
 import { css, keyframes, useTheme } from '../../theme'
 import { cx, range } from '../../utils'
 
-const waveAnimation = keyframes`
-  0%, 100% {
-    -webkit-transform: translateZ(-100px);
-            transform: translateZ(-100px);
-  }
-  50% {
-    -webkit-transform: translateZ(100px);
-            transform: translateZ(100px);
-  }
-`
+// TODO: fix animation restarting after page transition
 
 const linesNum = 15
 export const Art = (p: { class?: string; style?: string }) => {
@@ -81,3 +72,14 @@ export const Art = (p: { class?: string; style?: string }) => {
     </div>
   )
 }
+
+const waveAnimation = keyframes`
+  0%, 100% {
+    -webkit-transform: translateZ(-100px);
+            transform: translateZ(-100px);
+  }
+  50% {
+    -webkit-transform: translateZ(100px);
+            transform: translateZ(100px);
+  }
+`

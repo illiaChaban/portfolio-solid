@@ -24,5 +24,6 @@ You can deploy the `dist` folder to any static host provider (netlify, surge, no
 
 TODOs:
 - integrate fullstory
+- fix contact page animation restart on page transition
 - update/fix page transition on mobile?
 
