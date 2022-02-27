@@ -44,8 +44,8 @@ const Contact = () => {
         </div>
         <Art
           style={`
-            width: ${contactInfoRect$()?.width}px;
-            height: ${contactInfoRect$()?.height}px;
+            width: ${contactInfoRect$()?.width ?? 0}px;
+            height: ${contactInfoRect$()?.height ?? 0}px;
           `}
           class={css`
             /* aligning for content padding */

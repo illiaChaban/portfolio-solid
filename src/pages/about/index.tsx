@@ -2,9 +2,10 @@ import { Heading, Link } from '../../components'
 import { Button } from '../../components/button'
 import { textScramble } from '../../directives'
 import { use } from '../../hooks'
-import { styled, useTheme } from '../../theme'
+import { css, styled, useTheme } from '../../theme'
 import { cx, media } from '../../utils'
 import { log } from '../../utils/log'
+import { Art } from './art'
 
 const Content = styled('div')`
   display: flex;
@@ -14,6 +15,25 @@ const Content = styled('div')`
   padding-left: 5%;
   min-width: 250px;
   width: 40%;
+
+  ${({ theme }) => media(theme.breakpoints.down(780))} {
+    box-sizing: border-box;
+    width: 100%;
+    padding-top: 0;
+  }
+`
+
+const P = styled('p')`
+  margin: 18px 0;
+  font-size: 0.9rem;
+  line-height: 1.1rem;
+
+  &:first-child {
+    margin-top: 8px;
+  }
+  &:last-child {
+    margin-bottom: 8px;
+  }
 `
 
 const Container = styled('div')`
@@ -28,71 +48,67 @@ const Container = styled('div')`
   }
 `
 
+const Subtle = styled('span')`
+  color: ${({ theme }) => theme.colors.text.subtle2};
+`
+
 const About = () => {
   const { sharedStyles } = useTheme()
   return (
     <Container class={cx(sharedStyles.tags.body)} id="about">
       <Content>
         <Heading class={sharedStyles.tags.h1}>About</Heading>
-        <div class="div-tags-end">
-          <p>
-            <span class="c-subtle-text">2016</span> - moved to Atlanta, GA from
-            Kyiv, Ukraine
-          </p>
-          <p>
-            <span class="c-subtle-text">2018 Jan</span> - fell in love with
-            coding at DigitalCrafts software development bootcamp
-          </p>
-          <p>
-            <span class="c-subtle-text">2018 Jul</span> - landed my first tech
-            job with Capgemini
-          </p>
-          <p>
-            <span class="c-subtle-text">2019 Mar</span> - left Capgemini and
-            made this cool portfolio
-          </p>
-          <p>
-            <span class="c-subtle-text">2019 Oct</span> - joined the Insiten
-            team
-          </p>
-          <p>
-            <span class="c-subtle-text">2020 Jul</span> - we launched{' '}
-            <Link href="https://tacklebox.app/">TackleBox</Link> !
-          </p>
-          <p>
-            <span class="c-subtle-text">2021 Jul</span> - after a great run with
-            Insiten, I joined forces with Motorefi
-          </p>
-          <p>
-            <span class="c-subtle-text">2021 Nov</span> - Motorefi became
-            Caribou and we successefully completed all-company rebrand in 30
-            days!
-          </p>
+        <div
+          class={cx(
+            sharedStyles.tags.divEnd,
+            css`
+              padding-bottom: 25px;
+            `,
+          )}
+        >
+          <P>
+            <Subtle>2016</Subtle> - moved to Atlanta, GA from Kyiv, Ukraine
+          </P>
+          <P>
+            <Subtle>2018 Jan</Subtle> - fell in love with coding at
+            DigitalCrafts software development bootcamp
+          </P>
+          <P>
+            <Subtle>2018 Jul</Subtle> - landed my first tech job with Capgemini
+          </P>
+          <P>
+            <Subtle>2019 Mar</Subtle> - left Capgemini and made this cool
+            portfolio
+          </P>
+          <P>
+            <Subtle>2019 Oct</Subtle> - joined the Insiten team
+          </P>
+          <P>
+            <Subtle>2020 Jul</Subtle> - we launched{' '}
+            <Link href="https://tacklebox.app/">TackleBox</Link>!
+          </P>
+          <P>
+            <Subtle>2021 Jul</Subtle> - after a great run with Insiten, I joined
+            forces with Motorefi
+          </P>
+          <P>
+            <Subtle>2021 Nov</Subtle> - Motorefi became Caribou and we
+            successefully completed all-company rebrand in 30 days!
+          </P>
 
-          <p>
+          <P>
             I feel grateful for being in the industry that most of all values
             skills, ideas and hard work, encourages change and rewards passion.
             I want to be a part of the team where I can learn and grow. I want
             to be challenged and hope to make a real impact.
-          </p>
-          <p>
+          </P>
+          <P>
             When I’m not coding you can find me playing soccer, bouldering at
             Stone Summit or taking a nap. I love naps.
-          </p>
+          </P>
         </div>
       </Content>
-      <div class="art">
-        <div class="art-container">
-          <div id="img"></div>
-          <div id="quote">
-            <div class="quotation">
-              <span></span>
-            </div>
-            <div class="author"></div>
-          </div>
-          <button class="btn">More wisdom</button>
-        </div>
-      </div>
+      <Art />
     </Container>
   )
 }

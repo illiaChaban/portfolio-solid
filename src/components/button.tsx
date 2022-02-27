@@ -1,6 +1,6 @@
 import { Link, LinkProps } from 'solid-app-router'
-import { createRoot, createSignal, JSX } from 'solid-js'
-import { use, useBoundingRect, useRef } from '../hooks'
+import { createMemo, createRoot, createSignal, JSX } from 'solid-js'
+import { use, useRect } from '../hooks'
 import { css, keyframes, makeStyles, styled } from '../theme'
 import { bindEventWithCleanup, throttle, withActions } from '../utils'
 import { has, minMax } from '../utils/lodash'
@@ -58,50 +58,52 @@ export const Button = (p: ButtonProps): JSX.Element => {
   const mousePosition$ = withActions(
     createSignal<Point>({ x: 0, y: 0 }),
     set => ({
-      track: throttle(10, (e: MouseEvent) =>
-        set({ x: e.clientX, y: e.clientY }),
-      ),
+      track: throttle(10, (e: MouseEvent) => {
+        set({ x: e.pageX, y: e.pageY })
+      }),
     }),
   )
 
-  const boundingRect$ = useBoundingRect()
-  const gradient$ = (): Record<
-    'x' | 'y' | 'opacity' | 'from' | 'to',
-    number
-  > => {
-    const rect = boundingRect$()
-    if (!rect) return { x: 0, y: 0, opacity: 0, from: 0, to: 0 }
-    const { x, y } = mousePosition$()
-    const { left, right, top, bottom, width, height } = rect
-    const buffer = 100
+  const rect$ = useRect()
+  const gradient$ = createMemo(
+    (): Record<'x' | 'y' | 'opacity' | 'from' | 'to', number> => {
+      const rect = rect$()
+      if (!rect) return { x: 0, y: 0, opacity: 0, from: 0, to: 0 }
+      const { x, y } = mousePosition$()
+      const { left, right, top, bottom } = rect
+      const width = right - left
+      const height = bottom - top
 
-    const distanceToElement = distanceToRect({ x, y }, rect)
+      const buffer = 100
 
-    const closeness =
-      distanceToElement > buffer
-        ? 0
-        : distanceToElement === 0
-        ? 1
-        : (buffer - distanceToElement) / buffer
+      const distanceToElement = distanceToRect({ x, y }, rect)
 
-    return {
-      x:
-        x > right + buffer
-          ? width + buffer
-          : x < left - buffer
-          ? -buffer
-          : x - left,
-      y:
-        y < top - buffer
-          ? -buffer
-          : y > bottom + buffer
-          ? height + buffer
-          : y - top,
-      opacity: closeness === 1 ? 1 : closeness * 0.5,
-      from: closeness === 1 ? 0.5 : closeness * 0.1,
-      to: closeness === 1 ? 1 : minMax(0.3, 0.7)(closeness),
-    }
-  }
+      const closeness =
+        distanceToElement > buffer
+          ? 0
+          : distanceToElement === 0
+          ? 1
+          : (buffer - distanceToElement) / buffer
+
+      return {
+        x:
+          x > right + buffer
+            ? width + buffer
+            : x < left - buffer
+            ? -buffer
+            : x - left,
+        y:
+          y < top - buffer
+            ? -buffer
+            : y > bottom + buffer
+            ? height + buffer
+            : y - top,
+        opacity: closeness === 1 ? 1 : closeness * 0.5,
+        from: closeness === 1 ? 0.5 : closeness * 0.1,
+        to: closeness === 1 ? 1 : minMax(0.3, 0.7)(closeness),
+      }
+    },
+  )
 
   const Component = has(p, 'href')
     ? (props: LinkProps) => <Link {...props} />
@@ -114,7 +116,7 @@ export const Button = (p: ButtonProps): JSX.Element => {
   return (
     <>
       <Component
-        ref={use(boundingRect$.track, ripple)}
+        ref={use(rect$.track, ripple)}
         class={styles.btn()}
         onClick={p.onClick as any}
         href={(p as any).href}
@@ -146,14 +148,14 @@ const Backdrop = styled('div')`
 `
 
 const ripple = (button: HTMLElement) => {
-  const boundingRect$ = useBoundingRect()
-  boundingRect$.track(button)
+  const rect$ = useRect()
+  rect$.track(button)
 
   bindEventWithCleanup(button, 'click', (e: MouseEvent) => {
     const diameter = Math.max(button.clientWidth, button.clientHeight)
     const radius = diameter / 2
 
-    const rect = boundingRect$()!
+    const rect = rect$()!
 
     const duration = 600
 
@@ -162,8 +164,8 @@ const ripple = (button: HTMLElement) => {
         style={`
           width: ${diameter}px;
           height: ${diameter}px;
-          left: ${e.clientX - (rect.left + radius)}px;
-          top: ${e.clientY - (rect.top + radius)}px;
+          left: ${e.pageX - (rect.left + radius)}px;
+          top: ${e.pageY - (rect.top + radius)}px;
           animation-duration: ${duration}ms;
         `}
       />,
