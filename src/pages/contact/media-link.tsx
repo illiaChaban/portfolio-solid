@@ -44,14 +44,17 @@ const LinkBase = styled('a')`
   color: ${({ theme }) => theme.colors.text.primary};
   font-family: 'Inconsolata', 'Saira', monospace;
   -webkit-tap-highlight-color: transparent;
+  display: block;
+  width: 5.25rem;
+  height: 5.25rem;
+  position: relative;
+  font-size: 3rem;
 `
 
 const TileWrapper = styled('div')`
-  position: relative;
-  display: block;
-  width: 3.5rem;
-  height: 3.5rem;
-  transform: rotate(-35deg) skew(20deg);
+  width: 100%;
+  height: 100%;
+  transform: rotate(-35deg) skew(20deg) translate(-10px, 10px);
 `
 
 const useTileStyles = () => {
@@ -81,10 +84,10 @@ const useTileStyles = () => {
       .map(
         i => `
         &:nth-child(${i + 1}) {
-          transform: translate(${i * 5}px, -${i * 5}px);
+          transform: translate(${i * 5}px, -${i * 5}px) scale(0.6);
           opacity: ${(1 / tilesNum) * (i + 1)};
           .${MediaLink.class}:hover & {
-            transform: translate(${i * 5}px, -${i * 5}px) scale(1.05);
+            transform: translate(${i * 5}px, -${i * 5}px) scale(0.65);
           }
         }
       `,

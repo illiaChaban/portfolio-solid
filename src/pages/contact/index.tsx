@@ -2,11 +2,13 @@ import { Icon, Link } from '../../components'
 import { textScramble } from '../../directives'
 import { use } from '../../hooks'
 import { css, styled, useTheme } from '../../theme'
-import { cx } from '../../utils'
+import { cx, media } from '../../utils'
 import { MediaLink } from './media-link'
 
+const showArtBreakpoint = 780
+
 const Contact = () => {
-  const { sharedStyles, colors } = useTheme()
+  const { sharedStyles, colors, breakpoints } = useTheme()
 
   return (
     <div
@@ -15,7 +17,16 @@ const Contact = () => {
         flex-grow: 1;
       `}
     >
-      <div class={cx('flex flex-1', sharedStyles.tags.body)} id="contact">
+      <div
+        class={cx(
+          'flex flex-1',
+          sharedStyles.tags.body,
+          css`
+            justify-content: space-around;
+          `,
+        )}
+        id="contact"
+      >
         <div
           id="contact-info"
           class={css`
@@ -25,6 +36,10 @@ const Contact = () => {
             color: ${colors.text.primary};
             flex-direction: column;
             padding-left: 25px;
+            ${media(breakpoints.down(showArtBreakpoint))} {
+              padding-left: 8px;
+              padding-right: 8px;
+            }
           `}
         >
           <div
@@ -75,10 +90,6 @@ const Contact = () => {
               class={css`
                 display: flex;
                 justify-content: space-between;
-                font-size: 2rem;
-                padding-top: 30px;
-                /* aligning for border 1px */
-                padding-bottom: 2px;
                 width: 100%;
               `}
             >
@@ -104,7 +115,17 @@ const Contact = () => {
           </div>
         </div>
 
-        <div id="contact-art" class={sharedStyles.tags.div}>
+        <div
+          id="contact-art"
+          class={cx(
+            sharedStyles.tags.div,
+            css`
+              ${media(breakpoints.down(showArtBreakpoint))} {
+                display: none;
+              }
+            `,
+          )}
+        >
           <div class="loading-wave"></div>
         </div>
       </div>
