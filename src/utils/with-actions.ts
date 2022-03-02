@@ -1,4 +1,6 @@
 import { Accessor, Setter } from 'solid-js'
+import { isArray } from '.'
+import { Atom } from '../hooks'
 import { AnyFunc } from '../types'
 
 /**
@@ -6,6 +8,13 @@ import { AnyFunc } from '../types'
  *
  * @example
  * const value = withActions(createSignal(0), (set) => ({
+ *   increment: () => set(v => v+1),
+ *   reset: () => set(0)
+ * }))
+ *
+ * // OR
+ *
+ * const value = withActions(useAtom(0), (set) => ({
  *   increment: () => set(v => v+1),
  *   reset: () => set(0)
  * }))
@@ -20,8 +29,11 @@ import { AnyFunc } from '../types'
  *
  */
 export const withActions = <T, TActions extends Record<string, AnyFunc>>(
-  [get, set]: [Accessor<T>, Setter<T>],
+  reactive: [Accessor<T>, Setter<T>] | Atom<T>,
   mapSet: (set: Setter<T>) => TActions,
 ): Accessor<T> & TActions => {
+  const [get, set] = isArray(reactive)
+    ? reactive
+    : [reactive, (val: any) => reactive(val ?? undefined)]
   return Object.assign(() => get(), mapSet(set))
 }

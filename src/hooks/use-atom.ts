@@ -8,7 +8,7 @@ type SetWithValue<T> = <U extends Exclude<T, Function>>(value: U) => U
 /** Like Setter except argument is required */
 type RequiredSetter<T> = SetWithCallback<T> & SetWithValue<T>
 
-type Atom<T> = Accessor<T> & RequiredSetter<T>
+export type Atom<T> = Accessor<T> & RequiredSetter<T>
 
 type UseAtom = {
   /**
