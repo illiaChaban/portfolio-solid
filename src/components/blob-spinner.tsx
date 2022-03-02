@@ -1,8 +1,8 @@
 import { keyframes, styled } from '../theme'
 
-export const BlobSpinner = () => {
+export const BlobSpinner = (p: { class?: string }) => {
   return (
-    <Container>
+    <Container class={p.class}>
       <BlobTop />
       <BlobBottom />
       <BlobLeft />
@@ -12,9 +12,6 @@ export const BlobSpinner = () => {
 }
 
 const Container = styled('div')`
-  & ~ * {
-    visibility: hidden;
-  }
   --spinner-color: ${({ theme }) => theme.colors.primary};
   position: absolute;
   width: 30px;
@@ -23,7 +20,6 @@ const Container = styled('div')`
   left: 50%;
   -webkit-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
-  animation: fadeIn 3s;
 `
 
 const BlobBase = styled('div')`
@@ -37,8 +33,6 @@ const BlobBase = styled('div')`
   height: 10px;
   border-radius: 50%;
 `
-
-type Variant = 'top' | 'bottom' | 'left' | 'move'
 
 const blobTop = keyframes`
   50% {

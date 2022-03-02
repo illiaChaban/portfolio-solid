@@ -13,6 +13,9 @@ const theme = {
       subtle1: 'var(--color-subtle)',
       subtle2: 'var(--color-subtle-text)',
     },
+    gray: {
+      light: '#afadad',
+    },
     background: 'var(--body-background-color)',
     accent: {
       black: 'black',

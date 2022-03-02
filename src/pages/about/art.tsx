@@ -1,20 +1,23 @@
-import { createEffect, lazy, on, onMount, Suspense } from 'solid-js'
+import {
+  Component,
+  createEffect,
+  JSX,
+  lazy,
+  on,
+  onMount,
+  Suspense,
+} from 'solid-js'
+import { Dynamic } from 'solid-js/web'
+import { Transition } from 'solid-transition-group'
 import { Button } from '../../components'
 import { BlobSpinner } from '../../components/blob-spinner'
 import { useAtom, useRef } from '../../hooks'
-import { css, styled, useTheme } from '../../theme'
-import { media, scope, wait, withActions } from '../../utils'
+import { styled } from '../../theme'
+import { flow, media, scope } from '../../utils'
 import { TextTyper } from './text-typer'
 
-const lazyUtil = (fn: () => Promise<any>) =>
-  lazy(() => wait(1000).then(() => fn()))
-const AsyncSimpson = lazyUtil(() => import('./images/simpson'))
-
 export const Art = () => {
-  const { breakpoints, colors } = useTheme()
-
   const art$ = scope(() => {
-    const artConfig = useArtConfig()
     const index$ = useAtom(0)
     return Object.assign(() => artConfig[index$()], {
       next: () => index$(v => (v + 1) % artConfig.length),
@@ -30,7 +33,7 @@ export const Art = () => {
     const authorTyper = new TextTyper(authorRef.current, 20, 80)
 
     createEffect(
-      on(art$, ({ quote, imgUrl, colors }) => {
+      on(art$, ({ quote }) => {
         const [quotation, author] = quote
         quoteTyper.clearNow()
         authorTyper.clearNow().removeCursor()
@@ -46,16 +49,13 @@ export const Art = () => {
     )
   })
 
-  // this.updateArt();
-  // this.bindArtButton();
-
   return (
     <Wrapper>
       <Container>
         <ImgWrapper id="img" ref={imgContainerRef}>
-          <Suspense fallback={<BlobSpinner />}>
-            <AsyncSimpson />
-          </Suspense>
+          <SuspenceWithSpinner>
+            <Dynamic component={art$().Image} />
+          </SuspenceWithSpinner>
         </ImgWrapper>
         <Quote>
           <Quotation>
@@ -142,60 +142,68 @@ const Author = styled('div')`
   opacity: 0.8;
 `
 
-const useArtConfig = (): {
-  imgUrl: string
-  colors: string[]
-  quote: [string, string]
-}[] => {
-  const { colors } = useTheme()
+const SuspenceWithSpinner = (p: { children?: JSX.Element }) => {
+  const getElOpacity = flow(getComputedStyle, ({ opacity }) =>
+    Number(opacity || '1'),
+  )
+  return (
+    <Transition
+      onEnter={(el, done) => {
+        console.log('enter', getElOpacity(el))
+        el.animate([{ opacity: 0 }, { opacity: getElOpacity(el) }], {
+          duration: 200,
+        }).finished.then(done)
+      }}
+      onExit={(el, done) => {
+        console.log('exit', getElOpacity(el))
 
-  const gray = '#afadad'
-  return [
-    {
-      imgUrl: 'imgs/quotes/simpsons.svg',
-      colors: [colors.text.primary, 'black', gray, colors.primary],
-
-      // imgUrl: 'imgs/quotes/simpsons1.svg',
-      // colors: ['black', colors.text.primary, gray],
-      quote: ['Find what you love and follow it to glory.', '- The Simpsons'],
-    },
-    {
-      imgUrl: 'imgs/quotes/todd.svg',
-      colors: [
-        'black',
-        colors.text.primary,
-        colors.text.subtle1,
-        colors.primary,
-      ],
-      quote: [
-        'I never know if I can handle anything! That’s what makes my life so exciting.',
-        '- Todd from BoJack Horseman',
-      ],
-    },
-    {
-      imgUrl: 'imgs/quotes/feynman.svg',
-      colors: [colors.text.primary, gray, 'black'],
-      // quote: ["I'm smart enough to know that I'm dumb.", "- Richard Feynman"],
-      quote: [
-        'The first principle is that you must not fool yourself and you are the easiest person to fool.',
-        '- Richard Feynman',
-      ],
-    },
-    {
-      imgUrl: 'imgs/quotes/gandhi1.svg',
-      colors: ['black', colors.text.primary, gray],
-      quote: [
-        'A man is but the product of his thoughts. What he thinks, he becomes.',
-        '- Mahatma Gandhi',
-      ],
-    },
-    {
-      imgUrl: 'imgs/quotes/lee7.svg',
-      colors: ['black', colors.text.primary, gray],
-      quote: [
-        'Knowing is not enough, we must apply. Willing is not enough, we must do.',
-        '- Bruce Lee',
-      ],
-    },
-  ]
+        const isSpinner = el.tagName === 'DIV'
+        el.animate([{ opacity: getElOpacity(el) }, { opacity: 0 }], {
+          duration: isSpinner ? 400 : 200,
+        }).finished.then(done)
+      }}
+    >
+      <Suspense fallback={<BlobSpinner />}>{p.children}</Suspense>
+    </Transition>
+  )
 }
+
+//TODO: test how much memory it takes to load these images in prod
+// VS in dev VS vanilla JS
+const artConfig: {
+  Image: Component
+  quote: [string, string]
+}[] = [
+  {
+    Image: lazy(() => import('./images/simpson')),
+    quote: ['Find what you love and follow it to glory.', '- The Simpsons'],
+  },
+  {
+    Image: lazy(() => import('./images/todd')),
+    quote: [
+      'I never know if I can handle anything! That’s what makes my life so exciting.',
+      '- Todd from BoJack Horseman',
+    ],
+  },
+  {
+    Image: lazy(() => import('./images/feynman')),
+    quote: [
+      'The first principle is that you must not fool yourself and you are the easiest person to fool.',
+      '- Richard Feynman',
+    ],
+  },
+  {
+    Image: lazy(() => import('./images/gandhi')),
+    quote: [
+      'A man is but the product of his thoughts. What he thinks, he becomes.',
+      '- Mahatma Gandhi',
+    ],
+  },
+  {
+    Image: lazy(() => import('./images/lee')),
+    quote: [
+      'Knowing is not enough, we must apply. Willing is not enough, we must do.',
+      '- Bruce Lee',
+    ],
+  },
+]
