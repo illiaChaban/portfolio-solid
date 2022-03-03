@@ -50,31 +50,22 @@ export const Art = () => {
   })
 
   return (
-    <Wrapper>
-      <Container>
-        <ImgWrapper id="img" ref={imgContainerRef}>
-          <SuspenceWithSpinner>
-            <Dynamic component={art$().Image} />
-          </SuspenceWithSpinner>
-        </ImgWrapper>
-        <Quote>
-          <Quotation>
-            <span ref={quotationRef}></span>
-          </Quotation>
-          <Author ref={authorRef}></Author>
-        </Quote>
-        <Button onClick={art$.next}>More wisdom</Button>
-      </Container>
-    </Wrapper>
+    <Container>
+      <ImgWrapper id="img" ref={imgContainerRef}>
+        <SuspenceWithSpinner>
+          <Dynamic component={art$().Image} />
+        </SuspenceWithSpinner>
+      </ImgWrapper>
+      <Quote>
+        <Quotation>
+          <span ref={quotationRef}></span>
+        </Quotation>
+        <Author ref={authorRef}></Author>
+      </Quote>
+      <Button onClick={art$.next}>More wisdom</Button>
+    </Container>
   )
 }
-
-const Wrapper = styled('div')`
-  display: flex;
-  flex-grow: 1;
-  justify-content: center;
-  align-items: center;
-`
 
 const Container = styled('div')`
   min-height: 400px;

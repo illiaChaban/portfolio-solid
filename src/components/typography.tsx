@@ -3,8 +3,9 @@ import { textScramble } from '../directives'
 import { RefSetter, use } from '../hooks'
 import { css, styled, useTheme } from '../theme'
 import { WithOverrides } from '../types'
+import { cx } from '../utils'
 
-export const HeadingBase = styled('h1')`
+const HeadingBase = styled('h1')`
   font-family: Courier;
   font-size: 3rem;
   position: relative;
@@ -23,6 +24,7 @@ export const Heading = (
   return (
     <HeadingBase
       {...p}
+      class={cx(theme.sharedStyles.tags.h1, p.class, p.className)}
       ref={use(
         textScramble({
           delay: 1000,

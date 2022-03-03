@@ -19,9 +19,10 @@ const Contact = () => {
     >
       <div
         class={cx(
-          'flex flex-1',
+          'flex-1',
           sharedStyles.tags.body,
           css`
+            display: flex;
             justify-content: space-around;
           `,
         )}
