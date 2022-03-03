@@ -1,5 +1,5 @@
-import { Heading, ExternalLink } from '../../components'
-import { css, styled, useTheme } from '../../theme'
+import { ExternalLink, Heading } from '../../components'
+import { styled, useTheme } from '../../theme'
 import { cx, media } from '../../utils'
 import { Art } from './art'
 
@@ -109,6 +109,7 @@ export const ArtContainer = styled('div')`
   flex-grow: 1;
   justify-content: center;
   align-items: center;
+  position: relative;
 `
 
 const Subtle = styled('span')`

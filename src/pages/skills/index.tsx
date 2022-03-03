@@ -1,8 +1,9 @@
+import { lazy } from 'solid-js'
 import { ExternalLink, Heading, PageLink } from '../../components'
+import { SpinnerSuspence } from '../../components/spinner-suspence'
 import { css, useTheme } from '../../theme'
 import { cx, media } from '../../utils'
 import { ArtContainer, Container, Content, P } from '../about'
-import { Art } from './art'
 
 export default () => {
   const { sharedStyles, breakpoints } = useTheme()
@@ -49,8 +50,12 @@ export default () => {
         </div>
       </Content>
       <ArtContainer>
-        <Art />
+        <SpinnerSuspence>
+          <AsyncArt />
+        </SpinnerSuspence>
       </ArtContainer>
     </Container>
   )
 }
+
+const AsyncArt = lazy(() => import('./art'))

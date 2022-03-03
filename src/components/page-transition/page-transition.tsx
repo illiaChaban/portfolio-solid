@@ -17,6 +17,8 @@ import { TransitionContainer } from './transition-container'
 export const PageTransition = (p: { children: JSX.Element }) => {
   // FIXME: page scrolling up on transition start
   // FIXME: delay text scramble animation and others to wait for transition
+  // FIXME: preload ink images & svg ? component?. With disabled cache the
+  // first page transition doesn't work. Use simple fade in/out until preloaded
 
   // TODO:
   // ! Allow scroll and navigation before background fades in

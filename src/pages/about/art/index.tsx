@@ -1,19 +1,10 @@
-import {
-  Component,
-  createEffect,
-  JSX,
-  lazy,
-  on,
-  onMount,
-  Suspense,
-} from 'solid-js'
+import { Component, createEffect, lazy, on, onMount } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
-import { Transition } from 'solid-transition-group'
 import { Button } from '../../../components'
-import { BlobSpinner } from '../../../components/blob-spinner'
+import { SpinnerSuspence } from '../../../components/spinner-suspence'
 import { useAtom, useRef } from '../../../hooks'
 import { styled } from '../../../theme'
-import { flow, media, scope } from '../../../utils'
+import { media, scope } from '../../../utils'
 import { TextTyper } from './text-typer'
 
 export const Art = () => {
@@ -52,9 +43,9 @@ export const Art = () => {
   return (
     <Container>
       <ImgWrapper id="img" ref={imgContainerRef}>
-        <SuspenceWithSpinner>
+        <SpinnerSuspence>
           <Dynamic component={art$().Image} />
-        </SuspenceWithSpinner>
+        </SpinnerSuspence>
       </ImgWrapper>
       <Quote>
         <Quotation>
@@ -132,29 +123,6 @@ const Author = styled('div')`
   color: var(--color-highlight);
   opacity: 0.8;
 `
-
-const SuspenceWithSpinner = (p: { children?: JSX.Element }) => {
-  const getElOpacity = flow(getComputedStyle, ({ opacity }) =>
-    Number(opacity || '1'),
-  )
-  return (
-    <Transition
-      onEnter={(el, done) => {
-        el.animate([{ opacity: 0 }, { opacity: getElOpacity(el) }], {
-          duration: 200,
-        }).finished.then(done)
-      }}
-      onExit={(el, done) => {
-        const isSpinner = el.tagName === 'DIV'
-        el.animate([{ opacity: getElOpacity(el) }, { opacity: 0 }], {
-          duration: isSpinner ? 400 : 200,
-        }).finished.then(done)
-      }}
-    >
-      <Suspense fallback={<BlobSpinner />}>{p.children}</Suspense>
-    </Transition>
-  )
-}
 
 //TODO: test how much memory it takes to load these images in prod
 // VS in dev VS vanilla JS

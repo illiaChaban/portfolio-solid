@@ -1,8 +1,9 @@
+import { ComponentProps } from 'solid-js'
 import { keyframes, styled } from '../theme'
 
-export const BlobSpinner = (p: { class?: string }) => {
+export const BlobSpinner = (p: ComponentProps<typeof Container>) => {
   return (
-    <Container class={p.class}>
+    <Container {...p}>
       <BlobTop />
       <BlobBottom />
       <BlobLeft />

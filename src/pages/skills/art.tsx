@@ -3,10 +3,10 @@ import { default as WordCloud } from 'tag-canvas'
 import { getCssVariable } from '../../utils'
 import { JSX, onMount } from 'solid-js'
 
-export const Art = () => {
+export default () => {
   const canvasId = 'skills-canvas'
   const listId = 'skills-cloud'
-  onMount(() => {
+  onMount(async () => {
     const cloudOptions = useSkillsCloudOptions()
     // Reference: https://www.goat1000.com/tagcanvas-install.php
     WordCloud.Start(canvasId, listId, cloudOptions)
