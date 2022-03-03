@@ -1,7 +1,9 @@
-import { Link, LinkProps } from 'solid-app-router'
+import { LinkProps } from 'solid-app-router'
 import { createMemo, createRoot, createSignal, JSX } from 'solid-js'
+import { PageLinkBase, PageLinkBaseProps } from '.'
 import { use, useRect } from '../hooks'
 import { css, keyframes, makeStyles, styled } from '../theme'
+import { OmitSafe, Page } from '../types'
 import { bindEventWithCleanup, throttle, withActions } from '../utils'
 import { has, minMax } from '../utils/lodash'
 
@@ -50,7 +52,7 @@ type ButtonProps = {
       onClick?: JSX.DOMAttributes<HTMLButtonElement>['onClick']
     }
   | {
-      href: LinkProps['href']
+      page: Page
       onClick?: LinkProps['onClick']
     }
 )
@@ -105,8 +107,10 @@ export const Button = (p: ButtonProps): JSX.Element => {
     },
   )
 
-  const Component = has(p, 'href')
-    ? (props: LinkProps) => <Link {...props} />
+  const Component = has(p, 'page')
+    ? (props: OmitSafe<PageLinkBaseProps, 'page'>) => (
+        <PageLinkBase {...props} page={p.page} />
+      )
     : (props: JSX.DOMAttributes<HTMLButtonElement>) => <button {...props} />
 
   const styles = useStyles()
@@ -119,7 +123,6 @@ export const Button = (p: ButtonProps): JSX.Element => {
         ref={use(rect$.track, ripple)}
         class={styles.btn()}
         onClick={p.onClick as any}
-        href={(p as any).href}
       >
         <Backdrop
           style={`

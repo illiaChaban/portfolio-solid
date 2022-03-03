@@ -3,7 +3,7 @@ import { ComponentProps } from 'solid-js'
 import { delayNavigationOnTouch } from '../directives'
 import { use } from '../hooks'
 import { css, useTheme } from '../theme'
-import { OmitSafe } from '../types'
+import { OmitSafe, Page } from '../types'
 import { cx } from '../utils'
 
 type StyleProps = { color?: 'primary' | 'text' }
@@ -67,23 +67,21 @@ export const ExternalLink = (
       class={cx(styles, p.class)}
       target="_blank"
       rel="external"
-      ref={use(delayNavigationOnTouch(250))}
+      ref={use(delayNavigationOnTouch(350))}
     />
   )
 }
 
-type Page = 'home' | 'about' | 'skills' | 'projects' | 'contact'
+export type PageLinkBaseProps = Omit<LinkProps, 'target' | 'href'> & {
+  page: Page
+}
+export const PageLinkBase = (p: PageLinkBaseProps) => {
+  return <LinkBase {...p} href={p.page === 'home' ? '/' : `/${p.page}`} />
+}
+
 export const PageLink = (
-  p: Omit<LinkProps, 'target' | 'href' | 'className'> & {
-    page: Page
-  } & StyleProps,
+  p: OmitSafe<PageLinkBaseProps, 'className'> & StyleProps,
 ) => {
   const styles = useStyles(p)
-  return (
-    <LinkBase
-      {...p}
-      class={cx(styles, p.class)}
-      href={p.page === 'home' ? '/' : `/${p.page}`}
-    />
-  )
+  return <PageLinkBase {...p} class={cx(styles, p.class)} />
 }
