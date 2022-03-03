@@ -89,8 +89,11 @@ const About = () => {
             forces with Motorefi
           </P>
           <P>
-            <Subtle>2021 Nov</Subtle> - Motorefi became Caribou and we
-            successefully completed all-company rebrand in 30 days!
+            <Subtle>2021 Nov</Subtle> - Motorefi became{' '}
+            <ExternalLink href="https://www.gocaribou.com/">
+              Caribou
+            </ExternalLink>{' '}
+            and we successefully completed all-company rebrand in 30 days!
           </P>
 
           <P>

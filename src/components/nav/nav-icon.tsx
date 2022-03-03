@@ -72,7 +72,7 @@ const useStyles = makeStyles()({
         &::after {
           content: var(--hover-text, 'navigate');
           font-size: 0.7rem;
-          letter-spacing: 1px;
+          letter-spacing: 0.1px;
           position: absolute;
           display: block;
 
