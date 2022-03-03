@@ -32,18 +32,14 @@ export default () => {
           </P>
           <P>
             My main area of expertise is all things JavaScript. I love working
-            with TypeScript and RxJS. Angular/React are my frameworks of choice
+            with TypeScript and RxJS. React/Angular are my frameworks of choice
             for the client side. I also have a good amount of experience working
             with C# with .Net and Node with Express.js on the back-end.
           </P>
           <P>
-            For more details you can visit my{' '}
-            <ExternalLink href="https://www.linkedin.com/in/illia-chaban/">
-              LinkedIn
-            </ExternalLink>{' '}
-            profile or just{' '}
-            <PageLink page="contact" id="contact-me2">
-              contact me
+            You can learn about some of my projects{' '}
+            <PageLink page="projects" id="contact-me2">
+              here
             </PageLink>
             .
           </P>

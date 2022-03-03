@@ -1,5 +1,5 @@
-import { ExternalLink, Heading } from '../../components'
-import { styled, useTheme } from '../../theme'
+import { ExternalLink, Heading, PageLink } from '../../components'
+import { css, styled, useTheme } from '../../theme'
 import { cx, media } from '../../utils'
 import { Art } from './art'
 
@@ -9,32 +9,40 @@ export default () => {
     <Container class={cx(sharedStyles.tags.body)} id="about">
       <Content>
         <Heading>About</Heading>
-        <div class={sharedStyles.tags.divEnd}>
+        <div
+          class={cx(
+            sharedStyles.tags.divEnd,
+            css`
+              & > *:first-child {
+                margin-top: 8px;
+              }
+              & > *:last-child {
+                margin-bottom: 8px;
+              }
+            `,
+          )}
+        >
           <P>
             <Subtle>2016</Subtle> - moved to Atlanta, GA from Kyiv, Ukraine
           </P>
           <P>
             <Subtle>2018 Jan</Subtle> - fell in love with coding at
-            DigitalCrafts software development bootcamp
+            DigitalCrafts
           </P>
           <P>
             <Subtle>2018 Jul</Subtle> - landed my first tech job with Capgemini
           </P>
           <P>
-            <Subtle>2019 Mar</Subtle> - left Capgemini and made this cool
-            portfolio
-          </P>
-          <P>
             <Subtle>2019 Oct</Subtle> - joined the Insiten team
           </P>
           <P>
-            <Subtle>2020 Jul</Subtle> - we launched{' '}
-            <ExternalLink href="https://tacklebox.app/">TackleBox</ExternalLink>
-            !
-          </P>
-          <P>
-            <Subtle>2021 Jul</Subtle> - after a great run with Insiten, I joined
-            forces with Motorefi
+            <Subtle>2021 Jul</Subtle> - after a great run with Insiten and a ton
+            of projects (
+            <ExternalLink href="https://ampmemberships.com/">AMP</ExternalLink>,{' '}
+            <ExternalLink href="https://appsource.microsoft.com/en-cy/product/office/wa200002310?tab=overview">
+              Tacklebox
+            </ExternalLink>
+            ) I joined forces with Motorefi
           </P>
           <P>
             <Subtle>2021 Nov</Subtle> - Motorefi became{' '}
@@ -48,12 +56,16 @@ export default () => {
             I feel grateful for being in the industry that most of all values
             skills, ideas and hard work, encourages change and rewards passion.
             I want to be a part of the team where I can learn and grow. I want
-            to be challenged and hope to make a real impact.
+            to be challenged and hope to make a real impact.{' '}
+            <PageLink page="skills">
+              Here is what I bring to the table.
+            </PageLink>
           </P>
           <P>
             When I’m not coding you can find me playing soccer, bouldering at
             Stone Summit or taking a nap. I love naps.
           </P>
+          <P></P>
         </div>
       </Content>
       <ArtContainer>
@@ -83,7 +95,6 @@ export const P = styled('p')`
   margin: 18px 0;
   font-size: 0.9rem;
   line-height: 1.1rem;
-
   &:first-child {
     margin-top: 8px;
   }
