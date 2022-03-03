@@ -9,11 +9,11 @@ import {
 } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
 import { Transition } from 'solid-transition-group'
-import { Button } from '../../components'
-import { BlobSpinner } from '../../components/blob-spinner'
-import { useAtom, useRef } from '../../hooks'
-import { styled } from '../../theme'
-import { flow, media, scope } from '../../utils'
+import { Button } from '../../../components'
+import { BlobSpinner } from '../../../components/blob-spinner'
+import { useAtom, useRef } from '../../../hooks'
+import { styled } from '../../../theme'
+import { flow, media, scope } from '../../../utils'
 import { TextTyper } from './text-typer'
 
 export const Art = () => {
@@ -149,14 +149,11 @@ const SuspenceWithSpinner = (p: { children?: JSX.Element }) => {
   return (
     <Transition
       onEnter={(el, done) => {
-        console.log('enter', getElOpacity(el))
         el.animate([{ opacity: 0 }, { opacity: getElOpacity(el) }], {
           duration: 200,
         }).finished.then(done)
       }}
       onExit={(el, done) => {
-        console.log('exit', getElOpacity(el))
-
         const isSpinner = el.tagName === 'DIV'
         el.animate([{ opacity: getElOpacity(el) }, { opacity: 0 }], {
           duration: isSpinner ? 400 : 200,

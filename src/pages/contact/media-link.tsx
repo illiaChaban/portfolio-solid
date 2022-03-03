@@ -58,8 +58,6 @@ const TileWrapper = styled('div')`
 `
 
 const useTileStyles = () => {
-  // const theme = useTheme()
-
   return css`
     position: absolute;
     top: 0;

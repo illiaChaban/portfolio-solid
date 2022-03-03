@@ -58,10 +58,11 @@ export const Art = (p: { class?: string; style?: string }) => {
             const color = colorsArr[colorIdx]
             return (
               <span
+                // FIXME: workaround for animation reset after page transition
                 style={`
                   width: ${diagonalToContainerRatio}%;
                   height: ${diagonalToContainerRatio}%;
-                  animation-delay: ${distanceBetweenCircles}s;
+                  animation-delay: ${distanceBetweenCircles + 1.05}s;
                   border-color: ${color};
                 `}
               />

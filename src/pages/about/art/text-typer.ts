@@ -1,5 +1,5 @@
-import { css, keyframes } from '../../theme'
-import { scope } from '../../utils'
+import { css, keyframes } from '../../../theme'
+import { scope } from '../../../utils'
 
 export class TextTyper {
   private cursorBlinkerTimeoutId: number | undefined

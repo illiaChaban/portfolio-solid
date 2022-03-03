@@ -1,10 +1,6 @@
 import { Heading, Link } from '../../components'
-import { Button } from '../../components/button'
-import { textScramble } from '../../directives'
-import { use } from '../../hooks'
 import { css, styled, useTheme } from '../../theme'
 import { cx, media } from '../../utils'
-import { log } from '../../utils/log'
 import { Art } from './art'
 
 const Content = styled('div')`
