@@ -1,4 +1,4 @@
-import { Icon, Link } from '../../components'
+import { Icon, ExternalLink } from '../../components'
 import { textScramble } from '../../directives'
 import { RefSetter, use } from '../../hooks'
 import { useTheme, css, styled } from '../../theme'
@@ -25,7 +25,7 @@ export const ContactInfo = (p: { ref?: RefSetter<HTMLDivElement> }) => {
         `}
       >
         <LinkWrapper>
-          <Link href="mailto:illia.chaban.8@gmail.com" color="text">
+          <ExternalLink href="mailto:illia.chaban.8@gmail.com" color="text">
             <Icon
               name="envelope"
               class={css`
@@ -34,15 +34,15 @@ export const ContactInfo = (p: { ref?: RefSetter<HTMLDivElement> }) => {
               `}
             />{' '}
             illia.chaban.8@gmail.com
-          </Link>
+          </ExternalLink>
         </LinkWrapper>
         <LinkWrapper>
-          <Link
+          <ExternalLink
             href="https://docs.google.com/viewer?url=https://docs.google.com/document/d/1Q1eJ4p3lnqyGA5hYGV61Woh0eHEu0M6OcytNqIVpr0g/export?format=pdf"
             color="text"
           >
             <Icon name="pdf" /> Resume
-          </Link>
+          </ExternalLink>
         </LinkWrapper>
 
         <LinkWrapper
@@ -59,6 +59,7 @@ export const ContactInfo = (p: { ref?: RefSetter<HTMLDivElement> }) => {
           display: flex;
           justify-content: space-between;
           width: 100%;
+          overflow: hidden;
         `}
       >
         <MediaLink

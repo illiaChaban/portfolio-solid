@@ -77,9 +77,9 @@ const Wrapper = styled('div')`
 `
 
 const Container = styled('div')`
-  min-width: 400px;
   min-height: 400px;
   width: 400px;
+  max-width: 100vw;
   position: relative;
   bottom: 5%;
 

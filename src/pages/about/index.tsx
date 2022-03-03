@@ -1,4 +1,4 @@
-import { Heading, Link } from '../../components'
+import { Heading, ExternalLink } from '../../components'
 import { css, styled, useTheme } from '../../theme'
 import { cx, media } from '../../utils'
 import { Art } from './art'
@@ -81,7 +81,8 @@ const About = () => {
           </P>
           <P>
             <Subtle>2020 Jul</Subtle> - we launched{' '}
-            <Link href="https://tacklebox.app/">TackleBox</Link>!
+            <ExternalLink href="https://tacklebox.app/">TackleBox</ExternalLink>
+            !
           </P>
           <P>
             <Subtle>2021 Jul</Subtle> - after a great run with Insiten, I joined

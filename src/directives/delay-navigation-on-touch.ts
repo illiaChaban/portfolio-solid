@@ -8,10 +8,10 @@ export const delayNavigationOnTouch =
     bindEventWithCleanup(node, 'click', (e: MouseEvent) => {
       if (hasHover$()) return
       e.preventDefault()
-      const href = node.href
+      const { href, target } = node
       href &&
         setTimeout(() => {
-          window.location.assign(href)
+          window.open(href, target)
         }, delay)
     })
   }

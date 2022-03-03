@@ -61,7 +61,7 @@ const Home = () => {
           Full Stack | TS | Angular | React Native | C# | .Net
         </h2>
         <div class={styles.btnContainer()}>
-          <Button href="about">More About Me</Button>
+          <Button href="/about">More About Me</Button>
         </div>
       </div>
     </div>

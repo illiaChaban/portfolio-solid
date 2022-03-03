@@ -24,7 +24,7 @@ export const MediaLink = withClass('media-link')(
         {...linkProps}
         target="_blank"
         rel="noopener"
-        ref={use(delayNavigationOnTouch(200), registerHovering)}
+        ref={use(delayNavigationOnTouch(400), registerHovering)}
       >
         <TileWrapper>
           <For each={range(tilesNum)}>

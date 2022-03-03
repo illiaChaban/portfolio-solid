@@ -23,7 +23,9 @@ You can deploy the `dist` folder to any static host provider (netlify, surge, no
 
 
 TODOs:
+- debug dev not working on other browsers (can still build/deploy?)
 - integrate fullstory
-- fix contact page animation restart on page transition
+- fix page transition on mobile (current page scrolls up on navigation to the next page)
+- fix animation restart on page transition end (link hover effect / contact page art)
 - update/fix page transition on mobile?
 
