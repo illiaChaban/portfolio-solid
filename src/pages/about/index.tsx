@@ -9,19 +9,7 @@ export default () => {
     <Container class={cx(sharedStyles.tags.body)} id="about">
       <Content>
         <Heading>About</Heading>
-        <div
-          class={cx(
-            sharedStyles.tags.divEnd,
-            css`
-              & > *:first-child {
-                margin-top: 8px;
-              }
-              & > *:last-child {
-                margin-bottom: 8px;
-              }
-            `,
-          )}
-        >
+        <div class={sharedStyles.tags.divEnd}>
           <P>
             <Subtle>2016</Subtle> - moved to Atlanta, GA from Kyiv, Ukraine
           </P>
@@ -37,19 +25,14 @@ export default () => {
           </P>
           <P>
             <Subtle>2021 Jul</Subtle> - after a great run with Insiten and a ton
-            of projects (
-            <ExternalLink href="https://ampmemberships.com/">AMP</ExternalLink>,{' '}
-            <ExternalLink href="https://appsource.microsoft.com/en-cy/product/office/wa200002310?tab=overview">
-              Tacklebox
-            </ExternalLink>
-            ) I joined forces with Motorefi
+            of projects (<PageLink page="projects">AMP</PageLink>,{' '}
+            <PageLink page="projects">Tacklebox</PageLink> etc.) I joined forces
+            with Motorefi
           </P>
           <P>
             <Subtle>2021 Nov</Subtle> - Motorefi became{' '}
-            <ExternalLink href="https://www.gocaribou.com/">
-              Caribou
-            </ExternalLink>{' '}
-            and we successefully completed all-company rebrand in 30 days!
+            <PageLink page="projects">Caribou</PageLink> and we successefully
+            completed all-company rebrand in 30 days!
           </P>
 
           <P>

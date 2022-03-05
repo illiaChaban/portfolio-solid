@@ -31,10 +31,11 @@ export default () => {
             code.
           </P>
           <P>
-            My main area of expertise is all things JavaScript. I love working
-            with TypeScript and RxJS. React/Angular are my frameworks of choice
-            for the client side. I also have a good amount of experience working
-            with C# with .Net and Node with Express.js on the back-end.
+            My main area of expertise is all things JavaScript. I enjoy working
+            with TypeScript and RxJS. SolidJS/React are my client side
+            frameworks of choice, although I have had experience with myriad of
+            different technologies. I also have good amount of experience
+            working with C# with .NET and Node with NestJS on the back-end.
           </P>
           <P>
             You can learn about some of my projects{' '}

@@ -12,6 +12,8 @@ const icons = {
   codepen: 'fab fa-codepen',
   pdf: 'fas fa-file-pdf',
   mapMarker: 'fas fa-map-marker-alt',
+  arrowRight: 'fas fa-angle-right',
+  building: 'fas fa-building',
 }
 
 type Props = { name: keyof typeof icons } & JSX.IntrinsicElements['i']

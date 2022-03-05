@@ -30,3 +30,6 @@ TODOs:
 - fix animation restart on page transition end (link hover effect / contact page art)
 - update/fix page transition on mobile?
 
+MAYBEs:
+- SSR?
+- contact form ?

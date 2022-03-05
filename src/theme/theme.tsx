@@ -27,6 +27,10 @@ const theme = {
     navOffset: 'var(--menu-offset)',
   },
   sharedStyles,
+  zIndex: {
+    navbar: 3,
+    pageTranstion: 2,
+  },
 }
 
 export type Theme = typeof theme

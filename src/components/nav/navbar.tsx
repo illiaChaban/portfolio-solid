@@ -23,7 +23,7 @@ const MenuContainer = styled('div')(({ theme }) => ({
   height: '100%',
   position: 'fixed',
   top: 0,
-  zIndex: 3,
+  zIndex: theme.zIndex.navbar,
 
   display: 'flex',
   justifyContent: 'center',

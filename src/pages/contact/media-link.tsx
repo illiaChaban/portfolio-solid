@@ -49,6 +49,7 @@ const LinkBase = styled('a')`
   height: 5.25rem;
   position: relative;
   font-size: 3rem;
+  text-decoration: none;
 `
 
 const TileWrapper = styled('div')`

@@ -123,12 +123,6 @@ export const GlobalStyles = createGlobalStyles`
     position: relative;
   }
 
-  a {
-    text-decoration: none;
-    color: var(--color-highlight);
-  }
-
-
   .flex-1 {
     flex-grow: 1;
     flex-shrink: 1;

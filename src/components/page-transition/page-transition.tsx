@@ -174,6 +174,7 @@ export const Mask = (p: {
           // For mobile view, show the whole thing
           paddingLeft: 'inherit',
           display: 'flex',
+          zIndex: theme.zIndex.pageTranstion,
         }),
       )}
     >
