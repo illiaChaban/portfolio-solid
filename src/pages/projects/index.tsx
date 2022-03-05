@@ -3,6 +3,7 @@
 import { JSXElement, Show } from 'solid-js'
 import { Icon } from '../../components'
 import { css, styled, useTheme, withClass } from '../../theme'
+import { MediaLink } from './media-link'
 import { Project } from './project'
 
 // TODO: mention AMP (+ udpate tacklebox links to Microsoft)
@@ -22,42 +23,36 @@ export default () => {
                 Complex auto refinancing platform that helps you navigate
                 through different lenders to find the best quotes.
               </p>
-              <ul>
+              <Ul>
                 <li>
                   Delivered one of the more complex pages on the consumer flow.
                 </li>
                 <li>
                   Completed company websites rebrand within a 30-day deadline
                 </li>
-              </ul>
+              </Ul>
             </>
           }
           back={
             <>
               <p>
-                <span class="highlight">Details:</span>
-                <br />
+                <Subtitle>Details:</Subtitle>
                 Integrated content platform with advanced user and error
                 tracking. Using GraphQL to navigate a complex system of
                 microservices
               </p>
               <p>
-                <span class="highlight">Technologies:</span>
-                <br />
+                <Subtitle>Technologies:</Subtitle>
                 Typescript, React, GraphQL, Hasura, Next.js, Node.js, Rollbar,
                 Segment, Contentful
               </p>
-              <div class="links">
-                <a
+              <LinksContainer>
+                <MediaLink
                   href="https://www.gocaribou.com/"
-                  target="_blank"
-                  rel="noopener"
-                  class="icon-to-text-on-hover"
-                  aria-label="website"
-                >
-                  <i class="fas fa-globe"></i>
-                </a>
-              </div>
+                  icon="globe"
+                  label="website"
+                />
+              </LinksContainer>
             </>
           }
         />
@@ -78,6 +73,12 @@ const Title = styled('h2')`
   margin: 0;
   width: 100%;
   text-align: center;
+`
+
+const Ul = styled('ul')`
+  padding-left: 15px;
+  font-size: 0.8rem;
+  line-height: 1.3rem;
 `
 
 const Row = withClass('flex-1')(styled('div')`
@@ -104,4 +105,24 @@ const At = styled('span')`
   color: ${({ theme }) => theme.colors.text.subtle1};
   font-size: 0.6em;
   display: block;
+`
+
+const Subtitle = (p: { children: string }) => (
+  <>
+    <span
+      class={css`
+        font-weight: 900;
+        text-decoration: underline;
+      `}
+    >
+      {p.children}
+    </span>
+    <br />
+  </>
+)
+
+const LinksContainer = styled('div')`
+  display: flex;
+  justify-content: space-evenly;
+  font-size: 2rem;
 `

@@ -14,9 +14,11 @@ const icons = {
   mapMarker: 'fas fa-map-marker-alt',
   arrowRight: 'fas fa-angle-right',
   building: 'fas fa-building',
+  globe: 'fas fa-globe',
 }
 
-type Props = { name: keyof typeof icons } & JSX.IntrinsicElements['i']
+export type IconName = keyof typeof icons
+type Props = { name: IconName } & JSX.IntrinsicElements['i']
 
 export const Icon = (p: Props) => {
   const [p1, others] = splitProps(p, ['class', 'className', 'name'])
