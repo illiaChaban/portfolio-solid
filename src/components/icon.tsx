@@ -15,6 +15,13 @@ const icons = {
   arrowRight: 'fas fa-angle-right',
   building: 'fas fa-building',
   globe: 'fas fa-globe',
+  appStore: 'fab fa-app-store-ios',
+  googlePlay: 'fab fa-google-play',
+  plant: 'fas fa-seedling',
+  youtube: 'fab fa-youtube',
+  palette: 'fas fa-palette',
+  lightbulb: 'far fa-lightbulb',
+  runner: 'fas fa-running',
 }
 
 export type IconName = keyof typeof icons

@@ -149,7 +149,7 @@ const Front = styled('div')`
     transition: opacity 0.3s, transform 0s 0.6s;
   }
 
-  > *:first-child {
+  > p:first-child {
     margin-top: 0;
   }
   > *:last-child {

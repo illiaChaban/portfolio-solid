@@ -2,6 +2,9 @@
 // https://codepen.io/lollocll/pen/qPmLMr
 // Thanks!
 
+import { onMount } from 'solid-js'
+import { PartialBut } from '../types'
+
 // Was updated by me for my needs :)
 
 type Config = {
@@ -29,9 +32,8 @@ class TextScramble {
   private frameRequest!: number
   private frame = 0
 
-  constructor(private el: HTMLElement, config: Partial<Config> = {}) {
+  constructor(private el: HTMLElement, config: PartialBut<Config, 'phrases'>) {
     this.config = {
-      phrases: [this.el.innerText],
       infinite: false,
       interval: 2500,
       doodleStyle: '',
@@ -105,6 +107,9 @@ type DirectiveConfig = Partial<Config> & {
 export const textScramble =
   ({ delay = 1000, ...config }: DirectiveConfig) =>
   (node: HTMLElement) => {
-    const scramble = new TextScramble(node, config)
-    setTimeout(scramble.animate, delay)
+    onMount(() => {
+      const phrases = config.phrases ?? [node.innerText]
+      const scramble = new TextScramble(node, { ...config, phrases })
+      setTimeout(scramble.animate, delay)
+    })
   }

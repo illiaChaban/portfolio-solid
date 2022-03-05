@@ -16,3 +16,5 @@ export type FC<T extends AnyObj = EmptyObj> = SimpleComponent<T>
 export type OmitSafe<T extends {}, TKeys extends keyof T> = Omit<T, TKeys>
 
 export type WithOverrides<T extends {}, Y extends {}> = Omit<T, keyof Y> & Y
+export type PartialBut<T, K extends keyof T> = Partial<Omit<Text, K>> &
+  Pick<T, K>
