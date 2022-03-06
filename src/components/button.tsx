@@ -4,7 +4,7 @@ import { PageLinkBase, PageLinkBaseProps } from '.'
 import { use, useRect } from '../hooks'
 import { css, keyframes, makeStyles, styled } from '../theme'
 import { OmitSafe, Page } from '../types'
-import { bindEventWithCleanup, throttle, withActions } from '../utils'
+import { bindEventWithCleanup, cx, throttle, withActions } from '../utils'
 import { has, minMax } from '../utils/lodash'
 
 const useStyles = makeStyles()({
@@ -47,6 +47,7 @@ const useStyles = makeStyles()({
 
 type ButtonProps = {
   children: JSX.Element
+  class?: string
 } & (
   | {
       onClick?: JSX.DOMAttributes<HTMLButtonElement>['onClick']
@@ -121,7 +122,7 @@ export const Button = (p: ButtonProps): JSX.Element => {
     <>
       <Component
         ref={use(rect$.track, ripple)}
-        class={styles.btn()}
+        class={cx(styles.btn(), p.class)}
         onClick={p.onClick as any}
       >
         <Backdrop

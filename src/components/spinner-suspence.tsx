@@ -19,7 +19,6 @@ export const SpinnerSuspence = (p: { children?: JSX.Element }) => {
         }).finished.then(done)
       }}
       onExit={(el, done) => {
-        console.log(isSpinner(el), el)
         el.animate([{ opacity: getElOpacity(el) }, { opacity: 0 }], {
           duration: isSpinner(el) ? 400 : 200,
         }).finished.then(done)
