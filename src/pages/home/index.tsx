@@ -4,7 +4,7 @@ import { Button } from '../../components/button'
 import { textScramble } from '../../directives/text-scramble'
 import { useBool, useRef } from '../../hooks'
 import { use } from '../../hooks/use-directives'
-import { css, makeStyles, styled, useTheme } from '../../theme'
+import { css, keyframes, makeStyles, styled, useTheme } from '../../theme'
 import { cx, media } from '../../utils/styles'
 
 export default () => {
@@ -125,9 +125,7 @@ const Header = () => {
         opacity: [0, 1],
         easing: 'easeInOutQuad',
         duration: 250,
-        delay: function (el, i) {
-          return 50 * (i + 1)
-        },
+        delay: (_, i) => 50 * (i + 1),
       })
       .finished.then(animatedShow$.on)
   })
@@ -148,10 +146,18 @@ const Header = () => {
             background: linear-gradient(
               to right,
               ${theme.colors.text.primary},
+              ${theme.colors.text.primary} 50%,
               ${theme.colors.primary}
             );
+            background-size: 200%;
+            background-position: left;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            animation: ${keyframes`
+                to {
+                  background-position: right;
+                }
+              `} linear 0.75s forwards;
           `,
       )}
     >
