@@ -6,6 +6,7 @@ import { useBool, useRef } from '../../hooks'
 import { use } from '../../hooks/use-directives'
 import { css, keyframes, makeStyles, styled, useTheme } from '../../theme'
 import { cx, media } from '../../utils/styles'
+import { Intro } from './intro'
 
 export default () => {
   const { sharedStyles } = useTheme()
@@ -14,20 +15,10 @@ export default () => {
     <>
       <IntroWrapper class={sharedStyles.tags.body}>
         <IntroContainer class={sharedStyles.tags.div}>
-          {/* <h1 class="ml8">
-            <span class="letters-container">
-              <span class="letters letters-left">Hi</span>
-              <span class="letters bang">!</span>
-            </span>
-            <span class="circle circle-white"></span>
-            <span class="circle circle-dark"></span>
-            <span class="circle circle-container">
-              <span class="circle circle-dark-dashed"></span>
-            </span>
-          </h1> */}
+          <Intro />
 
           <Header />
-          <Subheading>
+          <Subheading ref={use(textScramble({ delay: 1000 }))}>
             Full Stack | TypeScript | React | Angular | C#
           </Subheading>
           <Button
@@ -90,22 +81,6 @@ const IntroContainer = styled('div')`
   }
 `
 
-// const Header = styled('h1')`
-//   color: ${({ theme }) => theme.colors.text.primary};
-//   text-align: left;
-//   letter-spacing: 2px;
-//   line-height: 1.2em;
-//   margin: 0;
-//   /* adding gradient */
-//   /* background: linear-gradient(
-//     to right,
-//     ${({ theme }) => theme.colors.text.primary},
-//     ${({ theme }) => theme.colors.primary}
-//   );
-//   -webkit-background-clip: text;
-//   -webkit-text-fill-color: transparent; */
-// `
-
 const Header = () => {
   const theme = useTheme()
   const ref = useRef()
@@ -140,13 +115,12 @@ const Header = () => {
           line-height: 1.2em;
           margin: 0;
         `,
-        // TODO
         animatedShow$() &&
           css`
             background: linear-gradient(
               to right,
               ${theme.colors.text.primary},
-              ${theme.colors.text.primary} 50%,
+              ${theme.colors.text.primary} 60%,
               ${theme.colors.primary}
             );
             background-size: 200%;
@@ -157,7 +131,7 @@ const Header = () => {
                 to {
                   background-position: right;
                 }
-              `} linear 0.75s forwards;
+              `} linear 1.5s forwards;
           `,
       )}
     >
