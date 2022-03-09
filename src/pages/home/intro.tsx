@@ -1,17 +1,17 @@
 import anime from 'animejs'
 import { onMount } from 'solid-js'
 import { useRef } from '../../hooks'
-import { css, keyframes, styled } from '../../theme'
+import { keyframes, styled } from '../../theme'
 
 export const Intro = () => {
   const circleWhite = useRef()
-  const circleContainer = useRef()
+  const circleDarkDashedContainer = useRef()
   const circleDark = useRef()
   const letters = useRef()
   const bang = useRef()
 
   onMount(() => {
-    const hiAnimation = anime
+    anime
       .timeline({ loop: false })
       .add({
         targets: circleWhite.current,
@@ -21,37 +21,44 @@ export const Intro = () => {
         rotateZ: 360,
         duration: 1100,
       })
-      .add({
-        targets: circleContainer.current,
-        scale: [0, 1],
-        duration: 1100,
-        easing: 'easeInOutExpo',
-        offset: '-=1000',
-      })
-      .add({
-        targets: circleDark.current,
-        scale: [0, 1],
-        duration: 1100,
-        easing: 'easeOutExpo',
-        offset: '-=600',
-      })
-      .add({
-        targets: letters.current,
-        scale: [0, 1],
-        translateY: ['38%', '38%'], //centering letters
-        duration: 1200,
-        offset: '-=550',
-      })
-      .add({
-        targets: bang.current,
-        scale: [0, 1],
-        translateY: ['38%', '38%'], //centering letters
-        opacity: [0, 1],
-        rotateZ: [45, 15],
-        duration: 1200,
-        offset: '-=1000',
-      })
-    // .add({}) // fixes "!" bug
+      .add(
+        {
+          targets: circleDarkDashedContainer.current,
+          scale: [0, 1],
+          duration: 1100,
+          easing: 'easeInOutExpo',
+        },
+        '-=1000',
+      )
+      .add(
+        {
+          targets: circleDark.current,
+          scale: [0, 1],
+          duration: 1100,
+          easing: 'easeOutExpo',
+        },
+        '-=600',
+      )
+      .add(
+        {
+          targets: letters.current,
+          scale: [0, 1],
+          translateY: ['38%', '38%'], //centering letters
+          duration: 1200,
+        },
+        '-=550',
+      )
+      .add(
+        {
+          targets: bang.current,
+          scale: [0, 1],
+          translateY: ['38%', '38%'], //centering letters
+          opacity: [0, 1],
+          rotateZ: [45, 15],
+          duration: 1200,
+        },
+        '-=1000',
+      )
   })
   return (
     <Container>
@@ -61,7 +68,7 @@ export const Intro = () => {
       </LettersContainer>
       <CircleWhite ref={circleWhite} />
       <CircleDark ref={circleDark} />
-      <Circle ref={circleContainer}>
+      <Circle ref={circleDarkDashedContainer}>
         <CircleDarkDashed />
       </Circle>
     </Container>
@@ -87,7 +94,7 @@ const LettersContainer = styled('span')`
   top: 0;
   bottom: 0;
   height: 1em;
-  text-align: center; /* centering text */
+  text-align: center;
 `
 
 const Letters = styled('span')`
@@ -95,12 +102,10 @@ const Letters = styled('span')`
   z-index: 2;
   display: inline-block;
   line-height: 0.7em;
-  right: -0.12em;
   top: -0.2em;
 `
 
 const Bang = styled(Letters)`
-  /* font-size: 1.4em; */
   top: auto;
   left: -0.06em;
 `
@@ -124,7 +129,7 @@ const CircleWhite = styled(Circle)`
 const CircleDark = styled(Circle)`
   width: 2.2em;
   height: 2.2em;
-  background-color: #4f7b86;
+  background-color: #316673;
   border-radius: 3em;
   z-index: 1;
 `
@@ -135,10 +140,6 @@ const CircleDarkDashed = styled(Circle)`
   border: 2px dashed var(--color-highlight);
   width: 2.3em;
   height: 2.3em;
-  /* animation-name: rotate360;
-  animation-duration: 8s;
-  animation-iteration-count: infinite;
-  animation-timing-function: linear; */
 
   animation: ${keyframes`
       from {

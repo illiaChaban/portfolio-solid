@@ -18,7 +18,7 @@ export default () => {
           <Intro />
 
           <Header />
-          <Subheading ref={use(textScramble({ delay: 1000 }))}>
+          <Subheading ref={use(textScramble({ delay: 2000 }))}>
             Full Stack | TypeScript | React | Angular | C#
           </Subheading>
           <Button
@@ -33,23 +33,12 @@ export default () => {
         </IntroContainer>
       </IntroWrapper>
     </>
-    // <div class={cx(styles.homeText(), 'padding-15', sharedStyles.tags.body)}>
-    //   <div class={cx(styles.textContainer(), sharedStyles.tags.div)}>
-    //     {/* TODO: add PageTransitionContext & useTransitioning -> no delay on first load */}
-    //     <h2 ref={use(textScramble({ delay: 1000 }))} class={styles.subtle()}>
-    //       Full Stack | TS | Angular | React Native | C# | .Net
-    //     </h2>
-    //     <Button page="about" class={styles.btn()}>
-    //       More About Me
-    //     </Button>
-    //   </div>
-    // </div>
     // <Art />
   )
 }
 
 const IntroWrapper = styled('div')`
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.text.primary};
   font-size: 2rem;
   font-family: 'Special Elite', cursive;
   font-weight: 900;
@@ -63,8 +52,6 @@ const IntroWrapper = styled('div')`
   align-items: center;
 
   overflow: hidden;
-
-  padding: 15px;
 
   ${({ theme }) => media(theme.breakpoints.down('md'))} {
     margin-left: 0;
@@ -100,7 +87,7 @@ const Header = () => {
         opacity: [0, 1],
         easing: 'easeInOutQuad',
         duration: 250,
-        delay: (_, i) => 50 * (i + 1),
+        delay: anime.stagger(50, { start: 100 }),
       })
       .finished.then(animatedShow$.on)
   })
