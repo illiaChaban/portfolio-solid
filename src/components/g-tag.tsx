@@ -27,5 +27,5 @@ export const GTag: Component = p => {
     gtag('config', id)
     gtagSetPath()
   })
-  return <>{p.children}</>
+  return null
 }

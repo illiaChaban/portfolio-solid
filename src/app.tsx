@@ -38,13 +38,13 @@ const useStyles = makeStyles()({
 
 export const App: Component = withProviders(
   ThemeProvider,
-  isProduction && GTag,
   Router,
 )(() => {
   const styles = useStyles()
   const contentRef = useRef<HTMLElement>()
   return (
-    <div>
+    <>
+      {isProduction && <GTag />}
       <Particles />
       <main>
         <Navbar />
@@ -62,6 +62,6 @@ export const App: Component = withProviders(
           </PageTransition>
         </div>
       </main>
-    </div>
+    </>
   )
 })
