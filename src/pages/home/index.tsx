@@ -1,10 +1,8 @@
 import anime from 'animejs'
-import { onMount, For } from 'solid-js'
+import { For, onMount } from 'solid-js'
 import { Button } from '../../components/button'
-import { textScramble } from '../../directives/text-scramble'
 import { Ref, useBool, useRef } from '../../hooks'
-import { use } from '../../hooks/use-directives'
-import { css, keyframes, makeStyles, styled, useTheme } from '../../theme'
+import { css, keyframes, styled, useTheme } from '../../theme'
 import { cx, media } from '../../utils/styles'
 import { Art } from './art'
 import { Intro } from './intro'
@@ -19,7 +17,7 @@ export default (p: { contentRef: Ref<HTMLElement> }) => {
           <Intro />
 
           <Header />
-          <Subheading ref={use(textScramble({ delay: 2000 }))}>
+          <Subheading>
             Full Stack | TypeScript | React | Angular | C#
           </Subheading>
           <Button

@@ -54,7 +54,6 @@ const useStyles = makeStyles()({
 export const InkImage = (p: {
   step: number
   class?: string
-  style?: JSX.CSSProperties
   ref?: Ref<Element>
 }) => {
   const frameInPercent = 100 / framesNum
@@ -69,14 +68,10 @@ export const InkImage = (p: {
       class={cx(
         p.class,
         css({ position: 'absolute' }),
-        inRange$()
-          ? [
-              styles.inRange(),
-              css({ transform: `translateX(-${position$()}%)` }),
-            ]
-          : styles.outOfRange(),
+        inRange$() && styles.inRange(),
+        !inRange$() && styles.outOfRange(),
       )}
-      style={p.style}
+      style={inRange$() ? `transform: translateX(-${position$()}%)` : ''}
     />
   )
 }

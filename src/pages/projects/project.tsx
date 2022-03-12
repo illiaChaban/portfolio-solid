@@ -82,6 +82,12 @@ const Container = withClass('project')(styled('section')`
   min-height: 330px;
   margin: 20px;
   background: ${({ theme }) => theme.colors.background};
+  background: radial-gradient(
+    circle at 50% 0%,
+    #0a1515,
+    ${({ theme }) => theme.colors.background} 80%
+  );
+
   font-size: 0.8rem;
 `)
 
