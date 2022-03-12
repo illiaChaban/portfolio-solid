@@ -25,9 +25,8 @@ You can deploy the `dist` folder to any static host provider (netlify, surge, no
 
 TODOs:
 - update metas + screen.jpg
-- remove .modern-theme classes
+- fix page transition on mobile
 - preload page transition images (if cache is disabled, the page transition doesn't work the first time). Use fade in/fade out transition until all images load
-- debug dev not working on other browsers (can still build/deploy?)
 - integrate fullstory
 - fix page transition on mobile (current page scrolls up on navigation to the next page)
 - fix animation restart on page transition end (link hover effect / contact page art)

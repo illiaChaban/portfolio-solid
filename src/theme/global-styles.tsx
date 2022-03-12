@@ -103,37 +103,9 @@ export const GlobalStyles = createGlobalStyles`
   body {
     --menu-offset: 56px;
 
-    --color-main: #f2f1c6;
-    --color-subtle: grey;
     --color-subtle-text: #73aeb9;
-    --color-highlight: #FF6138;
-    
-    --body-background-color: #252627;
-
-
-
-    margin: 0;
-    color: var(--color-main);
-    font-family: 'Saira', Helvetica, Courier, sans-serif;
-
-
-    background: var(--body-background-color);
-    background-size: cover;
-    background-position: center;
-    position: relative;
-  }
-
-  .flex-1 {
-    flex-grow: 1;
-    flex-shrink: 1;
-    flex-basis: auto;
-  }
-
-  /* COLOR EXPERIMENTS */
-  body.modern-theme {
     --color-subtle: #7f838a;
     --color-main: #fdfbeb;
-    // --color-highlight: #49eeff;
     --color-highlight: #7fffff;
 
     --body-background-color: #112d44; 
@@ -141,17 +113,29 @@ export const GlobalStyles = createGlobalStyles`
     background: -moz-linear-gradient(110deg, rgb(18, 3, 41) 0%,var(--body-background-color) 25%,var(--body-background-color) 42%, rgba(10,4,23,1) 100%);
     background: -webkit-linear-gradient(110deg, rgb(18, 3, 41) 0%,var(--body-background-color) 25%,var(--body-background-color) 42%, rgba(10,4,23,1) 100%);
     background: linear-gradient(110deg, rgb(18, 3, 41) 0%,var(--body-background-color) 25%,var(--body-background-color) 42%, rgba(10,4,23,1) 100%);
+
+    margin: 0;
+    color: var(--color-main);
+    font-family: 'Saira', Helvetica, Courier, sans-serif;
+
+    background-size: cover;
+    background-position: center;
+    position: relative;
   }
 
-
   @media (max-width: 960px) {
-    body.modern-theme {
+    body {
       --body-background-color: #122438; 
       /* fixing white background on home page on mobile after squirrel jump animation */
       background: var(--body-background-color);
     }
   }
 
+  .flex-1 {
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: auto;
+  }
 
   ${tagStyles}
 `
