@@ -7,6 +7,7 @@ export type Key = string | number | symbol
 export type Falsy = '' | 0 | null | undefined | false
 export type AnyObj = Record<string, unknown>
 export type EmptyObj = Record<string, never>
+export type Dictionary<T> = Record<string, T>
 export type AnyFunc = (...args: any[]) => any
 export type SimpleComponent<T extends AnyObj = EmptyObj> = (
   props: T,

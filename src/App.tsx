@@ -6,6 +6,7 @@ import { PageTransition } from './components/page-transition'
 import { Particles } from './components/particles'
 import { isProduction } from './constants/env'
 import { withProviders } from './hocs'
+import { useRef } from './hooks'
 import About from './pages/about'
 import Contact from './pages/contact'
 import Home from './pages/home'
@@ -41,16 +42,17 @@ export const App: Component = withProviders(
   Router,
 )(() => {
   const styles = useStyles()
+  const contentRef = useRef<HTMLElement>()
   return (
     <div>
       <Particles />
       <main>
         <Navbar />
 
-        <div class={styles.content()}>
+        <div class={styles.content()} ref={contentRef}>
           <PageTransition>
             <Routes>
-              <Route path="/" element={<Home />} />
+              <Route path="/" element={<Home {...{ contentRef }} />} />
               <Route path="/about" element={<About />} />
               <Route path="/skills" element={<Skills />} />
               <Route path="/projects" element={<Projects />} />

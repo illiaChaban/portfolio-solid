@@ -1,5 +1,5 @@
 import anime from 'animejs'
-import { onMount } from 'solid-js'
+import { onCleanup, onMount } from 'solid-js'
 import { useRef } from '../../hooks'
 import { keyframes, styled } from '../../theme'
 
@@ -11,7 +11,7 @@ export const Intro = () => {
   const bang = useRef()
 
   onMount(() => {
-    anime
+    const animation = anime
       .timeline({ loop: false })
       .add({
         targets: circleWhite.current,

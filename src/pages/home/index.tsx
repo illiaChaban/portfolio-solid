@@ -2,13 +2,14 @@ import anime from 'animejs'
 import { onMount, For } from 'solid-js'
 import { Button } from '../../components/button'
 import { textScramble } from '../../directives/text-scramble'
-import { useBool, useRef } from '../../hooks'
+import { Ref, useBool, useRef } from '../../hooks'
 import { use } from '../../hooks/use-directives'
 import { css, keyframes, makeStyles, styled, useTheme } from '../../theme'
 import { cx, media } from '../../utils/styles'
+import { Art } from './art'
 import { Intro } from './intro'
 
-export default () => {
+export default (p: { contentRef: Ref<HTMLElement> }) => {
   const { sharedStyles } = useTheme()
 
   return (
@@ -32,8 +33,8 @@ export default () => {
           </Button>
         </IntroContainer>
       </IntroWrapper>
+      <Art {...p} />
     </>
-    // <Art />
   )
 }
 
