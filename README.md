@@ -24,6 +24,8 @@ You can deploy the `dist` folder to any static host provider (netlify, surge, no
 
 
 TODOs:
+- fix navbar on mobile (prod)
+- add some flair with page animations (onCleanup animation?), elements flowing from page to page --> create continous feeling
 - update metas + screen.jpg
 - fix page transition on mobile
 - preload page transition images (if cache is disabled, the page transition doesn't work the first time). Use fade in/fade out transition until all images load
