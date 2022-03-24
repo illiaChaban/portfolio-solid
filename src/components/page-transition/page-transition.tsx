@@ -13,6 +13,7 @@ import { cx, media } from '../../utils/styles'
 import { withActions } from '../../utils/with-actions'
 import { ClipPath, framesNum as inkFramesNum, InkImage } from './ink-masks'
 import { TransitionContainer } from './transition-container'
+import InkImg from './assets/ink-page-mask.png'
 
 export const PageTransition = (p: { children: JSX.Element }) => {
   // FIXME: page scrolling up on transition start
@@ -156,6 +157,9 @@ export const Mask = (p: {
     ),
   )
 
+  const frameInPercent = 100 / 24
+  const position$ = () => step$() * frameInPercent
+
   return (
     <div
       ref={use(
@@ -192,7 +196,11 @@ export const Mask = (p: {
           class={css`
             width: 100%;
             height: 100%;
-            clip-path: url(#${maskId});
+            /* clip-path: url(#${maskId}); */
+            -webkit-mask-image: url(${InkImg});
+            -webkit-mask-size: 2500vw 100vh;
+            /* -webkit-mask-size: 500%; */
+
             /* Copying styles from #content */
             display: flex;
             flex-direction: column;
@@ -203,6 +211,10 @@ export const Mask = (p: {
             ${media(theme.breakpoints.down('md'))} {
               padding-bottom: ${theme.misc.navOffset};
             }
+          `}
+          style={`
+            -webkit-mask-position: ${position$()}% 0;
+            
           `}
         >
           <svg width="0" height="0">
