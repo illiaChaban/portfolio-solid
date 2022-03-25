@@ -1,19 +1,23 @@
-import { createEffect, createSignal, on, Show } from 'solid-js'
+import { createEffect, createSignal, on, onMount, Show } from 'solid-js'
 import { JSX } from 'solid-js/jsx-runtime'
 import { devId } from '../../directives/dev-id'
 import { use } from '../../hooks/use-directives'
 import { useRef } from '../../hooks/use-ref'
-import { css, styled, useTheme } from '../../theme'
+import { css, keyframes, styled, useTheme } from '../../theme'
 import { Cleanup } from '../../types'
 import { pipe } from '../../utils'
 import { assertLog } from '../../utils/assert'
 import { Cleanups } from '../../utils/cleanups'
-import { scope } from '../../utils/lodash'
+import { minMax, scope } from '../../utils/lodash'
 import { cx, media } from '../../utils/styles'
 import { withActions } from '../../utils/with-actions'
 import { ClipPath, framesNum as inkFramesNum, InkImage } from './ink-masks'
 import { TransitionContainer } from './transition-container'
-import InkImg from './assets/ink-page-mask.png'
+import InkImgMask from './assets/ink-page-mask.png'
+import InkImg from './assets/ink.png'
+import anime from 'animejs'
+
+const fillInTime = 1200
 
 export const PageTransition = (p: { children: JSX.Element }) => {
   // FIXME: page scrolling up on transition start
@@ -34,13 +38,12 @@ export const PageTransition = (p: { children: JSX.Element }) => {
   // TODO/FIXME: try to use page owner in transition and see if it would
   // fix effects bug, where it's disposed too quickly before the page is
   // is actually animated off the screen (because Router disposed of it)
-  return <TransitionContainer>{p.children}</TransitionContainer>
+  return (
+    <>
+      <TransitionContainer>{p.children}</TransitionContainer>
+    </>
+  )
 }
-
-const getMaskId = scope(() => {
-  let id = 0
-  return () => (++id).toString()
-})
 
 export const Mask = (p: {
   children: JSX.Element
@@ -48,8 +51,6 @@ export const Mask = (p: {
   onFilled?: () => void
   debug?: boolean
 }) => {
-  const maskId = getMaskId()
-
   const theme = useTheme()
 
   // get parent dimensions
@@ -75,95 +76,177 @@ export const Mask = (p: {
   const chldrenContainerRef = useRef()
 
   // describe animation
-  const [animationCount, startAnimation] = scope(() => {
-    const [animationCount, setAnimationCount] = createSignal(0)
-    return [animationCount, () => setAnimationCount(v => v + 1)]
-  })
+  // const [animationCount, startAnimation] = scope(() => {
+  //   const [animationCount, setAnimationCount] = createSignal(0)
+  //   return [animationCount, () => setAnimationCount(v => v + 1)]
+  // })
 
   // Last additional step represents fully filled screen
-  const totalStepsNum = inkFramesNum + 1
+  // const totalStepsNum = inkFramesNum + 1
   // The first step doesn't count, because it already starts at the first step
-  const totalAdditionalSteps = totalStepsNum - 1
+  // const totalAdditionalSteps = totalStepsNum - 1
 
-  const step$ = withActions(createSignal(0), setStep => {
-    const updateRange = (step: number) => (step + totalStepsNum) % totalStepsNum
-    const increment = () => setStep(v => pipe(v + 1, updateRange))
-    const decrement = () => setStep(v => pipe(v - 1, updateRange))
-    const reset = () => setStep(0)
-    return { increment, decrement, reset }
+  // const step$ = withActions(createSignal(0), setStep => {
+  //   const updateRange = (step: number) => (step + totalStepsNum) % totalStepsNum
+  //   const increment = () => setStep(v => pipe(v + 1, updateRange))
+  //   const decrement = () => setStep(v => pipe(v - 1, updateRange))
+  //   const reset = () => setStep(0)
+  //   return { increment, decrement, reset }
+  // })
+
+  // createEffect(
+  //   on(
+  //     animationCount,
+  //     (_, _2, prevCleanups: Cleanups | void): Cleanups | void => {
+  //       if (p.debug && !animationCount()) return
+
+  //       if (step$() === totalAdditionalSteps) {
+  //         prevCleanups?.execute()
+  //         step$.reset()
+  //         return
+  //       }
+
+  //       const backgroundOutTime = 300
+
+  //       const fadeInPage = (): Cleanup => {
+  //         const textAnimation = chldrenContainerRef.current.animate(
+  //           [{ opacity: 0.2 }, { opacity: 0.8, offset: 0.75 }, { opacity: 1 }],
+  //           {
+  //             duration: fillInTime + backgroundOutTime,
+  //             fill: 'forwards',
+  //           },
+  //         )
+
+  //         return () => textAnimation.cancel()
+  //       }
+
+  //       // const fadeOutInkBackground = (onDone?: () => void): Cleanup => {
+  //       //   // fade out ink
+  //       //   const inkAnimation = inkRef.current.animate([{ opacity: 0 }], {
+  //       //     duration: backgroundOutTime,
+  //       //     fill: 'forwards',
+  //       //   })
+
+  //       //   inkAnimation.onfinish = () => onDone?.()
+
+  //       //   return () => inkAnimation.cancel()
+  //       // }
+
+  //       // const animateInk = (onDone: () => void): Cleanup => {
+  //       // const time =
+  //       //   backgroundInTime -
+  //       //   (backgroundInTime / totalAdditionalSteps) * step$()
+
+  //       // chldrenContainerRef.current
+  //       //   .animate([{ 'mask-position': '0%' }, { 'mask-position': '100%' }], {
+  //       //     duration: time,
+  //       //     // iterationComposite: 'replace',
+  //       //     easing: 'steps(24)',
+  //       //   })
+  //       //   .finished.then(a => {
+  //       //     console.log('finished')
+  //       //     a.commitStyles()
+  //       //   })
+
+  //       //   return animateSteps({
+  //       //     onStep: step$.increment,
+  //       //     onDone,
+  //       //     steps: totalAdditionalSteps - step$(),
+  //       //     // time,
+  //       //     time: fillInTime,
+  //       //   })
+  //       // }
+
+  //       const cleanups = new Cleanups()
+  //       cleanups.add(fadeInPage())
+  //       // cleanups.add(() => clearTimeout())
+  //       setTimeout(() => p.onFilled?.(), fillInTime - 100)
+  //       setTimeout(() => p.onDone?.(), fillInTime - 100)
+  //       // cleanups.add(
+  //       //   animateInk(() => {
+  //       //     p.onFilled?.()
+  //       //     // const cancel = fadeOutInkBackground(p.onDone)
+  //       //     // cleanups.add(cancel)
+  //       //   }),
+  //       // )
+
+  //       return cleanups
+  //     },
+  //   ),
+  // )
+
+  onMount(() => {
+    const backgroundOutTime = 300
+
+    const fadeInPage = (): Cleanup => {
+      const textAnimation = chldrenContainerRef.current.animate(
+        [{ opacity: 0.2 }, { opacity: 0.8, offset: 0.75 }, { opacity: 1 }],
+        {
+          duration: fillInTime + backgroundOutTime,
+          fill: 'forwards',
+        },
+      )
+
+      return () => textAnimation.cancel()
+    }
+
+    // inkRef.current.animate(
+    //   [
+    //     { transform: 'translateX(0%)' },
+    //     { transform: 'translateX(-100%)', offset: 0.96 },
+    //     { background: '#0c1126' },
+    //   ],
+    //   { duration: fillInTime, easing: 'steps(25)', fill: 'forwards' },
+    // )
+
+    // anime({
+    //   targets: inkRef.current,
+    //   keyframes: [
+    //     // { transform: 'translateX(0%)' },
+    //     // { transform: 'translateX(-100%)', offset: 0.96 },
+    //     // { background: '#0c1126' },
+    //     // { translateX: '0%' },
+    //     // { traslateX: '100%' },
+
+    //     { transform: 'translateX(0%)' },
+    //     { transform: 'translateX(-100%)' },
+    //     // { background: '#0c1126' },
+    //   ],
+    //   duration: fillInTime,
+    //   easing: 'steps(25)',
+    //   // fill
+    // }).finished.then(() => console.log('done animating'))
+
+    anime({
+      targets: inkRef.current,
+      // transform: ['translateX(0%)', 'translateX(-100%)'],
+      translateX: ['0%', '-100%'],
+      duration: fillInTime,
+      easing: 'steps(25)',
+      // fill
+    }).finished.then(() => console.log('done animating'))
+
+    anime({
+      targets: chldrenContainerRef.current,
+      // transform: ['translateX(0%)', 'translateX(-100%)'],
+      '-webkit-mask-position': ['0% 0', '100% 0'],
+      // 'mask-position': ['0% 0', '100% 0'],
+      duration: fillInTime,
+      easing: 'steps(24)',
+      // fill
+    }).finished.then(() => console.log('done animating'))
+
+    const cleanups = new Cleanups()
+    cleanups.add(fadeInPage())
+    // cleanups.add(() => clearTimeout())
+    setTimeout(() => p.onFilled?.(), fillInTime - 550)
+    setTimeout(() => p.onDone?.(), fillInTime - 550)
   })
-
-  createEffect(
-    on(
-      animationCount,
-      (_, _2, prevCleanups: Cleanups | void): Cleanups | void => {
-        if (p.debug && !animationCount()) return
-
-        if (step$() === totalAdditionalSteps) {
-          prevCleanups?.execute()
-          step$.reset()
-          return
-        }
-
-        const backgroundInTime = 800
-        const backgroundOutTime = 300
-
-        const fadeInPage = (): Cleanup => {
-          const textAnimation = chldrenContainerRef.current.animate(
-            [{ opacity: 0.2 }, { opacity: 0.8, offset: 0.75 }, { opacity: 1 }],
-            {
-              duration: backgroundInTime + backgroundOutTime,
-              fill: 'forwards',
-            },
-          )
-
-          return () => textAnimation.cancel()
-        }
-
-        const fadeOutInkBackground = (onDone?: () => void): Cleanup => {
-          // fade out ink
-          const inkAnimation = inkRef.current.animate([{ opacity: 0 }], {
-            duration: backgroundOutTime,
-            fill: 'forwards',
-          })
-
-          inkAnimation.onfinish = () => onDone?.()
-
-          return () => inkAnimation.cancel()
-        }
-
-        const animateInk = (onDone: () => void): Cleanup =>
-          animateSteps({
-            onStep: step$.increment,
-            onDone,
-            steps: totalAdditionalSteps - step$(),
-            time:
-              backgroundInTime -
-              (backgroundInTime / totalAdditionalSteps) * step$(),
-          })
-
-        const cleanups = new Cleanups()
-        cleanups.add(fadeInPage())
-        cleanups.add(
-          animateInk(() => {
-            p.onFilled?.()
-            const cancel = fadeOutInkBackground(p.onDone)
-            cleanups.add(cancel)
-          }),
-        )
-
-        return cleanups
-      },
-    ),
-  )
-
-  const frameInPercent = 100 / 24
-  const position$ = () => step$() * frameInPercent
 
   return (
     <div
       ref={use(
-        devId('transition-mask-' + maskId),
+        devId('transition-mask'),
         // parentDimensions$.calculate,
       )}
       class={cx(
@@ -189,17 +272,54 @@ export const Mask = (p: {
           position: relative;
         `}
       >
-        <InkImage ref={inkRef} step={step$()} />
+        {/* <InkImage ref={inkRef} step={step$()} /> */}
+
+        <div
+          ref={inkRef}
+          class={css`
+            position: absolute;
+            left: 0;
+            height: 100%;
+            width: ${25 * 100}%;
+            background: url(${InkImg}) no-repeat 0 0;
+            background-size: 100% 100%;
+            /* animation: ${keyframes`
+              0% {
+                transform: translateX(0%);
+              }
+              96% {
+                transform: translateX(-100%);
+              }
+              100% {
+                background: #0c1126;
+              }
+            `} ${fillInTime}ms steps(25) forwards; */
+          `}
+        />
 
         <div
           ref={chldrenContainerRef}
           class={css`
             width: 100%;
             height: 100%;
-            /* clip-path: url(#${maskId}); */
-            -webkit-mask-image: url(${InkImg});
+            -webkit-mask-image: url(${InkImgMask});
+            mask-image: url(${InkImgMask});
             -webkit-mask-size: 2500vw 100vh;
-            /* -webkit-mask-size: 500%; */
+            mask-size: 2500vw 100vh;
+            /* animation: ${keyframes`
+              0% {
+                -webkit-mask-position: 0% 0;
+                mask-position: 0% 0;
+              }
+              96% {
+                -webkit-mask-position: 100% 0;
+                mask-position: 100% 0;
+              }
+              100% {
+                -webkit-mask-image: none;
+                mask-image: none;
+              }
+            `} ${fillInTime}ms steps(24) forwards; */
 
             /* Copying styles from #content */
             display: flex;
@@ -212,47 +332,30 @@ export const Mask = (p: {
               padding-bottom: ${theme.misc.navOffset};
             }
           `}
-          style={`
-            -webkit-mask-position: ${position$()}% 0;
-            
-          `}
+          // style={`-webkit-mask-position: ${minMax(0, 100)(position$())}% 0;`}
         >
-          <svg width="0" height="0">
-            <defs>
-              <clipPath id={maskId} clipPathUnits="objectBoundingBox">
-                <ClipPath step={step$()} />
-              </clipPath>
-            </defs>
-          </svg>
-
           {p.children}
         </div>
 
-        {
-          <Show when={p.debug}>
-            {
-              <ControlsContainer>
-                <button onClick={() => location.replace('/')}>
-                  Navigate Home
-                </button>
-                <button onClick={startAnimation}>
-                  {step$() === totalAdditionalSteps ? 'Reset' : 'Animate'}
-                </button>
-                <div
-                  style={{
-                    width: '20px',
-                    textAlign: 'center',
-                    display: 'inline-block',
-                  }}
-                >
-                  {step$()}
-                </div>
-                <button onClick={step$.increment}>Increment</button>
-                <button onClick={step$.decrement}>Decrement</button>
-              </ControlsContainer>
-            }
-          </Show>
-        }
+        {/* <Show when={p.debug}>
+          <ControlsContainer>
+            <button onClick={() => location.replace('/')}>Navigate Home</button>
+            <button onClick={startAnimation}>
+              {step$() === totalAdditionalSteps ? 'Reset' : 'Animate'}
+            </button>
+            <div
+              style={{
+                width: '20px',
+                textAlign: 'center',
+                display: 'inline-block',
+              }}
+            >
+              {step$()}
+            </div>
+            <button onClick={step$.increment}>Increment</button>
+            <button onClick={step$.decrement}>Decrement</button>
+          </ControlsContainer>
+        </Show> */}
       </div>
     </div>
   )

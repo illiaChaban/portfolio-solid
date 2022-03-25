@@ -64,6 +64,7 @@ export const TransitionContainer = (p: {
             onFilled={() => {
               if (!currChildId) return
               elements$.remove(currChildId)
+              console.log('remove child ')
             }}
             debug={DEBUG}
           >
