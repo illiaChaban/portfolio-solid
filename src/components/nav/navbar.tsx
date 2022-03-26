@@ -1,10 +1,10 @@
-import { Accessor, createComputed, For, on } from 'solid-js'
+import { Accessor, createMemo, For, onMount } from 'solid-js'
 import { useComputedStyles } from '../../hooks'
 import { useAtom } from '../../hooks/use-atom'
 import { Ref, useRef } from '../../hooks/use-ref'
-import { css, styled, useBreakpoint } from '../../theme'
+import { css, styled, useBreakpoint, useTheme } from '../../theme'
 import { flow, pipe } from '../../utils'
-import { extractFloat, iif, minMax, scope } from '../../utils/lodash'
+import { extractFloat, iif, scope } from '../../utils/lodash'
 import { cx, media } from '../../utils/styles'
 import { NavIcon } from './nav-icon'
 import {
@@ -39,11 +39,6 @@ const MenuContainer = styled('div')(({ theme }) => ({
     borderRight: 'none',
   },
 }))
-
-// FIXME: compiling + diff browser
-// FIXME: reduce the number of containers
-// TODO: test transparent bar
-// TODO: desktop
 
 const navLength = 300
 
@@ -90,10 +85,22 @@ const NavContainer = styled('div')`
 `
 
 const Bar = (p: { index: number | undefined }) => {
-  const animationDuration$ = useAnimationDuration(() => p.index)
+  const theme = useTheme()
 
   const backdropRef = useRef()
   const clipPath$ = useClipPath(backdropRef, () => p.index)
+
+  const backdropTransitionStyles$ = scope(() => {
+    const afterMounted$ = useAtom(false)
+    // wait for initial clip-path to be applied
+    onMount(() => setTimeout(() => afterMounted$(true), 0))
+    return () =>
+      p.index &&
+      afterMounted$() &&
+      css`
+        transition: clip-path ${0.2}s ease-out;
+      `
+  })
 
   return (
     <div
@@ -101,40 +108,44 @@ const Bar = (p: { index: number | undefined }) => {
         width: 100%;
         height: 100%;
         position: absolute;
-        filter: drop-shadow(0px -1px 3px var(--color-highlight));
       `}
     >
+      {/* Using another DIV to create border instead of 
+      "filter: drop-shadow(0px -1px 3px var(--color-highlight));" on the parent 
+      because of the animation bug on mobile (visible only on an actual phone)
+      */}
+      <div
+        class={cx(
+          css`
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            background-color: ${theme.colors.text.subtle2};
+            ${media(theme.breakpoints.down('md'))} {
+              top: -1px;
+            }
+            ${media(theme.breakpoints.up('md'))} {
+              right: -1px;
+            }
+          `,
+          backdropTransitionStyles$(),
+        )}
+        style={`clip-path: path('${clipPath$()}');`}
+      />
       <div
         ref={backdropRef}
         class={cx(
           css`
-            backdrop-filter: blur(2px);
             height: 100%;
             width: 100%;
             background: #262323;
           `,
-          css`
-            transition: clip-path ${animationDuration$() / 1000}s ease-out;
-          `,
+          backdropTransitionStyles$(),
         )}
-        style={clipPath$()}
+        style={`clip-path: path('${clipPath$()}');`}
       />
     </div>
   )
-}
-
-const useAnimationDuration = (index$: Accessor<number | undefined>) => {
-  const animationDuration$ = useAtom<number>(0)
-  createComputed(
-    on(index$, (i, prevI) => {
-      if (i === undefined || prevI === undefined) {
-        return animationDuration$(0)
-      }
-      const change = Math.abs(i - prevI)
-      animationDuration$(minMax(90, 175)(change * 50))
-    }),
-  )
-  return animationDuration$
 }
 
 type Direction = 'down' | 'right'
@@ -190,7 +201,6 @@ const useClipPath = (elRef: Ref, index$: Accessor<number | undefined>) => {
     const length =
       backdropDimensions$()[direction === 'right' ? 'width' : 'height']
     const line = direction === 'right' ? 'h' : 'v'
-    // return `v${backdropDimensions$().height}`
     return oneLine(`
       ${line}${getBackdropPadding(length)}
       ${line}${startPoint$()}
@@ -200,22 +210,23 @@ const useClipPath = (elRef: Ref, index$: Accessor<number | undefined>) => {
     `).replace('--', '')
   }
 
-  const clipPath$ = () =>
+  const clipPath$ = createMemo(() =>
     isDesktop$()
-      ? oneLine(`clip-path: path('
-      M0,0
-      h${backdropDimensions$().width} 
-      ${top$('down')}
-      h-${backdropDimensions$().width} 
-      z
-    ');`)
-      : oneLine(`clip-path: path('
-      M0,0
-      ${top$('right')}
-      v${backdropDimensions$().height} 
-      h-${backdropDimensions$().width}
-      z
-    ');`)
+      ? oneLine(`
+        M0,0
+        h${backdropDimensions$().width} 
+        ${top$('down')}
+        h-${backdropDimensions$().width} 
+        z
+      `)
+      : oneLine(`
+        M0,0
+        ${top$('right')}
+        v${backdropDimensions$().height} 
+        h-${backdropDimensions$().width}
+        z
+      `),
+  )
 
   return clipPath$
 }

@@ -1,17 +1,21 @@
 import { NavLink, useLocation } from 'solid-app-router'
-import { createEffect, on } from 'solid-js'
+import { createRenderEffect, on } from 'solid-js'
 import { JSX } from 'solid-js/jsx-runtime'
 import { css, makeStyles } from '../../theme'
 import { cx, hoverMedia, media } from '../../utils/styles'
 import { Icon } from '../icon'
 
 const useStyles = makeStyles()({
-  container: css`
+  container: ({ breakpoints }) => css`
     border-radius: 50%;
     width: 50px;
     height: 50px;
     z-index: 1;
     transition: transform 0.2s;
+    /* transition on the phone doesn't seem smooth with 0.2s */
+    ${media(breakpoints.down('sm'))} {
+      transition: transform 0.3s;
+    }
   `,
   activeContainer: ({ breakpoints }) => css`
     ${media(breakpoints.down('md'))} {
@@ -114,7 +118,6 @@ type IconBaseProps = {
   name?: string
   children: JSX.Element
   onActivate?: () => void
-  showNameOnHover?: boolean
 }
 const NavIconBase = (p: IconBaseProps): JSX.Element => {
   const removeSlashes = (str: string) => str.replace('/', '')
@@ -123,7 +126,7 @@ const NavIconBase = (p: IconBaseProps): JSX.Element => {
   const location$ = useLocation()
   const isActivated$ = () => location$.pathname === p.href
 
-  createEffect(
+  createRenderEffect(
     on(isActivated$, isActive => {
       isActive && p.onActivate?.()
     }),
@@ -152,7 +155,7 @@ const NavIconBase = (p: IconBaseProps): JSX.Element => {
   )
 }
 
-type Props = Pick<IconBaseProps, 'onActivate' | 'showNameOnHover'>
+type Props = Pick<IconBaseProps, 'onActivate'>
 export const NavIcon = {
   Home: (p: Props) => (
     <NavIconBase href="/" end name="home" onActivate={p.onActivate}>
