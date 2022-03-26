@@ -50,16 +50,16 @@ export const App: Component = withProviders(
         <Navbar />
 
         <div class={styles.content()} ref={contentRef}>
-          <PageTransition>
-            <Routes>
-              <Route path="/" element={<Home {...{ contentRef }} />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/skills" element={<Skills />} />
-              <Route path="/projects" element={<Projects />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/*all" element={<NotFound />} />
-            </Routes>
-          </PageTransition>
+          {/* <PageTransition> */}
+          <Routes>
+            <Route path="/" element={<Home {...{ contentRef }} />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/skills" element={<Skills />} />
+            <Route path="/projects" element={<Projects />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/*all" element={<NotFound />} />
+          </Routes>
+          {/* </PageTransition> */}
         </div>
       </main>
     </>

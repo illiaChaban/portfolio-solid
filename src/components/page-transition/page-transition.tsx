@@ -217,24 +217,35 @@ export const Mask = (p: {
     //   // fill
     // }).finished.then(() => console.log('done animating'))
 
-    anime({
-      targets: inkRef.current,
-      // transform: ['translateX(0%)', 'translateX(-100%)'],
-      translateX: ['0%', '-100%'],
-      duration: fillInTime,
-      easing: 'steps(25)',
-      // fill
-    }).finished.then(() => console.log('done animating'))
+    // anime({
+    //   targets: inkRef.current,
+    //   // transform: ['translateX(0%)', 'translateX(-100%)'],
+    //   translateX: ['0%', '-100%'],
+    //   duration: fillInTime,
+    //   easing: 'steps(25)',
+    //   // fill
+    // })
 
-    anime({
-      targets: chldrenContainerRef.current,
-      // transform: ['translateX(0%)', 'translateX(-100%)'],
-      '-webkit-mask-position': ['0% 0', '100% 0'],
-      // 'mask-position': ['0% 0', '100% 0'],
-      duration: fillInTime,
-      easing: 'steps(24)',
-      // fill
-    }).finished.then(() => console.log('done animating'))
+    // anime({
+    //   targets: chldrenContainerRef.current,
+    //   // transform: ['translateX(0%)', 'translateX(-100%)'],
+    //   '-webkit-mask-position': ['0% 0', '100% 0'],
+    //   // 'mask-position': ['0% 0', '100% 0'],
+    //   duration: fillInTime,
+    //   easing: 'steps(24)',
+    //   // fill
+    // })
+
+    // anime({
+    //   targets: chldrenContainerRef.current,
+    //   // transform: ['translateX(0%)', 'translateX(-100%)'],
+    //   translateX: ['0%', '-100%'],
+
+    //   // 'mask-position': ['0% 0', '100% 0'],
+    //   duration: fillInTime,
+    //   easing: 'steps(24)',
+    //   // fill
+    // })
 
     const cleanups = new Cleanups()
     cleanups.add(fadeInPage())
@@ -300,26 +311,12 @@ export const Mask = (p: {
         <div
           ref={chldrenContainerRef}
           class={css`
-            width: 100%;
+            width: 2500vw;
             height: 100%;
             -webkit-mask-image: url(${InkImgMask});
             mask-image: url(${InkImgMask});
-            -webkit-mask-size: 2500vw 100vh;
-            mask-size: 2500vw 100vh;
-            /* animation: ${keyframes`
-              0% {
-                -webkit-mask-position: 0% 0;
-                mask-position: 0% 0;
-              }
-              96% {
-                -webkit-mask-position: 100% 0;
-                mask-position: 100% 0;
-              }
-              100% {
-                -webkit-mask-image: none;
-                mask-image: none;
-              }
-            `} ${fillInTime}ms steps(24) forwards; */
+            -webkit-mask-size: 100% 100%;
+            mask-size: 100% 100%;
 
             /* Copying styles from #content */
             display: flex;
@@ -334,7 +331,14 @@ export const Mask = (p: {
           `}
           // style={`-webkit-mask-position: ${minMax(0, 100)(position$())}% 0;`}
         >
-          {p.children}
+          <div
+            class={css`
+              width: 100vw;
+              min-height: 100%;
+            `}
+          >
+            {p.children}
+          </div>
         </div>
 
         {/* <Show when={p.debug}>
