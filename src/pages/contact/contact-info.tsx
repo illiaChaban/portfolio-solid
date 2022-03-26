@@ -59,7 +59,6 @@ export const ContactInfo = (p: { ref?: RefSetter<HTMLDivElement> }) => {
           display: flex;
           justify-content: space-between;
           width: 100%;
-          overflow: hidden;
         `}
       >
         <MediaLink
