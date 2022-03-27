@@ -16,6 +16,7 @@ export const ContactInfo = (p: { ref?: RefSetter<HTMLDivElement> }) => {
         sharedStyles.tags.div,
         css`
           padding: 35px 0;
+          overflow: hidden;
         `,
       )}
       ref={use(p.ref)}
