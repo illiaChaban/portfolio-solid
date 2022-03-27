@@ -1,2 +1,2 @@
 # Netlify redirects from what the browser requests to what we serve
-/about             /
+/*   /index.html   200
