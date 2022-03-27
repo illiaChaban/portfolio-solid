@@ -16,7 +16,6 @@ export const PageTransition = (p: { children: JSX.Element }) => {
       {isBig$() ? (
         <MaskTransitionAsync>{p.children}</MaskTransitionAsync>
       ) : (
-        // TODO:
         <FadeInTransition>{p.children}</FadeInTransition>
       )}
     </>
