@@ -1,4 +1,6 @@
+import { useContext } from 'solid-js'
 import { Icon, ExternalLink } from '../../components'
+import { PageTransitionContext } from '../../components/page-transition'
 import { textScramble } from '../../directives'
 import { RefSetter, use } from '../../hooks'
 import { useTheme, css, styled } from '../../theme'
@@ -90,11 +92,12 @@ const LinkWrapper = styled('h2')`
 
 const IntroHeading = () => {
   const theme = useTheme()
+  const { maskTransitionEnabled$ } = useContext(PageTransitionContext)
   return (
     <h3
       ref={use(
         textScramble({
-          delay: 1000,
+          delay: maskTransitionEnabled$() ? 1000 : 250,
           // eslint-disable-next-line quotes
           phrases: ['Hello friend,', "Let's build something great!"],
           interval: 2000,

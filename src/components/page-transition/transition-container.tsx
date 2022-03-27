@@ -13,21 +13,6 @@ import { Mask } from './mask'
 
 const DEBUG = false
 
-// FIXME: page scrolling up on transition start
-// FIXME: delay text scramble animation and others to wait for transition
-// FIXME: preload ink images & svg ? component?. With disabled cache the
-// first page transition doesn't work. Use simple fade in/out until preloaded
-
-// TODO:
-// ! Allow scroll and navigation before background fades in
-// Refactor?
-// Mobile rotate images + clip?
-// Lazy load this transition due to clips and image size
-// Try to reduce image size
-// Use simple transition as a backup
-// Show a banner "advanced transition loaded/loading" when it's ready
-// + "try to navigate to a different page"
-
 // TODO/FIXME: try to use page owner in transition and see if it would
 // fix effects bug, where it's disposed too quickly before the page is
 // is actually animated off the screen (because Router disposed of it)

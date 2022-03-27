@@ -148,6 +148,7 @@ const NavIconBase = (p: IconBaseProps): JSX.Element => {
         )}
         style={`--hover-text: '${name()}'`}
         aria-label={`nav-menu--${name()}`}
+        noScroll
       >
         {p.children}
       </NavLink>

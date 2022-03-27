@@ -1,10 +1,11 @@
-import { ExternalLink, Heading, PageLink } from '../../components'
-import { css, styled, useTheme } from '../../theme'
+import { Heading, PageLink } from '../../components'
+import { styled, useTheme } from '../../theme'
 import { cx, media } from '../../utils'
 import { Art } from './art'
 
 export default () => {
   const { sharedStyles } = useTheme()
+
   return (
     <Container class={cx(sharedStyles.tags.body)} id="about">
       <Content>

@@ -1,9 +1,13 @@
-import { lazy, Suspense } from 'solid-js'
+import { createContext, lazy, Show, Suspense } from 'solid-js'
 import { JSX } from 'solid-js/jsx-runtime'
 import { Transition } from 'solid-transition-group'
 import { useBreakpoint } from '../../theme'
 import { Load } from '../../utils'
 import InkImg from './assets/ink.png'
+
+export const PageTransitionContext = createContext({
+  maskTransitionEnabled$: (): boolean => false,
+})
 
 export const PageTransition = (p: { children: JSX.Element }) => {
   const isBig$ = useBreakpoint('sm')
@@ -12,13 +16,16 @@ export const PageTransition = (p: { children: JSX.Element }) => {
   // due to both dimensions of the ink mask and low performance
   // TODO: test on tablet
   return (
-    <>
-      {isBig$() ? (
-        <MaskTransitionAsync>{p.children}</MaskTransitionAsync>
-      ) : (
-        <FadeInTransition>{p.children}</FadeInTransition>
-      )}
-    </>
+    <PageTransitionContext.Provider value={{ maskTransitionEnabled$: isBig$ }}>
+      {
+        <Show
+          when={isBig$()}
+          fallback={<FadeInTransition>{p.children}</FadeInTransition>}
+        >
+          {<MaskTransitionAsync>{p.children}</MaskTransitionAsync>}
+        </Show>
+      }
+    </PageTransitionContext.Provider>
   )
 }
 
@@ -32,6 +39,7 @@ const FadeInTransition = (p: { children: JSX.Element }) => {
         }).finished.then(done)
       }}
       onExit={(el, done) => {
+        window.scroll(0, 0)
         done()
       }}
     >
