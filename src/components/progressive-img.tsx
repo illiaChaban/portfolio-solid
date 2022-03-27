@@ -1,6 +1,7 @@
 import { JSX, onMount, splitProps } from 'solid-js'
 import { useAtom, useRef } from '../hooks'
 import { OmitSafe } from '../types'
+import { Load } from '../utils'
 
 type SmallPngImgSrc = string
 type MappedSrc = string
@@ -29,7 +30,7 @@ export const ProgressiveImage = (
         ? p.sources.webp.lg
         : p.sources.png[window.innerWidth > 650 ? 'lg' : 'md']
 
-      await loadImage(newSrc)
+      await Load.image(newSrc)
       loadedImagesMap[p1.sources.png.sm] = newSrc
       betterQualitySrc$(newSrc)
     })
@@ -57,14 +58,4 @@ const webpIsSupported = (currentImageSrc: string) => {
   const l = currentImageSrc.length
   const last4extension = currentImageSrc.slice(l - 4, l)
   return last4extension === 'webp'
-}
-
-const loadImage = (src: string): Promise<HTMLImageElement> => {
-  const img = new Image()
-  const promise = new Promise<HTMLImageElement>((resolve, reject) => {
-    img.onload = () => resolve(img)
-    img.onerror = reject
-  })
-  img.src = src
-  return promise
 }

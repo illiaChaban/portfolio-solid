@@ -1,6 +1,6 @@
 const loadedScripts: Record<string, Promise<true>> = {}
 
-export const loadScript = (src: string) => {
+const loadScript = (src: string) => {
   if (!(src in loadedScripts)) {
     loadedScripts[src] = new Promise((resolve, reject) => {
       const s = document.createElement('script')
@@ -15,4 +15,20 @@ export const loadScript = (src: string) => {
     })
   }
   return loadedScripts[src]
+}
+
+const loadImage = (src: string): Promise<HTMLImageElement> => {
+  const img = new Image()
+  const promise = new Promise<HTMLImageElement>((resolve, reject) => {
+    img.onload = () => resolve(img)
+    img.onerror = reject
+  })
+  img.src = src
+  return promise
+}
+
+export const Load = {
+  script: loadScript,
+  /** Once image is loaded, the browser will cache it by default */
+  image: loadImage,
 }

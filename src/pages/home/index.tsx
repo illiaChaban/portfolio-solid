@@ -11,7 +11,12 @@ export default (p: { contentRef: Ref<HTMLElement> }) => {
   const { sharedStyles } = useTheme()
 
   return (
-    <>
+    <div
+      class={css`
+        display: flex;
+        flex-grow: 1;
+      `}
+    >
       <IntroWrapper class={sharedStyles.tags.body}>
         <IntroContainer class={sharedStyles.tags.div}>
           <Intro />
@@ -32,7 +37,7 @@ export default (p: { contentRef: Ref<HTMLElement> }) => {
         </IntroContainer>
       </IntroWrapper>
       <Art {...p} />
-    </>
+    </div>
   )
 }
 
