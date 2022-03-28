@@ -5,23 +5,44 @@ import {
   createSignal,
   For,
   JSXElement,
+  lazy,
   on,
 } from 'solid-js'
+import { Load } from '../../utils'
 import { last, scope } from '../../utils/lodash'
 import { withActions } from '../../utils/with-actions'
-import { Mask } from './mask'
+import InkImg from './assets/ink.png'
+import { FadeInTransition } from './fade-transition'
 
 const DEBUG = false
 
 // TODO/FIXME: try to use page owner in transition and see if it would
 // fix effects bug, where it's disposed too quickly before the page is
 // is actually animated off the screen (because Router disposed of it)
-const TransitionContainer = (p: { children: JSXElement }): JSXElement => {
+export const MaskTransitionContainer = (p: {
+  children: JSXElement
+}): JSXElement => {
   const propsChildren = children(() => p.children)
   const getNextId = scope(() => {
     let id = 0
     return () => ++id
   })
+
+  let cachedImage
+
+  const MaskTransition = lazy(async () => {
+    const [Component, image] = await Promise.all([
+      import('./mask-transition'),
+      Load.image(InkImg),
+    ])
+    // caching ink image, otherwise the first transition might be
+    // transparent until the image loads
+    cachedImage = image
+    return Component
+  })
+
+  let loadedMaskTransition = false
+  MaskTransition.preload().then(() => (loadedMaskTransition = true))
 
   type Child = { el: JSXElement; id: number; dispose?: () => void }
   const elements$ = withActions(
@@ -29,9 +50,9 @@ const TransitionContainer = (p: { children: JSXElement }): JSXElement => {
       ? createSignal<Child[]>([
           {
             el: (
-              <TransitionPage onFilled={() => {}} debug={DEBUG}>
+              <MaskTransition onFilled={() => {}} debug={DEBUG}>
                 {propsChildren()}
-              </TransitionPage>
+              </MaskTransition>
             ),
             id: getNextId(),
           },
@@ -46,6 +67,7 @@ const TransitionContainer = (p: { children: JSXElement }): JSXElement => {
         }),
       add: (el: JSXElement, dispose: () => void) =>
         set(prev => [...prev, { el, id: getNextId(), dispose }]),
+      reset: (el: JSXElement) => set(() => [{ el, id: getNextId() }]),
     }),
   )
 
@@ -54,6 +76,11 @@ const TransitionContainer = (p: { children: JSXElement }): JSXElement => {
       const isFirst = !prevChild
       if (isFirst) return
 
+      if (!loadedMaskTransition) {
+        elements$.reset(<FadeInTransition>{child}</FadeInTransition>)
+        return
+      }
+
       const currChildId = last(elements$())?.id
 
       // If create root is not used, the transition page is disposed
@@ -61,7 +88,7 @@ const TransitionContainer = (p: { children: JSXElement }): JSXElement => {
       // page reactivities --> which breaks animation
       const [transitionedChild, dispose] = createRoot(dispose => {
         return [
-          <TransitionPage
+          <MaskTransition
             onFilled={() => {
               if (!currChildId) return
               elements$.remove(currChildId)
@@ -69,7 +96,7 @@ const TransitionContainer = (p: { children: JSXElement }): JSXElement => {
             debug={DEBUG}
           >
             {child}
-          </TransitionPage>,
+          </MaskTransition>,
           dispose,
         ]
       })
@@ -80,29 +107,3 @@ const TransitionContainer = (p: { children: JSXElement }): JSXElement => {
 
   return <For each={elements$()}>{child => child.el}</For>
 }
-
-const TransitionPage = (p: {
-  children: JSXElement
-  onFilled: () => void
-  debug?: boolean
-}): JSXElement => {
-  const [transitioned, setTransitioned] = createSignal(false)
-  // wrapping in children as a workaround for a bug inside Solid.js
-  // https://github.com/solidjs/solid/issues/731
-  const resolved = children(() =>
-    transitioned() ? (
-      p.children
-    ) : (
-      <Mask
-        onFilled={p.onFilled}
-        onDone={() => setTransitioned(true)}
-        debug={p.debug}
-      >
-        {p.children}
-      </Mask>
-    ),
-  )
-  return resolved
-}
-
-export default TransitionContainer

@@ -1,4 +1,11 @@
-import { createEffect, createSignal, on, Show } from 'solid-js'
+import {
+  children,
+  createEffect,
+  createSignal,
+  JSXElement,
+  on,
+  Show,
+} from 'solid-js'
 import { JSX } from 'solid-js/jsx-runtime'
 import { devId } from '../../directives/dev-id'
 import { use } from '../../hooks/use-directives'
@@ -13,12 +20,36 @@ import { cx, media } from '../../utils/styles'
 import { withActions } from '../../utils/with-actions'
 import { ClipPath, framesNum as inkFramesNum, InkImage } from './ink-masks'
 
+export default (p: {
+  children: JSXElement
+  onFilled: () => void
+  debug?: boolean
+}): JSXElement => {
+  const [transitioned, setTransitioned] = createSignal(false)
+  // wrapping in children as a workaround for a bug inside Solid.js
+  // https://github.com/solidjs/solid/issues/731
+  const resolved = children(() =>
+    transitioned() ? (
+      p.children
+    ) : (
+      <Mask
+        onFilled={p.onFilled}
+        onDone={() => setTransitioned(true)}
+        debug={p.debug}
+      >
+        {p.children}
+      </Mask>
+    ),
+  )
+  return resolved
+}
+
 const getMaskId = scope(() => {
   let id = 0
   return () => (++id).toString()
 })
 
-export const Mask = (p: {
+const Mask = (p: {
   children: JSX.Element
   onDone?: () => void
   onFilled?: () => void
@@ -27,24 +58,6 @@ export const Mask = (p: {
   const maskId = getMaskId()
 
   const theme = useTheme()
-
-  // get parent dimensions
-  // const parentDimensions$ = call(() => {
-  //   const containerRef = useRef()
-  //   const parentRef = useRef()
-  //   onMount(() => {
-  //     const parent = containerRef.current.parentElement
-  //     assertLog(parent, "Parent not found")
-  //     parentRef.current = parent
-  //   })
-  //   const parentDimensions$ = useContentWidth(parentRef)
-  //   return Object.assign(
-  //     parentDimensions$,
-  //     {calculate: (currEl: Element) => {
-  //       containerRef.current = currEl
-  //     }}
-  //   )
-  // })
 
   // other refs
   const inkRef = useRef()

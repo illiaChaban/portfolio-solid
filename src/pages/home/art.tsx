@@ -1,8 +1,8 @@
-import { Accessor, onMount, Show } from 'solid-js'
+import { Accessor, onMount } from 'solid-js'
 import { ProgressiveImage } from '../../components/progressive-img'
 import { Ref, useAtom } from '../../hooks'
 import { css, keyframes, styled } from '../../theme'
-import { bindEventWithCleanup, media, minMax, pick, pipe } from '../../utils'
+import { bindEventWithCleanup, media } from '../../utils'
 import { default as imgs } from './images'
 
 export const Art = (p: { contentRef: Ref<HTMLElement> }) => {
@@ -18,28 +18,8 @@ export const Art = (p: { contentRef: Ref<HTMLElement> }) => {
         <ArtContainer style={`--content-width: ${contentWidth$()}px;`}>
           <BaseContainer>
             <Mountain alt="mountain" sources={imgs.mountain} />
-            {/* <picture>
-              <source srcset="imgs/mountain-small.webp" type="image/webp" />
-              <img
-                id="mountain"
-                src="imgs/mountain-smallest.png"
-                data-src="imgs/mountain"
-                alt="mountain"
-              />
-            </picture> */}
             <BaseContainer>
               <Rv alt="hippie van" sources={imgs.rv} />
-
-              {/* <picture>
-                <source srcset="imgs/rv-small.webp" type="image/webp" />
-                <img
-                  id="rv"
-                  src="imgs/rv-smallest.png"
-                  alt="hippie van"
-                  data-src="imgs/rv"
-                />
-              </picture> */}
-
               <Squirell />
             </BaseContainer>
           </BaseContainer>

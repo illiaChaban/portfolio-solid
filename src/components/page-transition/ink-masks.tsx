@@ -1,5 +1,5 @@
 import InkImg from './assets/ink.png'
-import { createMemo, JSX } from 'solid-js'
+import { createMemo } from 'solid-js'
 import {
   Path2,
   Path3,
