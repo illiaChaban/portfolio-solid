@@ -15,6 +15,7 @@ const Contact = () => {
       class={css`
         display: flex;
         flex-grow: 1;
+        overflow: hidden;
       `}
     >
       <div
