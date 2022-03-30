@@ -19,7 +19,9 @@ Your app is ready to be deployed!
 
 ## Deployment
 
-You can deploy the `dist` folder to any static host provider (netlify, surge, now, etc.)
+Deploys to Netlify on master merge ([here](https://app.netlify.com/teams/illiachaban/overview))
+
+For SPA routing to work Netlify requires `_redirects` file in the public folder
 
 
 
