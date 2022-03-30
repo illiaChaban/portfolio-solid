@@ -84,8 +84,38 @@ const NavContainer = styled('div')`
   }
 `
 
+const useStyles = () => {
+  const theme = useTheme()
+  return {
+    backdropBorder: css`
+      position: absolute;
+      height: 100%;
+      width: 100%;
+      background-color: #7ff6ff40;
+      ${media(theme.breakpoints.down('md'))} {
+        top: -1.5px;
+      }
+      ${media(theme.breakpoints.up('md'))} {
+        right: -1px;
+      }
+    `,
+    backdrop: css`
+      height: 100%;
+      width: 100%;
+      /* background: #060f1a; */
+      background: #000000c4;
+      ${media(theme.breakpoints.down('md'))} {
+        background: #000000c4;
+        backdrop-filter: blur(2px);
+      }
+    `,
+  }
+}
+
 const Bar = (p: { index: number | undefined }) => {
   const theme = useTheme()
+
+  const styles = useStyles()
 
   const backdropRef = useRef()
   const clipPath$ = useClipPath(backdropRef, () => p.index)
@@ -115,33 +145,12 @@ const Bar = (p: { index: number | undefined }) => {
       because of the animation bug on mobile (visible only on an actual phone)
       */}
       <div
-        class={cx(
-          css`
-            position: absolute;
-            height: 100%;
-            width: 100%;
-            background-color: ${theme.colors.text.subtle2};
-            ${media(theme.breakpoints.down('md'))} {
-              top: -1px;
-            }
-            ${media(theme.breakpoints.up('md'))} {
-              right: -1px;
-            }
-          `,
-          backdropTransitionStyles$(),
-        )}
+        class={cx(styles.backdropBorder, backdropTransitionStyles$())}
         style={`clip-path: path('${clipPath$()}');`}
       />
       <div
         ref={backdropRef}
-        class={cx(
-          css`
-            height: 100%;
-            width: 100%;
-            background: #262323;
-          `,
-          backdropTransitionStyles$(),
-        )}
+        class={cx(styles.backdrop, backdropTransitionStyles$())}
         style={`clip-path: path('${clipPath$()}');`}
       />
     </div>
