@@ -1,6 +1,6 @@
 import { css, styled } from '../../theme'
 import { default as WordCloud } from 'tag-canvas'
-import { getCssVariable } from '../../utils'
+import { getCssVariable, hoverMedia, media } from '../../utils'
 import { JSX, onMount } from 'solid-js'
 
 export default () => {
@@ -8,7 +8,8 @@ export default () => {
   const listId = 'skills-cloud'
   onMount(async () => {
     const cloudOptions = useSkillsCloudOptions()
-    // Reference: https://www.goat1000.com/tagcanvas-install.php
+    // Reference: https://www.goat1000.com/tagcanvas-options.php
+    // https://www.goat1000.com/tagcanvas-install.php
     WordCloud.Start(canvasId, listId, cloudOptions)
   })
 
@@ -101,6 +102,11 @@ const Container = styled('div')`
   justify-content: center;
   align-items: center;
   font-size: 0.9rem;
+  pointer-events: none;
+
+  ${media(hoverMedia)} {
+    pointer-events: auto;
+  }
 
   @media (min-width: 1100px) {
     font-size: 0.8rem;
