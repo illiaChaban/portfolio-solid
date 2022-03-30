@@ -1,36 +1,13 @@
 import InkImg from './assets/ink.png'
 import { createMemo } from 'solid-js'
-import {
-  Path2,
-  Path3,
-  Path4,
-  Path5,
-  Path6,
-  Path7,
-  Path8,
-  Path9,
-  Path10,
-  Path11,
-  Path12,
-  Path13,
-  Path14,
-  Path15,
-  Path16,
-  Path17,
-  Path18,
-  Path19,
-  Path20,
-  Path21,
-  Path22,
-  Path23,
-  Path24,
-  Path25,
-} from './assets/clips'
+
+import masksJson from './assets/masks.json'
 import { cx } from '../../utils/styles'
 import { Ref } from '../../hooks/use-ref'
 import { use } from '../../hooks/use-directives'
 import { devId } from '../../directives/dev-id'
 import { css, makeStyles } from '../../theme'
+import { last } from '../../utils'
 
 export const framesNum = 25
 
@@ -77,38 +54,5 @@ export const InkImage = (p: {
 }
 
 export const ClipPath = (p: { step: number }) => {
-  const FullPath = () => <path d="M0 0 h1 v1 h-1 z" />
-  const EmptyPath = () => <path d="M0 0 z" />
-
-  return (
-    <>
-      {[
-        <EmptyPath />,
-        <Path2 />,
-        <Path3 />,
-        <Path4 />,
-        <Path5 />,
-        <Path6 />,
-        <Path7 />,
-        <Path8 />,
-        <Path9 />,
-        <Path10 />,
-        <Path11 />,
-        <Path12 />,
-        <Path13 />,
-        <Path14 />,
-        <Path15 />,
-        <Path16 />,
-        <Path17 />,
-        <Path18 />,
-        <Path19 />,
-        <Path20 />,
-        <Path21 />,
-        <Path22 />,
-        <Path23 />,
-        <Path24 />,
-        <Path25 />,
-      ][p.step] ?? <FullPath />}
-    </>
-  )
+  return <path d={masksJson[p.step] ?? last(masksJson)} />
 }
