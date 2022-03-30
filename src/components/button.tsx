@@ -2,46 +2,55 @@ import { LinkProps } from 'solid-app-router'
 import { Accessor, createMemo, createRoot, createSignal, JSX } from 'solid-js'
 import { PageLinkBase, PageLinkBaseProps } from '.'
 import { use, useRect } from '../hooks'
-import { css, keyframes, makeStyles, styled } from '../theme'
+import { css, keyframes, styled, useTheme } from '../theme'
 import { OmitSafe, Page } from '../types'
-import { bindEventWithCleanup, cx, throttle, withActions } from '../utils'
+import {
+  bindEvent,
+  bindEventWithCleanup,
+  cx,
+  throttle,
+  withActions,
+} from '../utils'
 import { has, minMax, pick } from '../utils/lodash'
 
-const useStyles = makeStyles()({
-  btn: ({ colors }) => css`
-    --btn-color: ${colors.primary};
+const useStyles = () => {
+  const { colors } = useTheme()
+  return {
+    btn: css`
+      --btn-color: ${colors.primary};
 
-    position: relative;
+      position: relative;
 
-    box-shadow: 0 0 10px var(--btn-color);
-    text-decoration: none;
-    color: var(--btn-color);
-    background: transparent;
-    font-weight: 100;
+      box-shadow: 0 0 10px var(--btn-color);
+      text-decoration: none;
+      color: var(--btn-color);
+      background: transparent;
+      font-weight: 100;
 
-    padding: 8px 12px;
-    border-radius: 5px;
-    border: 1px solid var(--btn-color);
+      padding: 8px 12px;
+      border-radius: 5px;
+      border: 1px solid var(--btn-color);
 
-    font-family: 'Saira', Helvetica, Arial, sans-serif;
-    font-size: 1.5rem;
+      font-family: 'Saira', Helvetica, Arial, sans-serif;
+      font-size: 1.5rem;
 
-    display: inline-block;
-    text-transform: uppercase;
-    cursor: pointer;
-    outline: none;
-    overflow: hidden;
+      display: inline-block;
+      text-transform: uppercase;
+      cursor: pointer;
+      outline: none;
+      overflow: hidden;
 
-    transition: color 0.4s;
+      transition: color 0.4s;
 
-    &:focus {
-      box-shadow: 0 0 20px 1px var(--btn-color);
-    }
-  `,
-  hover: ({ colors }) => css`
-    color: ${colors.background};
-  `,
-})
+      &:focus {
+        box-shadow: 0 0 20px 1px var(--btn-color);
+      }
+    `,
+    hover: css`
+      color: ${colors.background};
+    `,
+  }
+}
 
 type ButtonProps = {
   children: JSX.Element
@@ -116,10 +125,10 @@ export const Button = (p: ButtonProps): JSX.Element => {
       <Component
         ref={use(rect$.track, ripple)}
         class={cx(
-          styles.btn(),
+          styles.btn,
           // using hover detected with JS, because CSS doesn't react to scroll
           // even when mouse is over the button
-          gradient$().isHovering && styles.hover(),
+          gradient$().isHovering && styles.hover,
           p.class,
         )}
         onClick={p.onClick as any}
@@ -176,7 +185,10 @@ const ripple = (button: HTMLElement) => {
   const rect$ = useRect()
   rect$.track(button)
 
-  bindEventWithCleanup(button, 'click', (e: MouseEvent) => {
+  // Not using bindEventWithCleanup due to Solid bug where it's calling
+  // on cleanup right away if there's a signal used in the className on the
+  // element. Ref: https://github.com/solidjs/solid/issues/903
+  bindEvent(button, 'click', (e: MouseEvent) => {
     const diameter = Math.max(button.clientWidth, button.clientHeight)
     const radius = diameter / 2
 
