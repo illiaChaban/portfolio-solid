@@ -96,14 +96,13 @@ const useStyles = () => {
         top: -1.5px;
       }
       ${media(theme.breakpoints.up('md'))} {
-        right: -1px;
+        right: -1.5px;
       }
     `,
     backdrop: css`
       height: 100%;
       width: 100%;
-      /* background: #060f1a; */
-      background: #000000c4;
+      background: #000000d6;
       ${media(theme.breakpoints.down('md'))} {
         background: #000000c4;
         backdrop-filter: blur(2px);
@@ -113,8 +112,6 @@ const useStyles = () => {
 }
 
 const Bar = (p: { index: number | undefined }) => {
-  const theme = useTheme()
-
   const styles = useStyles()
 
   const backdropRef = useRef()

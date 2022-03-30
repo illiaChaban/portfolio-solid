@@ -65,7 +65,7 @@ const Container = styled('div')`
   position: relative;
   bottom: 5%;
 
-  ${({ theme }) => theme.breakpoints.down(780)} {
+  ${({ theme }) => media(theme.breakpoints.down(780))} {
     min-width: auto;
     padding: 10px;
   }
