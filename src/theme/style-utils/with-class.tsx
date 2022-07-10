@@ -1,5 +1,7 @@
 import { FC } from '../../types'
 import { cx, scope } from '../../utils'
+import { Theme } from '../theme'
+import { useTheme } from '../type-overrides'
 
 const getUniqueClassName = scope(() => {
   const counts: Record<string, number> = {}
@@ -23,7 +25,7 @@ const getUniqueClassName = scope(() => {
  *  }
  * `
  */
-export const withClass =
+export const withUniqueClass =
   (className: string) =>
   <T extends { className?: string; class?: string }>(
     Component: FC<T>,
@@ -38,4 +40,15 @@ export const withClass =
       )
     }
     return Object.assign(Wrapped, { class: uniqueClassName })
+  }
+
+export const withSharedStyles =
+  (getter: (styles: Theme['sharedStyles']) => string) =>
+  <T extends { class?: string }>(Component: FC<T>): FC<T> => {
+    const Wrapped = (props: T) => {
+      const theme = useTheme()
+      const className = getter(theme.sharedStyles)
+      return <Component {...props} class={cx(className, props.class)} />
+    }
+    return Wrapped
   }

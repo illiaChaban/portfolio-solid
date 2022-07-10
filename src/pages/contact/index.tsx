@@ -1,5 +1,5 @@
 import { useBoundingRect } from '../../hooks'
-import { css, useTheme } from '../../theme'
+import { css, styled, useTheme, withSharedStyles } from '../../theme'
 import { cx, media } from '../../utils'
 import { Art } from './art'
 import { ContactInfo } from './contact-info'
@@ -7,7 +7,7 @@ import { ContactInfo } from './contact-info'
 const showArtBreakpoint = 780
 
 const Contact = () => {
-  const { sharedStyles, colors, breakpoints } = useTheme()
+  const { colors, breakpoints } = useTheme()
   const contactInfoRect$ = useBoundingRect()
 
   return (
@@ -18,16 +18,7 @@ const Contact = () => {
         overflow: hidden;
       `}
     >
-      <div
-        class={cx(
-          'flex-1',
-          sharedStyles.tags.body,
-          css`
-            display: flex;
-            justify-content: space-around;
-          `,
-        )}
-      >
+      <Container>
         <div
           class={css`
             display: flex;
@@ -57,9 +48,14 @@ const Contact = () => {
             }
           `}
         />
-      </div>
+      </Container>
     </div>
   )
 }
+
+const Container = withSharedStyles(s => cx(s.flex1, s.tags.body))(styled('div')`
+  display: flex;
+  justify-content: space-around;
+`)
 
 export default Contact

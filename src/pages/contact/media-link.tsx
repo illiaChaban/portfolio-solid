@@ -7,13 +7,13 @@ import {
 } from 'solid-js'
 import { delayNavigationOnTouch } from '../../directives'
 import { use, useHovering, useRef } from '../../hooks'
-import { css, styled, useTheme, withClass } from '../../theme'
+import { css, styled, useTheme, withUniqueClass } from '../../theme'
 import { OmitSafe } from '../../types'
 import { range } from '../../utils'
 
 const tilesNum = 5
 
-export const MediaLink = withClass('media-link')(
+export const MediaLink = withUniqueClass('media-link')(
   (p: OmitSafe<ComponentProps<typeof LinkBase>, 'target' | 'rel' | 'ref'>) => {
     const [props, linkProps] = splitProps(p, ['children'])
 

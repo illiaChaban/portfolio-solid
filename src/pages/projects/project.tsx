@@ -1,7 +1,7 @@
 import { createEffect, JSX, on } from 'solid-js'
 import { Icon } from '../../components'
 import { useBool, useRef } from '../../hooks'
-import { css, styled, useTheme, withClass } from '../../theme'
+import { css, styled, useTheme, withUniqueClass } from '../../theme'
 import anime, { AnimeInstance } from 'animejs'
 import { cx } from '../../utils'
 
@@ -75,7 +75,7 @@ export const Project = (p: { front: JSX.Element; back: JSX.Element }) => {
   )
 }
 
-const Container = withClass('project')(styled('section')`
+const Container = withUniqueClass('project')(styled('section')`
   position: relative;
   width: 14rem;
   height: 19rem;

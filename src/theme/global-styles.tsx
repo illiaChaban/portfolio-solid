@@ -147,4 +147,5 @@ export const sharedStyles = {
     divEnd: 'div-tags-end',
     h1: 'h1-tags',
   },
+  flex1: 'flex-1',
 }

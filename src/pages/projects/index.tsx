@@ -1,6 +1,6 @@
 import { JSXElement, Show } from 'solid-js'
 import { Icon } from '../../components'
-import { css, styled, withClass } from '../../theme'
+import { css, styled, withSharedStyles } from '../../theme'
 import { MediaLink } from './media-link'
 import { Project } from './project'
 
@@ -8,7 +8,7 @@ import { Project } from './project'
 // TODO: mention AMP (+ udpate tacklebox links to Microsoft)
 export default () => {
   return (
-    <Container class={'flex-1'}>
+    <Container>
       <Title>On the job:</Title>
       <Row>
         <Project
@@ -332,7 +332,7 @@ export default () => {
   )
 }
 
-const Container = withClass('flex-1')(styled('div')`
+const Container = withSharedStyles(s => s.flex1)(styled('div')`
   justify-content: space-evenly;
   align-items: center;
   flex-wrap: wrap;
@@ -352,7 +352,7 @@ const Ul = styled('ul')`
   line-height: 1.3rem;
 `
 
-const Row = withClass('flex-1')(styled('div')`
+const Row = withSharedStyles(s => s.flex1)(styled('div')`
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
