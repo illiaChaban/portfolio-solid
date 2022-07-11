@@ -94,12 +94,6 @@ export const GlobalStyles = createGlobalStyles`
     }
   }
 
-  @media (max-width: 300px) {
-    html {
-      font-size: 16px;
-    }
-  }
-
   body {
     --menu-offset: 56px;
 
