@@ -94,9 +94,9 @@ export const GlobalStyles = createGlobalStyles`
     }
   }
 
-  @media (max-width: 320px) {
+  @media (max-width: 300px) {
     html {
-      font-size: 14px;
+      font-size: 16px;
     }
   }
 
