@@ -1,6 +1,7 @@
-import { JSXElement, Show } from 'solid-js'
+import { For, JSXElement, Show } from 'solid-js'
 import { Icon } from '../../components'
 import { css, styled, withSharedStyles } from '../../theme'
+import { FC } from '../../types'
 import { MediaLink } from './media-link'
 import { Project } from './project'
 
@@ -17,38 +18,35 @@ export default () => {
               <Heading>
                 Caribou <Icon name="building" />
               </Heading>
-              <p>
-                Complex auto refinancing platform that helps you navigate
-                through different lenders to find the best quotes.
-              </p>
-              <Ul>
-                <li>
-                  Delivered one of the more complex pages on the consumer flow.
-                </li>
-                <li>
-                  Completed company websites rebrand within a 30-day deadline
-                </li>
-              </Ul>
+              <List
+                items={[
+                  'Built & maintained user and error tracking systems',
+                  'Launched multiple A/B tests',
+                  'Researched & architected new forms solution',
+                  'Replatformed auto refinancing flow.',
+                  'Delivered a new marketing website with integrated CMS system within a tight deadline',
+                ]}
+              />
             </>
           }
           back={
             <>
               <p>
-                <Subtitle>Details:</Subtitle>
-                Integrated content platform with advanced user and error
-                tracking. Using GraphQL to navigate a complex system of
-                microservices
-              </p>
-              <p>
                 <Subtitle>Technologies:</Subtitle>
-                Typescript, React, GraphQL, Hasura, Next.js, Node.js, Rollbar,
-                Segment, Contentful
+                Typescript, Next.js, React, GraphQL, Hasura, Node.js, Ruby, Ruby
+                on Rails, Rollbar, Segment, Contentful, LaunchDarkly, Metabase,
+                Elastic
               </p>
               <LinksContainer>
                 <MediaLink
-                  href="https://www.gocaribou.com/"
+                  href="https://www.caribou.com/"
                   icon="globe"
-                  label="Website"
+                  label="Marketing"
+                />
+                <MediaLink
+                  href="https://www.new.apply.caribou.com/"
+                  icon="globe"
+                  label="Auto refinancing"
                 />
               </LinksContainer>
             </>
@@ -349,8 +347,17 @@ const Title = styled('h2')`
 const Ul = styled('ul')`
   padding-left: 15px;
   font-size: 0.8rem;
-  line-height: 1.3rem;
+  line-height: 1.2rem;
+  & li:not(:last-child) {
+    margin-bottom: 4px;
+  }
 `
+
+const List: FC<{ items: string[] }> = p => (
+  <Ul>
+    <For each={p.items}>{text => <li>{text}</li>}</For>
+  </Ul>
+)
 
 const Row = withSharedStyles(s => s.flex1)(styled('div')`
   display: flex;
