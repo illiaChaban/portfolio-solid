@@ -1,4 +1,4 @@
-import { Component } from 'solid-js'
+import { ParentComponent } from 'solid-js'
 import { JSX } from 'solid-js/jsx-runtime'
 // eslint-disable-next-line no-restricted-imports
 import { ThemeProvider as ThemeProviderBase } from 'solid-styled-components'
@@ -35,7 +35,7 @@ const theme = {
 
 export type Theme = typeof theme
 
-export const ThemeProvider: Component = (p): JSX.Element => {
+export const ThemeProvider: ParentComponent = (p): JSX.Element => {
   return (
     <ThemeProviderBase theme={theme}>
       <GlobalStyles />

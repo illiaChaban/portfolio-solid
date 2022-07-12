@@ -2,38 +2,78 @@ import anime, { AnimeInstance } from 'animejs'
 import { createEffect, JSX, on } from 'solid-js'
 import { Icon } from '../../components'
 import { useBool, useRef } from '../../hooks'
-import { css, styled, useTheme, withUniqueClass } from '../../theme'
+import { styled, useTheme, withUniqueClass } from '../../theme'
 import { cx, getUniqueId } from '../../utils'
 
 const showClass = 'show'
 
-export const Project = (p: { front: JSX.Element; back: JSX.Element }) => {
+type AnimationValues = {
+  points: string
+  baseFrequency: string
+  scale: string
+}
+
+export const NewProject = (p: { front: JSX.Element; back: JSX.Element }) => {
   const showBack$ = useBool()
   const theme = useTheme()
 
   const polygonRef = useRef()
+  const turbulenceRef = useRef()
+  const displacementRef = useRef()
 
-  const openingSvgPoints = '85,85 0,100 100,100 100,0'
+  const animationValues = {
+    start: {
+      points:
+        '64 68.64002826986787 8.574 99.99999809502238 63.44597386751702 67.67998300759965 64 3.9999980950223812 64.55402613248297 67.67998300759965 119.426 99.99999809502238',
+      baseFrequency: '0.049999976187779765',
+      scale: '14.999993332578335',
+    },
+    end: {
+      points:
+        '64 127.80331951798807 8.574 96.01325340175282 8.755810165245258 32.1182203436352 64 0.013253401752825411 119.24418983475474 32.1182203436352 119.426 96.01325340175282 ',
+      baseFrequency: '0.00016566752191031486',
+      scale: '1.046386906134888',
+    },
+  }
   let openSvg: AnimeInstance
   let closeSvg: AnimeInstance
 
-  const animateTo = (points: string) =>
-    anime({
-      easing: 'easeOutQuad',
-      duration: 600,
-      loop: false,
-      targets: polygonRef.current,
-      points: [{ value: points }],
-    })
+  const animateTo = (values: AnimationValues) =>
+    anime
+      .timeline({ loop: false })
+      .add({
+        easing: 'easeOutQuad',
+        duration: 600,
+        targets: polygonRef.current,
+        points: [{ value: values.points }],
+      })
+      .add(
+        {
+          easing: 'easeOutQuad',
+          duration: 600,
+          targets: turbulenceRef.current,
+          baseFrequency: values.baseFrequency,
+        },
+        '-=600',
+      )
+      .add(
+        {
+          easing: 'easeOutQuad',
+          duration: 600,
+          targets: displacementRef.current,
+          scale: values.scale,
+        },
+        '-=600',
+      )
 
   createEffect(
     on(showBack$, show => {
       if (show) {
         closeSvg?.pause()
-        openSvg = animateTo('0,0 0,100 100,100 100,0')
+        openSvg = animateTo(animationValues.end)
       } else {
         openSvg?.pause()
-        closeSvg = animateTo(openingSvgPoints)
+        closeSvg = animateTo(animationValues.start)
       }
     }),
   )
@@ -46,26 +86,19 @@ export const Project = (p: { front: JSX.Element; back: JSX.Element }) => {
       onMouseLeave={showBack$.off}
       class={cx(showBack$() && showClass)}
     >
-      <Shadow />
+      {/* <Shadow /> */}
 
       <Content>
-        <ToggleBtn onTouchEnd={showBack$.toggle}>
+        {/* <ToggleBtn onTouchEnd={showBack$.toggle}>
           {showBack$() ? 'Close' : 'Open'} <IconArrow name="arrowRight" />
-        </ToggleBtn>
+        </ToggleBtn> */}
 
         <Front>{p.front}</Front>
 
-        <svg
-          viewBox="0 0 100 100"
-          preserveAspectRatio="none"
-          class={css`
-            display: block;
-            width: 100%;
-            height: 100%;
-          `}
-        >
+        <svg viewBox="0 0 128 128" preserveAspectRatio="none">
           <filter id={filterId}>
             <feTurbulence
+              ref={turbulenceRef}
               type="turbulence"
               baseFrequency="0.049999976187779765"
               numOctaves="2"
@@ -73,6 +106,7 @@ export const Project = (p: { front: JSX.Element; back: JSX.Element }) => {
               style="transform: scale(1);"
             ></feTurbulence>
             <feDisplacementMap
+              ref={displacementRef}
               in2="turbulence"
               in="SourceGraphic"
               scale="14.999993332578335"
@@ -82,13 +116,37 @@ export const Project = (p: { front: JSX.Element; back: JSX.Element }) => {
           </filter>
           <polygon
             ref={polygonRef}
-            points={openingSvgPoints}
-            fill={theme.colors.primary}
+            points="64 68.64002826986787 8.574 99.99999809502238 63.44597386751702 67.67998300759965 64 3.9999980950223812 64.55402613248297 67.67998300759965 119.426 99.99999809502238 "
+            // points="0 0 220 0 220 326 0 326"
             style={`filter: url(#${filterId}); transform: scale(1);`}
+            fill="currentColor"
           ></polygon>
         </svg>
+        {/* <svg width="128" height="128" viewBox="0 0 128 128">
+            <filter id="displacementFilter2">
+              <feTurbulence
+                type="turbulence"
+                baseFrequency="0.00016566752191031486"
+                numOctaves="2"
+                result="turbulence"
+                style="transform: scale(1);"
+              ></feTurbulence>
+              <feDisplacementMap
+                in2="turbulence"
+                in="SourceGraphic"
+                scale="1.046386906134888"
+                xChannelSelector="R"
+                yChannelSelector="G"
+              ></feDisplacementMap>
+            </filter>
+            <polygon
+              points="64 127.80331951798807 8.574 96.01325340175282 8.755810165245258 32.1182203436352 64 0.013253401752825411 119.24418983475474 32.1182203436352 119.426 96.01325340175282 "
+              style={'filter: url(#displacementFilter2); transform: scale(1);'}
+              fill="currentColor"
+            ></polygon>
+          </svg> */}
 
-        <Back>{p.back}</Back>
+        {/* <Back>{p.back}</Back> */}
       </Content>
     </Container>
   )
@@ -135,10 +193,10 @@ const ToggleBtn = styled('button')`
   position: absolute;
   font-size: 0.8rem;
   font-family: 'Saira', Courier, monospace;
-  color: ${({ theme }) => theme.colors.primary};
-  /* color: black; */
+  color: black;
   bottom: 0px;
   right: 0px;
+  color: black;
   z-index: 2;
   padding: 5px 10px;
   transition: color 0.2s;
