@@ -34,7 +34,6 @@ export const Project = (p: { front: JSX.Element; back: JSX.Element }) => {
           easing: 'linear',
           duration: 400,
           targets: displacementRef.current,
-          // scale: startAnimationValues.scale,
           scale: '15',
         },
         '-=600',
@@ -230,15 +229,6 @@ const FrontBase = styled('div')`
   > *:last-child {
     margin-top: 0;
   }
-  ${({ visible }: { visible: boolean }) =>
-    visible
-      ? ''
-      : `
-    transform: translateY(-50%);
-    opacity: 0;
-    z-index: -1;
-    transition: opacity 0.3s, transform 0s 0.6s;
-  `}
 `
 const Front = styled(FrontBase)`
   ${({ visible }: { visible: boolean }) =>
