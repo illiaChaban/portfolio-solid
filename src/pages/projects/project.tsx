@@ -12,30 +12,88 @@ export const Project = (p: { front: JSX.Element; back: JSX.Element }) => {
   const theme = useTheme()
 
   const polygonRef = useRef()
+  const turbulenceRef = useRef()
+  const displacementRef = useRef()
 
-  const openingSvgPoints = '85,85 0,100 100,100 100,0'
   let openSvg: AnimeInstance
   let closeSvg: AnimeInstance
 
-  const animateTo = (points: string) =>
-    anime({
-      easing: 'easeOutQuad',
-      duration: 600,
-      loop: false,
-      targets: polygonRef.current,
-      points: [{ value: points }],
-    })
+  const startAnimationValues = {
+    points: '93,88 45,100 100,100 100,60',
+    scale: '7',
+  }
+
+  const animateToStart = () =>
+    anime
+      .timeline({ loop: false })
+      .add({
+        easing: 'easeOutQuad',
+        duration: 600,
+        targets: polygonRef.current,
+        points: [{ value: startAnimationValues.points }],
+      })
+      .add(
+        {
+          easing: 'linear',
+          duration: 400,
+          targets: displacementRef.current,
+          // scale: startAnimationValues.scale,
+          scale: '15',
+        },
+        '-=600',
+      )
+      .add(
+        {
+          easing: 'easeOutQuad',
+          duration: 200,
+          targets: displacementRef.current,
+          scale: startAnimationValues.scale,
+        },
+        '-=200',
+      )
+
+  const animateToEnd = () =>
+    anime
+      .timeline({ loop: false })
+      .add({
+        easing: 'easeOutQuad',
+        duration: 600,
+        targets: polygonRef.current,
+        points: [{ value: '0,0 0,100 100,100 100,0' }],
+      })
+      .add(
+        {
+          easing: 'easeOutQuart',
+          duration: 200,
+          targets: displacementRef.current,
+          scale: '25',
+        },
+        '-=600',
+      )
+      .add(
+        {
+          easing: 'easeInQuad',
+          duration: 400,
+          targets: displacementRef.current,
+          scale: '0',
+        },
+        '-=400',
+      )
 
   createEffect(
-    on(showBack$, show => {
-      if (show) {
-        closeSvg?.pause()
-        openSvg = animateTo('0,0 0,100 100,100 100,0')
-      } else {
-        openSvg?.pause()
-        closeSvg = animateTo(openingSvgPoints)
-      }
-    }),
+    on(
+      showBack$,
+      show => {
+        if (show) {
+          closeSvg?.pause()
+          openSvg = animateToEnd()
+        } else {
+          openSvg?.pause()
+          closeSvg = animateToStart()
+        }
+      },
+      { defer: true },
+    ),
   )
 
   const filterId = getUniqueId('displacementFilter')
@@ -67,22 +125,24 @@ export const Project = (p: { front: JSX.Element; back: JSX.Element }) => {
           <filter id={filterId}>
             <feTurbulence
               type="turbulence"
-              baseFrequency="0.049999976187779765"
+              baseFrequency="0.05"
               numOctaves="2"
               result="turbulence"
               style="transform: scale(1);"
+              ref={turbulenceRef}
             ></feTurbulence>
             <feDisplacementMap
               in2="turbulence"
               in="SourceGraphic"
-              scale="14.999993332578335"
+              scale={startAnimationValues.scale}
               xChannelSelector="R"
               yChannelSelector="G"
+              ref={displacementRef}
             ></feDisplacementMap>
           </filter>
           <polygon
             ref={polygonRef}
-            points={openingSvgPoints}
+            points={startAnimationValues.points}
             fill={theme.colors.primary}
             style={`filter: url(#${filterId}); transform: scale(1);`}
           ></polygon>
@@ -135,8 +195,8 @@ const ToggleBtn = styled('button')`
   position: absolute;
   font-size: 0.8rem;
   font-family: 'Saira', Courier, monospace;
-  color: ${({ theme }) => theme.colors.primary};
-  /* color: black; */
+  /* color: ${({ theme }) => theme.colors.primary}; */
+  color: black;
   bottom: 0px;
   right: 0px;
   z-index: 2;

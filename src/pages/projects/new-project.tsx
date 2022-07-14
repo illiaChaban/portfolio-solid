@@ -2,7 +2,7 @@ import anime, { AnimeInstance } from 'animejs'
 import { createEffect, JSX, on } from 'solid-js'
 import { Icon } from '../../components'
 import { useBool, useRef } from '../../hooks'
-import { styled, useTheme, withUniqueClass } from '../../theme'
+import { css, styled, useTheme, withUniqueClass } from '../../theme'
 import { cx, getUniqueId } from '../../utils'
 
 const showClass = 'show'
@@ -24,13 +24,17 @@ export const NewProject = (p: { front: JSX.Element; back: JSX.Element }) => {
   const animationValues = {
     start: {
       points:
-        '64 68.64002826986787 8.574 99.99999809502238 63.44597386751702 67.67998300759965 64 3.9999980950223812 64.55402613248297 67.67998300759965 119.426 99.99999809502238',
+        // '64 ,68.64002826986787 8.574 99.99999809502238 63.44597386751702 67.67998300759965 64 3.9999980950223812 64.55402613248297 67.67998300759965 119.426 99.99999809502238',
+        '115,115 0,128 115,117 128,128 117,116 128,0',
       baseFrequency: '0.049999976187779765',
+      // baseFrequency: '0',
       scale: '14.999993332578335',
+      // scale: '0',
     },
     end: {
       points:
-        '64 127.80331951798807 8.574 96.01325340175282 8.755810165245258 32.1182203436352 64 0.013253401752825411 119.24418983475474 32.1182203436352 119.426 96.01325340175282 ',
+        // '64 127.80331951798807 8.574 96.01325340175282 8.755810165245258 32.1182203436352 64 0.013253401752825411 119.24418983475474 32.1182203436352 119.426 96.01325340175282 ',
+        '0,0 0,128 115,128 128,128 128,116 128,0',
       baseFrequency: '0.00016566752191031486',
       scale: '1.046386906134888',
     },
@@ -50,7 +54,8 @@ export const NewProject = (p: { front: JSX.Element; back: JSX.Element }) => {
       .add(
         {
           easing: 'easeOutQuad',
-          duration: 600,
+          duration: 1200,
+          // duration: 600,
           targets: turbulenceRef.current,
           baseFrequency: values.baseFrequency,
         },
@@ -95,7 +100,15 @@ export const NewProject = (p: { front: JSX.Element; back: JSX.Element }) => {
 
         <Front>{p.front}</Front>
 
-        <svg viewBox="0 0 128 128" preserveAspectRatio="none">
+        <svg
+          viewBox="0 0 128 128"
+          preserveAspectRatio="none"
+          class={css`
+            display: block;
+            width: 100%;
+            height: 100%;
+          `}
+        >
           <filter id={filterId}>
             <feTurbulence
               ref={turbulenceRef}
