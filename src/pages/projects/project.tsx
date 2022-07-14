@@ -2,10 +2,8 @@ import anime, { AnimeInstance } from 'animejs'
 import { createEffect, JSX, on } from 'solid-js'
 import { Icon } from '../../components'
 import { useBool, useRef } from '../../hooks'
-import { css, styled, useTheme, withUniqueClass } from '../../theme'
-import { cx, getUniqueId } from '../../utils'
-
-const showClass = 'show'
+import { css, styled, useTheme } from '../../theme'
+import { getUniqueId } from '../../utils'
 
 export const Project = (p: { front: JSX.Element; back: JSX.Element }) => {
   const showBack$ = useBool()
@@ -98,11 +96,7 @@ export const Project = (p: { front: JSX.Element; back: JSX.Element }) => {
   const filterId = getUniqueId('displacementFilter')
 
   return (
-    <Container
-      onMouseEnter={showBack$.on}
-      onMouseLeave={showBack$.off}
-      class={cx(showBack$() && showClass)}
-    >
+    <Container onMouseEnter={showBack$.on} onMouseLeave={showBack$.off}>
       <Shadow />
 
       <Content>
@@ -110,7 +104,7 @@ export const Project = (p: { front: JSX.Element; back: JSX.Element }) => {
           {showBack$() ? 'Close' : 'Open'} <IconArrow name="arrowRight" />
         </ToggleBtn>
 
-        <Front>{p.front}</Front>
+        <Front visible={!showBack$()}>{p.front}</Front>
 
         <svg
           viewBox="0 0 100 100"
@@ -146,13 +140,13 @@ export const Project = (p: { front: JSX.Element; back: JSX.Element }) => {
           ></polygon>
         </svg>
 
-        <Back>{p.back}</Back>
+        <Back visible={showBack$()}>{p.back}</Back>
       </Content>
     </Container>
   )
 }
 
-const Container = withUniqueClass('project')(styled('section')`
+const Container = styled('section')`
   position: relative;
   width: 14rem;
   height: 19rem;
@@ -166,7 +160,7 @@ const Container = withUniqueClass('project')(styled('section')`
   );
 
   font-size: 0.8rem;
-`)
+`
 
 const Shadow = styled('div')`
   width: 100%;
@@ -193,7 +187,6 @@ const ToggleBtn = styled('button')`
   position: absolute;
   font-size: 0.8rem;
   font-family: 'Saira', Courier, monospace;
-  /* color: ${({ theme }) => theme.colors.primary}; */
   color: black;
   bottom: 0px;
   right: 0px;
@@ -212,7 +205,13 @@ const IconArrow = styled(Icon)`
   top: 2px;
 `
 
-const Front = styled('div')`
+/**
+ * NOTE:
+ * Separating components into Front & FrontBase makes sure
+ * that opacity transitioning as expected. Looks like it's being
+ * reset if a different class is applied
+ */
+const FrontBase = styled('div')`
   position: absolute;
   width: 100%;
   height: 100%;
@@ -225,22 +224,35 @@ const Front = styled('div')`
   transition: transform 0.6s, opacity 0.6s;
   transition-delay: 0.3s;
 
-  .${Container.class}.${showClass} & {
-    transform: translateY(-50%);
-    opacity: 0;
-    z-index: -1;
-    transition: opacity 0.3s, transform 0s 0.6s;
-  }
-
   > p:first-child {
     margin-top: 0;
   }
   > *:last-child {
     margin-top: 0;
   }
+  ${({ visible }: { visible: boolean }) =>
+    visible
+      ? ''
+      : `
+    transform: translateY(-50%);
+    opacity: 0;
+    z-index: -1;
+    transition: opacity 0.3s, transform 0s 0.6s;
+  `}
+`
+const Front = styled(FrontBase)`
+  ${({ visible }: { visible: boolean }) =>
+    visible
+      ? ''
+      : `
+    transform: translateY(-50%);
+    opacity: 0;
+    z-index: -1;
+    transition: opacity 0.3s, transform 0s 0.6s;
+  `}
 `
 
-const Back = styled('div')`
+const BackBase = styled('div')`
   width: 100%;
   height: 100%;
 
@@ -269,16 +281,19 @@ const Back = styled('div')`
   & a {
     color: black;
   }
+`
+const Back = styled(BackBase)`
+  ${({ visible }: { visible: boolean }) =>
+    visible
+      ? `
+        z-index: 1;
+        -webkit-transform: translateX(0);
+        transform: translateX(0);
+        opacity: 1;
 
-  .${Container.class}.${showClass} & {
-    z-index: 1;
+        transition: transform 0.5s, opacity 0.5s, -webkit-transform 0.5s;
 
-    -webkit-transform: translateX(0);
-    transform: translateX(0);
-    opacity: 1;
-
-    transition: transform 0.5s, opacity 0.5s, -webkit-transform 0.5s;
-
-    transition-delay: 0.2s;
-  }
+        transition-delay: 0.2s;
+      `
+      : ''}
 `
