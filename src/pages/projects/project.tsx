@@ -12,7 +12,6 @@ export const Project = (p: { front: JSX.Element; back: JSX.Element }) => {
   const theme = useTheme()
 
   const polygonRef = useRef()
-  const turbulenceRef = useRef()
   const displacementRef = useRef()
 
   let openSvg: AnimeInstance
@@ -129,7 +128,6 @@ export const Project = (p: { front: JSX.Element; back: JSX.Element }) => {
               numOctaves="2"
               result="turbulence"
               style="transform: scale(1);"
-              ref={turbulenceRef}
             ></feTurbulence>
             <feDisplacementMap
               in2="turbulence"
