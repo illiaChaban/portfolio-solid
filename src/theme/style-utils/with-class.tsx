@@ -1,16 +1,7 @@
 import { FC } from '../../types'
-import { cx, scope } from '../../utils'
+import { cx, getUniqueId } from '../../utils'
 import { Theme } from '../theme'
 import { useTheme } from '../type-overrides'
-
-const getUniqueClassName = scope(() => {
-  const counts: Record<string, number> = {}
-  return (className: string) => {
-    counts[className] = (counts[className] ?? 0) + 1
-    const count = counts[className]
-    return count === 1 ? className : `${className}-${count}`
-  }
-})
 
 /**
  * Helper method to style dependent child elements.
@@ -30,7 +21,7 @@ export const withUniqueClass =
   <T extends { className?: string; class?: string }>(
     Component: FC<T>,
   ): FC<T> & { class: string } => {
-    const uniqueClassName = getUniqueClassName(className)
+    const uniqueClassName = getUniqueId(className)
     const Wrapped = (props: T) => {
       return (
         <Component

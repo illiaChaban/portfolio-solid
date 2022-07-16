@@ -1,49 +1,103 @@
+import anime, { AnimeInstance } from 'animejs'
 import { createEffect, JSX, on } from 'solid-js'
 import { Icon } from '../../components'
 import { useBool, useRef } from '../../hooks'
-import { css, styled, useTheme, withUniqueClass } from '../../theme'
-import anime, { AnimeInstance } from 'animejs'
-import { cx } from '../../utils'
-
-const showClass = 'show'
+import { css, styled, useTheme } from '../../theme'
+import { getUniqueId } from '../../utils'
 
 export const Project = (p: { front: JSX.Element; back: JSX.Element }) => {
   const showBack$ = useBool()
   const theme = useTheme()
 
   const polygonRef = useRef()
+  const displacementRef = useRef()
 
-  const openingSvgPoints = '94,90 0,100 100,100 100,0'
   let openSvg: AnimeInstance
   let closeSvg: AnimeInstance
 
-  const animateTo = (points: string) =>
-    anime({
-      easing: 'easeOutQuad',
-      duration: 600,
-      loop: false,
-      targets: polygonRef.current,
-      points: [{ value: points }],
-    })
+  const startAnimationValues = {
+    points: '93,86 45,100 100,100 100,50',
+    scale: '7',
+  }
+
+  const animateToStart = () =>
+    anime
+      .timeline({ loop: false })
+      .add({
+        easing: 'easeOutQuad',
+        duration: 600,
+        targets: polygonRef.current,
+        points: [{ value: startAnimationValues.points }],
+      })
+      .add(
+        {
+          easing: 'linear',
+          duration: 400,
+          targets: displacementRef.current,
+          scale: '15',
+        },
+        '-=600',
+      )
+      .add(
+        {
+          easing: 'easeOutQuad',
+          duration: 200,
+          targets: displacementRef.current,
+          scale: startAnimationValues.scale,
+        },
+        '-=200',
+      )
+
+  const animateToEnd = () =>
+    anime
+      .timeline({ loop: false })
+      .add({
+        easing: 'easeOutQuad',
+        duration: 600,
+        targets: polygonRef.current,
+        points: [{ value: '0,0 0,100 100,100 100,0' }],
+      })
+      .add(
+        {
+          easing: 'easeOutQuart',
+          duration: 200,
+          targets: displacementRef.current,
+          scale: '25',
+        },
+        '-=600',
+      )
+      .add(
+        {
+          easing: 'easeInQuad',
+          duration: 400,
+          targets: displacementRef.current,
+          scale: '0',
+        },
+        '-=400',
+      )
 
   createEffect(
-    on(showBack$, show => {
-      if (show) {
-        closeSvg?.pause()
-        openSvg = animateTo('0,0 0,100 100,100 100,0')
-      } else {
-        openSvg?.pause()
-        closeSvg = animateTo(openingSvgPoints)
-      }
-    }),
+    on(
+      showBack$,
+      show => {
+        if (show) {
+          closeSvg?.pause()
+          openSvg = animateToEnd()
+        } else {
+          openSvg?.pause()
+          closeSvg = animateToStart()
+        }
+      },
+      { defer: true },
+    ),
   )
 
+  // TODO: play with turbulence on window scroll
+
+  const filterId = getUniqueId('displacementFilter')
+
   return (
-    <Container
-      onMouseEnter={showBack$.on}
-      onMouseLeave={showBack$.off}
-      class={cx(showBack$() && showClass)}
-    >
+    <Container onMouseEnter={showBack$.on} onMouseLeave={showBack$.off}>
       <Shadow />
 
       <Content>
@@ -51,7 +105,7 @@ export const Project = (p: { front: JSX.Element; back: JSX.Element }) => {
           {showBack$() ? 'Close' : 'Open'} <IconArrow name="arrowRight" />
         </ToggleBtn>
 
-        <Front>{p.front}</Front>
+        <Front visible={!showBack$()}>{p.front}</Front>
 
         <svg
           viewBox="0 0 100 100"
@@ -62,20 +116,38 @@ export const Project = (p: { front: JSX.Element; back: JSX.Element }) => {
             height: 100%;
           `}
         >
+          <filter id={filterId}>
+            <feTurbulence
+              type="turbulence"
+              baseFrequency="0.05"
+              numOctaves="2"
+              result="turbulence"
+              style="transform: scale(1);"
+            ></feTurbulence>
+            <feDisplacementMap
+              in2="turbulence"
+              in="SourceGraphic"
+              scale={startAnimationValues.scale}
+              xChannelSelector="R"
+              yChannelSelector="G"
+              ref={displacementRef}
+            ></feDisplacementMap>
+          </filter>
           <polygon
             ref={polygonRef}
-            points={openingSvgPoints}
+            points={startAnimationValues.points}
             fill={theme.colors.primary}
+            style={`filter: url(#${filterId}); transform: scale(1);`}
           ></polygon>
         </svg>
 
-        <Back>{p.back}</Back>
+        <Back visible={showBack$()}>{p.back}</Back>
       </Content>
     </Container>
   )
 }
 
-const Container = withUniqueClass('project')(styled('section')`
+const Container = styled('section')`
   position: relative;
   width: 14rem;
   height: 19rem;
@@ -89,7 +161,7 @@ const Container = withUniqueClass('project')(styled('section')`
   );
 
   font-size: 0.8rem;
-`)
+`
 
 const Shadow = styled('div')`
   width: 100%;
@@ -119,7 +191,6 @@ const ToggleBtn = styled('button')`
   color: black;
   bottom: 0px;
   right: 0px;
-  color: black;
   z-index: 2;
   padding: 5px 10px;
   transition: color 0.2s;
@@ -135,7 +206,13 @@ const IconArrow = styled(Icon)`
   top: 2px;
 `
 
-const Front = styled('div')`
+/**
+ * NOTE:
+ * Separating components into Front & FrontBase makes sure
+ * that opacity transitioning as expected. Looks like it's being
+ * reset if a different class is applied
+ */
+const FrontBase = styled('div')`
   position: absolute;
   width: 100%;
   height: 100%;
@@ -143,17 +220,13 @@ const Front = styled('div')`
   left: 0;
   padding: 15px;
   box-sizing: border-box;
-  z-index: 1;
+  opacity: 1;
+  -webkit-transform: translateY(0);
+  transform: translateY(0);
 
+  -webkit-transition: transform 0.6s, opacity 0.6s;
   transition: transform 0.6s, opacity 0.6s;
   transition-delay: 0.3s;
-
-  .${Container.class}.${showClass} & {
-    transform: translateY(-50%);
-    opacity: 0;
-    z-index: -1;
-    transition: opacity 0.3s, transform 0s 0.6s;
-  }
 
   > p:first-child {
     margin-top: 0;
@@ -162,8 +235,22 @@ const Front = styled('div')`
     margin-top: 0;
   }
 `
+const Front = styled(FrontBase)`
+  ${({ visible }: { visible: boolean }) =>
+    visible
+      ? `
+      pointer-events: none;
+    `
+      : `
+      -webkit-transform: translateY(-50%);
+      transform: translateY(-50%);
+      opacity: 0;
+      -webkit-transition: opacity 0.3s, transform 0s 0.6s;
+      transition: opacity 0.3s, transform 0s 0.6s;
+    `}
+`
 
-const Back = styled('div')`
+const BackBase = styled('div')`
   width: 100%;
   height: 100%;
 
@@ -192,16 +279,20 @@ const Back = styled('div')`
   & a {
     color: black;
   }
+`
+const Back = styled(BackBase)`
+  ${({ visible }: { visible: boolean }) =>
+    visible
+      ? `
+        -webkit-transform: translateX(0);
+        transform: translateX(0);
+        opacity: 1;
 
-  .${Container.class}.${showClass} & {
-    z-index: 1;
+        transition: transform 0.5s, opacity 0.5s, -webkit-transform 0.5s;
 
-    -webkit-transform: translateX(0);
-    transform: translateX(0);
-    opacity: 1;
-
-    transition: transform 0.5s, opacity 0.5s, -webkit-transform 0.5s;
-
-    transition-delay: 0.2s;
-  }
+        transition-delay: 0.2s;
+      `
+      : `
+        pointer-events: none;
+      `}
 `

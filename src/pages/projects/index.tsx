@@ -44,7 +44,7 @@ export default () => {
                   label="Marketing"
                 />
                 <MediaLink
-                  href="https://www.new.apply.caribou.com/"
+                  href="https://new.apply.caribou.com/"
                   icon="globe"
                   label="Auto refinancing"
                 />
