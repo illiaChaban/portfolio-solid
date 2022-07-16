@@ -23,18 +23,22 @@ export const NewProject = (p: { front: JSX.Element; back: JSX.Element }) => {
 
   const animationValues = {
     start: {
-      points:
-        // '64 ,68.64002826986787 8.574 99.99999809502238 63.44597386751702 67.67998300759965 64 3.9999980950223812 64.55402613248297 67.67998300759965 119.426 99.99999809502238',
-        '115,115 0,128 115,117 128,128 117,116 128,0',
+      // points: '64,69 9,100 63,68 64,4 65,68 119,100',
+      points: '60,65 9,100 63,75 119,100 65,68 64,4',
+      // '115,115 0,128 115,117 128,128 117,116 128,0',
       baseFrequency: '0.049999976187779765',
       // baseFrequency: '0',
       scale: '14.999993332578335',
       // scale: '0',
     },
+    otherStart: {
+      // points: '64,68 9,100 63,68 64,4 65,68 119,100',
+      points: '61,65 9,100 62,72 119,100 63,68 64,4',
+    },
     end: {
       points:
-        // '64 127.80331951798807 8.574 96.01325340175282 8.755810165245258 32.1182203436352 64 0.013253401752825411 119.24418983475474 32.1182203436352 119.426 96.01325340175282 ',
-        '0,0 0,128 115,128 128,128 128,116 128,0',
+        '64 127.80331951798807 8.574 96.01325340175282 8.755810165245258 32.1182203436352 64 0.013253401752825411 119.24418983475474 32.1182203436352 119.426 96.01325340175282 ',
+      // '0,0 0,128 115,128 128,128 128,116 128,0',
       baseFrequency: '0.00016566752191031486',
       scale: '1.046386906134888',
     },
@@ -113,7 +117,7 @@ export const NewProject = (p: { front: JSX.Element; back: JSX.Element }) => {
             <feTurbulence
               ref={turbulenceRef}
               type="turbulence"
-              baseFrequency="0.049999976187779765"
+              baseFrequency={animationValues.start.baseFrequency}
               numOctaves="2"
               result="turbulence"
               style="transform: scale(1);"
@@ -122,17 +126,24 @@ export const NewProject = (p: { front: JSX.Element; back: JSX.Element }) => {
               ref={displacementRef}
               in2="turbulence"
               in="SourceGraphic"
-              scale="14.999993332578335"
+              scale={animationValues.start.scale}
               xChannelSelector="R"
               yChannelSelector="G"
             ></feDisplacementMap>
           </filter>
           <polygon
             ref={polygonRef}
-            points="64 68.64002826986787 8.574 99.99999809502238 63.44597386751702 67.67998300759965 64 3.9999980950223812 64.55402613248297 67.67998300759965 119.426 99.99999809502238 "
+            points={animationValues.start.points}
             // points="0 0 220 0 220 326 0 326"
             style={`filter: url(#${filterId}); transform: scale(1);`}
             fill="currentColor"
+          ></polygon>
+
+          <polygon
+            points={animationValues.otherStart.points}
+            // points="0 0 220 0 220 326 0 326"
+            style={`filter: url(#${filterId}); transform: scale(1);`}
+            fill="black"
           ></polygon>
         </svg>
         {/* <svg width="128" height="128" viewBox="0 0 128 128">

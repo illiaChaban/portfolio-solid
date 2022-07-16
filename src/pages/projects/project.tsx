@@ -92,6 +92,8 @@ export const Project = (p: { front: JSX.Element; back: JSX.Element }) => {
     ),
   )
 
+  // TODO: play with turbulence on window scroll
+
   const filterId = getUniqueId('displacementFilter')
 
   return (
