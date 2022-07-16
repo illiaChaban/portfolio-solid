@@ -16,7 +16,7 @@ export const Project = (p: { front: JSX.Element; back: JSX.Element }) => {
   let closeSvg: AnimeInstance
 
   const startAnimationValues = {
-    points: '93,88 45,100 100,100 100,60',
+    points: '93,86 45,100 100,100 100,50',
     scale: '7',
   }
 
@@ -220,8 +220,11 @@ const FrontBase = styled('div')`
   left: 0;
   padding: 15px;
   box-sizing: border-box;
-  z-index: 1;
+  opacity: 1;
+  -webkit-transform: translateY(0);
+  transform: translateY(0);
 
+  -webkit-transition: transform 0.6s, opacity 0.6s;
   transition: transform 0.6s, opacity 0.6s;
   transition-delay: 0.3s;
 
@@ -235,13 +238,16 @@ const FrontBase = styled('div')`
 const Front = styled(FrontBase)`
   ${({ visible }: { visible: boolean }) =>
     visible
-      ? ''
+      ? `
+      pointer-events: none;
+    `
       : `
-    transform: translateY(-50%);
-    opacity: 0;
-    z-index: -1;
-    transition: opacity 0.3s, transform 0s 0.6s;
-  `}
+      -webkit-transform: translateY(-50%);
+      transform: translateY(-50%);
+      opacity: 0;
+      -webkit-transition: opacity 0.3s, transform 0s 0.6s;
+      transition: opacity 0.3s, transform 0s 0.6s;
+    `}
 `
 
 const BackBase = styled('div')`
@@ -278,7 +284,6 @@ const Back = styled(BackBase)`
   ${({ visible }: { visible: boolean }) =>
     visible
       ? `
-        z-index: 1;
         -webkit-transform: translateX(0);
         transform: translateX(0);
         opacity: 1;
@@ -287,5 +292,7 @@ const Back = styled(BackBase)`
 
         transition-delay: 0.2s;
       `
-      : ''}
+      : `
+        pointer-events: none;
+      `}
 `
