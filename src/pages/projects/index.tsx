@@ -3,7 +3,6 @@ import { Icon } from '../../components'
 import { css, styled, withSharedStyles } from '../../theme'
 import { FC } from '../../types'
 import { MediaLink } from './media-link'
-import { NewProject } from './new-project'
 import { Project } from './project'
 
 // TODO: mention recent projects at caribou (elk, metabase, new forms approach)
@@ -13,7 +12,6 @@ export default () => {
     <Container>
       <Title>On the job:</Title>
       <Row>
-        <NewProject front={'Hello'} back={null} />
         <Project
           front={
             <>
@@ -46,7 +44,7 @@ export default () => {
                   label="Marketing"
                 />
                 <MediaLink
-                  href="https://www.new.apply.caribou.com/"
+                  href="https://new.apply.caribou.com/"
                   icon="globe"
                   label="Auto refinancing"
                 />
