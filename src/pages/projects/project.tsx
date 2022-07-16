@@ -10,6 +10,7 @@ export const Project = (p: { front: JSX.Element; back: JSX.Element }) => {
   const theme = useTheme()
 
   const polygonRef = useRef()
+  const polygonRef2 = useRef()
   const displacementRef = useRef()
 
   let openSvg: AnimeInstance
@@ -19,6 +20,12 @@ export const Project = (p: { front: JSX.Element; back: JSX.Element }) => {
     points: '93,88 45,100 100,100 100,60',
     scale: '7',
   }
+  const startAnimationValues2 = {
+    // points: '95,90 47,100 100,100 100,62',
+    points: '93,88 45,100 100,100 100,60',
+
+    scale: '7',
+  }
 
   const animateToStart = () =>
     anime
@@ -26,9 +33,19 @@ export const Project = (p: { front: JSX.Element; back: JSX.Element }) => {
       .add({
         easing: 'easeOutQuad',
         duration: 600,
-        targets: polygonRef.current,
-        points: [{ value: startAnimationValues.points }],
+        targets: polygonRef2.current,
+        points: [{ value: startAnimationValues2.points }],
       })
+      .add(
+        {
+          easing: 'easeOutQuad',
+          duration: 600,
+          targets: polygonRef.current,
+          points: [{ value: startAnimationValues.points }],
+          delay: 50,
+        },
+        '-=600',
+      )
       .add(
         {
           easing: 'linear',
@@ -57,6 +74,16 @@ export const Project = (p: { front: JSX.Element; back: JSX.Element }) => {
         targets: polygonRef.current,
         points: [{ value: '0,0 0,100 100,100 100,0' }],
       })
+      .add(
+        {
+          easing: 'easeOutQuad',
+          duration: 600,
+          targets: polygonRef2.current,
+          points: [{ value: '0,0 0,100 100,100 100,0' }],
+          delay: 50,
+        },
+        '-=600',
+      )
       .add(
         {
           easing: 'easeOutQuart',
@@ -136,6 +163,12 @@ export const Project = (p: { front: JSX.Element; back: JSX.Element }) => {
           <polygon
             ref={polygonRef}
             points={startAnimationValues.points}
+            fill={'#2e96b2'}
+            style={`filter: url(#${filterId}); transform: scale(1);`}
+          ></polygon>
+          <polygon
+            ref={polygonRef2}
+            points={startAnimationValues2.points}
             fill={theme.colors.primary}
             style={`filter: url(#${filterId}); transform: scale(1);`}
           ></polygon>
