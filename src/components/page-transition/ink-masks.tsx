@@ -1,7 +1,7 @@
 import InkImg from './assets/ink.png'
 import { createMemo } from 'solid-js'
 
-import masksJson from './assets/masks.json'
+import masksJson from './assets/masks-minified.json'
 import { cx } from '../../utils/styles'
 import { Ref } from '../../hooks/use-ref'
 import { use } from '../../hooks/use-directives'

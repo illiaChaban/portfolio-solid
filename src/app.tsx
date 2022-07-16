@@ -42,6 +42,7 @@ export const App: Component = withProviders(
 )(() => {
   const styles = useStyles()
   const contentRef = useRef<HTMLElement>()
+
   return (
     <>
       {isProduction && <GTag />}

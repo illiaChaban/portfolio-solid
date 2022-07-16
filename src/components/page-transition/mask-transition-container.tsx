@@ -34,7 +34,7 @@ export const MaskTransitionContainer = (p: {
     const [Component, image] = await Promise.all([
       import('./mask-transition'),
       Load.image(InkImg),
-      import('./assets/masks.json'),
+      import('./assets/masks-minified.json'),
     ])
     // caching ink image, otherwise the first transition might be
     // transparent until the image loads
