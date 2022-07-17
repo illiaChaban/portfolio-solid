@@ -122,6 +122,11 @@ export const GlobalStyles = createGlobalStyles`
       --body-background-color: #122438; 
       /* fixing white background on home page on mobile after squirrel jump animation */
       background: var(--body-background-color);
+
+      background: #141E30;  /* fallback for old browsers */
+      background: -webkit-linear-gradient(to left, #243B55, #141E30);  /* Chrome 10-25, Safari 5.1-6 */
+      background: linear-gradient(to left, #243B55, #141E30); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
     }
   }
 
