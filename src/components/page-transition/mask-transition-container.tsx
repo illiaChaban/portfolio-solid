@@ -84,6 +84,8 @@ export const MaskTransitionContainer = (p: {
 
       const currChildId = last(elements$())?.id
 
+      currChildId && elements$.remove(currChildId)
+
       // If create root is not used, the transition page is disposed
       // when the child is disposed -- on the next page transition, which breaks
       // page reactivities --> which breaks animation
@@ -91,8 +93,7 @@ export const MaskTransitionContainer = (p: {
         return [
           <MaskTransition
             onFilled={() => {
-              if (!currChildId) return
-              elements$.remove(currChildId)
+              currChildId && elements$.remove(currChildId)
             }}
             debug={DEBUG}
           >

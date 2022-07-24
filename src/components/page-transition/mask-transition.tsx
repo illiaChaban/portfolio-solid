@@ -18,7 +18,12 @@ import { Cleanups } from '../../utils/cleanups'
 import { scope } from '../../utils/lodash'
 import { cx, media } from '../../utils/styles'
 import { withActions } from '../../utils/with-actions'
-import { ClipPath, framesNum as inkFramesNum, InkImage } from './ink-masks'
+import {
+  ClipPath,
+  framesNum as inkFramesNum,
+  InkImage,
+  useClipPath,
+} from './ink-masks'
 
 export default (p: {
   children: JSXElement
@@ -132,19 +137,21 @@ const Mask = (p: {
           })
 
         const cleanups = new Cleanups()
-        cleanups.add(fadeInPage())
-        cleanups.add(
-          animateInk(() => {
-            p.onFilled?.()
-            const cancel = fadeOutInkBackground(p.onDone)
-            cleanups.add(cancel)
-          }),
-        )
+        // cleanups.add(fadeInPage())
+        // cleanups.add(
+        //   animateInk(() => {
+        //     p.onFilled?.()
+        //     const cancel = fadeOutInkBackground(p.onDone)
+        //     cleanups.add(cancel)
+        //   }),
+        // )
 
         return cleanups
       },
     ),
   )
+
+  const { clipppedPath, outerSvg } = useClipPath()
 
   return (
     <div
@@ -175,7 +182,7 @@ const Mask = (p: {
           position: relative;
         `}
       >
-        <InkImage ref={inkRef} step={step$()} />
+        {/* <InkImage ref={inkRef} step={step$()} /> */}
 
         <div
           ref={chldrenContainerRef}
@@ -198,10 +205,30 @@ const Mask = (p: {
           <svg width="0" height="0">
             <defs>
               <clipPath id={maskId} clipPathUnits="objectBoundingBox">
-                <ClipPath step={step$()} />
+                {/* <ClipPath step={step$()} /> */}
+                {clipppedPath}
               </clipPath>
             </defs>
           </svg>
+          {/* 
+          <svg
+            class={css`
+              width: 100%;
+              height: 100%;
+              position: absolute;
+            `}
+            preserveAspectRatio="none"
+            viewBox="0 0 1 1"
+          >
+            <ClipPath
+              stroke={theme.colors.primary}
+              stroke-width={0.01}
+              fill="transparent"
+            />
+            {outerPath}
+          </svg> */}
+
+          {outerSvg}
 
           {p.children}
         </div>

@@ -3,6 +3,7 @@ import { Component } from 'solid-js'
 import { GTag } from './components/g-tag'
 import { Navbar } from './components/nav/navbar'
 import { PageTransition } from './components/page-transition'
+import { ClipPath, useClipPath } from './components/page-transition/ink-masks'
 import { Particles } from './components/particles'
 import { isProduction } from './constants/env'
 import { withProviders } from './hocs'
@@ -13,7 +14,7 @@ import Home from './pages/home'
 import NotFound from './pages/not-found'
 import Projects from './pages/projects'
 import Skills from './pages/skills'
-import { css, makeStyles } from './theme'
+import { css, makeStyles, useTheme } from './theme'
 import { ThemeProvider } from './theme/theme'
 import { media } from './utils/styles'
 
@@ -43,6 +44,10 @@ export const App: Component = withProviders(
   const styles = useStyles()
   const contentRef = useRef<HTMLElement>()
 
+  const theme = useTheme()
+
+  const { outerSvg } = useClipPath()
+
   return (
     <>
       {isProduction && <GTag />}
@@ -61,6 +66,8 @@ export const App: Component = withProviders(
               <Route path="/*all" element={<NotFound />} />
             </Routes>
           </PageTransition>
+
+          {/* {outerSvg} */}
         </div>
       </main>
     </>
