@@ -9,7 +9,8 @@ export const PageTransitionContext = createContext({
 })
 
 export const PageTransition = (p: { children: JSX.Element }) => {
-  const isBig$ = useBreakpoint('sm')
+  // const isBig$ = useBreakpoint('sm')
+  const isBig$ = () => true
 
   // Mask transition doesn't look good on smaller size devices
   // due to both dimensions of the ink mask and low performance

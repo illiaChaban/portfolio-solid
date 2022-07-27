@@ -228,9 +228,19 @@ const Mask = (p: {
             {outerPath}
           </svg> */}
 
-          {outerSvg}
-
           {p.children}
+        </div>
+
+        <div
+          class={css`
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            pointer-events: none;
+          `}
+        >
+          {outerSvg}
         </div>
 
         {

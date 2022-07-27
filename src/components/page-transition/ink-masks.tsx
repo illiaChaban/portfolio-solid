@@ -86,33 +86,41 @@ export const useClipPath = () => {
 
   type ClipPathProps2 = {
     step?: number
-    multiplier?: number
-  } & JSX.PathSVGAttributes<SVGCircleElement>
+    viewBoxSize?: number
+    // radiusMultiplier?: number
+  } & JSX.PathSVGAttributes<SVGPolygonElement>
 
   const ClipPath = (p: ClipPathProps2) => {
     const ref = useRef()
 
-    const multiplier = () => p.multiplier ?? 1
+    const viewBoxSize = () => p.viewBoxSize ?? 1
+
+    const otherPoints = [0, 1, 1, 1, 1, 0]
+    const points$ = (start: [number, number]) =>
+      [...start, ...otherPoints].map(x => x * viewBoxSize()).join(' ')
+
+    // const radiusMultiplier = () => p.radiusMultiplier ?? 1
 
     onMount(() => {
       const a = anime({
         easing: 'easeOutQuad',
-        duration: 800,
+        duration: 1000,
         targets: ref.current,
-        r: [{ value: 1.5 * multiplier() }],
+        points: [{ value: points$([0, 0]) }],
       })
 
       onCleanup(() => a.pause())
     })
 
     return (
-      <circle
-        ref={ref}
-        cx={1 * multiplier()}
-        cy={1 * multiplier()}
-        r={0 * multiplier()}
-        {...p}
-      />
+      // <circle
+      //   ref={ref}
+      //   cx={1 * viewBoxSize()}
+      //   cy={1 * viewBoxSize()}
+      //   r={radius(0)}
+      //   {...p}
+      // />
+      <polygon points={points$([0.9, 0.9])} ref={ref} {...p} />
     )
   }
 
@@ -150,8 +158,8 @@ export const useClipPath = () => {
         </filter>
         <ClipPath
           stroke={theme.colors.primary}
-          multiplier={100}
-          stroke-width={5}
+          viewBoxSize={100}
+          stroke-width={2}
           fill="transparent"
           // fill="black"
           style={`filter: url(#${filterId});`}
