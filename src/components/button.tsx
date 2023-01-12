@@ -1,5 +1,12 @@
 import { LinkProps } from 'solid-app-router'
-import { Accessor, createMemo, createRoot, createSignal, JSX } from 'solid-js'
+import {
+  Accessor,
+  children,
+  createMemo,
+  createRoot,
+  createSignal,
+  JSX,
+} from 'solid-js'
 import { PageLinkBase, PageLinkBaseProps } from '.'
 import { use, useRect } from '../hooks'
 import { css, keyframes, styled, useTheme } from '../theme'
@@ -8,6 +15,7 @@ import {
   bindEvent,
   bindEventWithCleanup,
   cx,
+  isTruthy,
   throttle,
   withActions,
 } from '../utils'
@@ -196,24 +204,27 @@ const ripple = (button: HTMLElement) => {
 
     const duration = 600
 
-    const [rippleEl, dispose] = createRoot(dispose => [
-      <Ripple
-        style={`
-          width: ${diameter}px;
-          height: ${diameter}px;
-          left: ${e.pageX - (rect.left + radius)}px;
-          top: ${e.pageY - (rect.top + radius)}px;
-          animation-duration: ${duration}ms;
-        `}
-      />,
-      dispose,
-    ])
+    createRoot(dispose => {
+      const els = children(() => (
+        <Ripple
+          style={`
+            width: ${diameter}px;
+            height: ${diameter}px;
+            left: ${e.pageX - (rect.left + radius)}px;
+            top: ${e.pageY - (rect.top + radius)}px;
+            animation-duration: ${duration}ms;
+          `}
+        />
+      ))
+        .toArray()
+        .filter(el => el instanceof HTMLElement) as HTMLElement[]
 
-    button.append(rippleEl as HTMLElement)
-    setTimeout(() => {
-      dispose()
-      ;(rippleEl as HTMLElement).remove()
-    }, duration)
+      button.append(...els)
+      setTimeout(() => {
+        dispose()
+        els.forEach(el => el.remove())
+      }, duration)
+    })
   })
 }
 
