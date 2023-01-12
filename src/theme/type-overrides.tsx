@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/ban-types */
 import { JSX } from 'solid-js'
 // eslint-disable-next-line no-restricted-imports
@@ -11,21 +12,13 @@ import { Theme } from './theme'
 
 export const useTheme: () => Theme = useThemeBase as any
 
-export const styled: {
+export const styled = styledBase as {
   <T extends keyof JSX.IntrinsicElements>(
-    tag: T | ((props: JSX.IntrinsicElements[T]) => JSX.Element),
+    tag: T /*  | ((props: JSX.IntrinsicElements[T]) => JSX.Element) */,
   ): CustomTagged<JSX.IntrinsicElements[T]>
 
-  <T>(component: (props: T) => JSX.Element): CustomTagged<T>
-} =  // Fix for solid-styled-component not supporting 'class' prop
-  (tag: any) =>
-  (...args: any[]) => {
-    const Component = (styledBase(tag) as any)(...args)
-    return (props: any) => (
-      // eslint-disable-next-line solid/no-react-specific-props
-      <Component {...props} className={props.class ?? props.className} />
-    )
-  }
+  <T extends {}>(component: (props: T) => JSX.Element): CustomTagged<T>
+}
 
 type StyledComponent<TOriginalProps extends {}, TExtraProps extends {} = {}> = (
   props: TExtraProps & TOriginalProps,
