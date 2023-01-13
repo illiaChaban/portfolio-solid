@@ -1,5 +1,6 @@
 import { Route, Router, Routes } from 'solid-app-router'
 import { Component } from 'solid-js'
+import { CachedComponentsProvider } from './components'
 import { GTag } from './components/g-tag'
 import { Navbar } from './components/nav/navbar'
 import { PageTransition } from './components/page-transition'
@@ -39,6 +40,7 @@ const useStyles = makeStyles()({
 export const App: Component = withProviders(
   ThemeProvider,
   Router,
+  CachedComponentsProvider,
 )(() => {
   const styles = useStyles()
   const contentRef = useRef<HTMLElement>()

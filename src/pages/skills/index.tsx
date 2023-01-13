@@ -1,5 +1,10 @@
 import { lazy } from 'solid-js'
-import { ExternalLink, Heading, PageLink } from '../../components'
+import {
+  CachedComponent,
+  ExternalLink,
+  Heading,
+  PageLink,
+} from '../../components'
 import { SpinnerSuspence } from '../../components/spinner-suspence'
 import { css, useTheme } from '../../theme'
 import { cx, media } from '../../utils'
@@ -55,4 +60,12 @@ export default () => {
   )
 }
 
-const AsyncArt = lazy(() => import('./art'))
+const AsyncArt = lazy(async () => {
+  return import('./art')
+  const { default: Art } = await import('./art')
+  return {
+    default: () => {
+      return <CachedComponent key="skills-cloud" Component={Art as any} />
+    },
+  }
+})

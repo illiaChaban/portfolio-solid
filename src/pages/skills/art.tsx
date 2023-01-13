@@ -1,4 +1,4 @@
-import { css, styled } from '../../theme'
+import { css, styled, useTheme } from '../../theme'
 import { default as WordCloud } from 'tag-canvas'
 import { getCssVariable, hoverMedia, media } from '../../utils'
 import { JSX, onMount } from 'solid-js'
@@ -6,7 +6,10 @@ import { JSX, onMount } from 'solid-js'
 export default () => {
   const canvasId = 'skills-canvas'
   const listId = 'skills-cloud'
+
+  console.log({ theme: useTheme() })
   onMount(async () => {
+    console.log('mount skills art')
     const cloudOptions = useSkillsCloudOptions()
     // Reference: https://www.goat1000.com/tagcanvas-options.php
     // https://www.goat1000.com/tagcanvas-install.php
