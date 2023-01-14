@@ -105,6 +105,7 @@ export const ArtContainer = styled('div')`
   justify-content: center;
   align-items: center;
   position: relative;
+  min-height: 200px;
 `
 
 const Subtle = styled('span')`

@@ -1,5 +1,5 @@
 import { lazy } from 'solid-js'
-import { ExternalLink, Heading, PageLink } from '../../components'
+import { Heading, PageLink } from '../../components'
 import { SpinnerSuspence } from '../../components/spinner-suspence'
 import { css, useTheme } from '../../theme'
 import { cx, media } from '../../utils'
