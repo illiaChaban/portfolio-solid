@@ -1,4 +1,4 @@
-import { NavLink, useLocation } from 'solid-app-router'
+import { NavLink, useLocation } from '@solidjs/router'
 import { createRenderEffect, on } from 'solid-js'
 import { JSX } from 'solid-js/jsx-runtime'
 import { css, makeStyles } from '../../theme'

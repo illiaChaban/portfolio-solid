@@ -1,4 +1,4 @@
-import { Link as LinkBase, LinkProps } from 'solid-app-router'
+import { Link as LinkBase, LinkProps } from '@solidjs/router'
 import { ComponentProps } from 'solid-js'
 import { delayNavigationOnTouch } from '../directives'
 import { use } from '../hooks'

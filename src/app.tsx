@@ -1,4 +1,4 @@
-import { Route, Router, Routes } from 'solid-app-router'
+import { Route, Router, Routes } from '@solidjs/router'
 import { Component } from 'solid-js'
 import { GTag } from './components/g-tag'
 import { Navbar } from './components/nav/navbar'

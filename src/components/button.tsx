@@ -1,4 +1,4 @@
-import { LinkProps } from 'solid-app-router'
+import { LinkProps } from '@solidjs/router'
 import {
   Accessor,
   children,
