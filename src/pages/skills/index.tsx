@@ -32,10 +32,10 @@ export default () => {
           </P>
           <P>
             My main area of expertise is all things JavaScript. I enjoy working
-            with TypeScript and RxJS. SolidJS/React are my client side
-            frameworks of choice, although I have had experience with myriad of
-            different technologies. I also have good amount of experience
-            working with C# with .NET and Node with NestJS on the back-end.
+            with TypeScript and RxJS. Although I have had experience with myriad
+            of different technologies SolidJS/React are my client side
+            frameworks of choice. I also have a good amount of experience
+            working with C#, .NET and Node with NestJS on the back-end.
           </P>
           <P>
             You can learn about some of my projects{' '}
