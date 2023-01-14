@@ -11,14 +11,7 @@ import { PageLinkBase, PageLinkBaseProps } from '.'
 import { use, useRect } from '../hooks'
 import { css, keyframes, styled, useTheme } from '../theme'
 import { OmitSafe, Page } from '../types'
-import {
-  bindEvent,
-  bindEventWithCleanup,
-  cx,
-  isTruthy,
-  throttle,
-  withActions,
-} from '../utils'
+import { bindEventWithCleanup, cx, throttle, withActions } from '../utils'
 import { has, minMax, pick } from '../utils/lodash'
 
 const useStyles = () => {
@@ -193,16 +186,24 @@ const ripple = (button: HTMLElement) => {
   const rect$ = useRect()
   rect$.track(button)
 
-  // Not using bindEventWithCleanup due to Solid bug where it's calling
-  // on cleanup right away if there's a signal used in the className on the
-  // element. Ref: https://github.com/solidjs/solid/issues/903
-  bindEvent(button, 'click', (e: MouseEvent) => {
-    const diameter = Math.max(button.clientWidth, button.clientHeight)
-    const radius = diameter / 2
-
+  bindEventWithCleanup(button, 'click', (e: MouseEvent) => {
     const rect = rect$()!
 
-    const duration = 600
+    const duration = 400
+
+    const distanceToClick = distanceToPoint({ x: e.pageX, y: e.pageY })
+
+    const distanceToFurthestCorner = [
+      { x: rect.left, y: rect.top },
+      { x: rect.left, y: rect.bottom },
+      { x: rect.right, y: rect.top },
+      { x: rect.right, y: rect.bottom },
+    ].reduce((distance, point) => {
+      return Math.max(distance, distanceToClick(point))
+    }, 0)
+
+    const radius = distanceToFurthestCorner
+    const diameter = radius * 2
 
     createRoot(dispose => {
       const els = children(() => (
@@ -220,6 +221,7 @@ const ripple = (button: HTMLElement) => {
         .filter(el => el instanceof HTMLElement) as HTMLElement[]
 
       button.append(...els)
+
       setTimeout(() => {
         dispose()
         els.forEach(el => el.remove())
@@ -232,13 +234,13 @@ const Ripple = styled('span')`
   position: absolute;
   border-radius: 50%;
   transform: scale(0);
-  animation: ${keyframes`
+  animation-name: ${keyframes`
     to {
-      transform: scale(4);
-      opacity: 0;
+      transform: scale(1);
     }
-  `} linear;
-  background-color: rgba(0, 0, 0, 0.3);
+  `};
+  animation-timing-function: ease-in-out;
+  background: radial-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.3));
 `
 
 type Point = { x: number; y: number }
