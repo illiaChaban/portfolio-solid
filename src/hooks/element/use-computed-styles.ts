@@ -12,7 +12,7 @@ export const useComputedStyles = (
     update: () => pipe(element.current, getComputedStyle, set),
   }))
 
-  bindEventWithCleanup(window, 'resize', debounce(100, styles$.update))
+  bindEventWithCleanup(window, 'resize', debounce(100)(styles$.update))
   onMount(styles$.update)
 
   return () => styles$()

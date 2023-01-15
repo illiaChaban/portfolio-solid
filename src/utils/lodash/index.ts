@@ -1,5 +1,9 @@
 import { AnyFunc, AnyObj } from '../../types'
 
+import _debounce from 'lodash/debounce'
+// eslint-disable-next-line no-restricted-imports
+import type { DebouncedFunc, DebounceSettings } from 'lodash'
+
 export * from './extract'
 export * from './min-max'
 export * from './get'
@@ -87,26 +91,18 @@ type TimedFn<Targs extends any[]> = {
   (...args: Targs): void
   cancel: () => void
 }
-export const debounce = <TArgs extends any[]>(
-  time: number,
-  fn: (...args: TArgs) => unknown,
-): TimedFn<TArgs> => {
-  let timeoutId: number
-  const cancel = () => clearTimeout(timeoutId)
-  const debounced = (...args: TArgs) => {
-    cancel()
-    timeoutId = setTimeout(() => fn(...args), time)
+export const debounce =
+  (time: number, options?: DebounceSettings) =>
+  <Fn extends (...args: any[]) => any>(fn: Fn): DebouncedFunc<Fn> => {
+    return _debounce(fn, time, options)
   }
-
-  return Object.assign(debounced, { cancel })
-}
 
 /** Invokes the function on initial call and throttles every next call */
 export const throttle = <TArgs extends any[]>(
   time: number,
   fn: (...args: TArgs) => unknown,
 ): TimedFn<TArgs> => {
-  let timeoutId: number | undefined
+  let timeoutId: NodeJS.Timeout | undefined
   let currArgs: TArgs
   let lastArgs: TArgs
 

@@ -14,6 +14,7 @@
   "license": "MIT",
   "devDependencies": {
     "@types/animejs": "^3.1.6",
+    "@types/lodash": "^4.14.191",
     "@typescript-eslint/eslint-plugin": "^5.48.1",
     "@typescript-eslint/parser": "^5.48.1",
     "eslint": "^8.31.0",
@@ -30,6 +31,7 @@
     "@solidjs/router": "^0.6.0",
     "animejs": "^3.2.1",
     "classnames": "^2.3.2",
+    "lodash": "^4.17.21",
     "pipe-ts": "0.0.9",
     "solid-js": "^1.6.9",
     "solid-styled-components": "^0.28.5",

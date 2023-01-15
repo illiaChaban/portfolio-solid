@@ -1,4 +1,4 @@
-import { createSignal, onMount } from 'solid-js'
+import { createSignal, onCleanup, onMount } from 'solid-js'
 import { bindEventWithCleanup } from '../../utils/events'
 import { debounce } from '../../utils/lodash'
 import { withActions } from '../../utils/with-actions'
@@ -16,7 +16,7 @@ export const useBoundingRect = <T extends Element>() => {
   const update = () => element && rect$.track(element)
 
   onMount(update)
-  bindEventWithCleanup(window, 'resize', debounce(100, update))
+  bindEventWithCleanup(window, 'resize', debounce(100)(update))
 
   return rect$
 }
@@ -56,8 +56,9 @@ export const useRect = <T extends HTMLElement>() => {
   )
 
   onMount(rect$.update)
-  bindEventWithCleanup(window, 'resize', debounce(100, rect$.update))
-  bindEventWithCleanup(window, 'scroll', debounce(100, rect$.update))
+  bindEventWithCleanup(window, 'resize', debounce(100)(rect$.update))
+  bindEventWithCleanup(window, 'scroll', debounce(400)(rect$.update))
+  useOnContentShift(rect$.update)
 
   return Object.assign(() => rect$(), {
     track: (el: T) => {
@@ -65,4 +66,10 @@ export const useRect = <T extends HTMLElement>() => {
       rect$.update()
     },
   })
+}
+
+const useOnContentShift = (cb: () => void) => {
+  const observer = new MutationObserver(debounce(200, { maxWait: 500 })(cb))
+  observer.observe(document.body, { childList: true, subtree: true })
+  onCleanup(() => observer.disconnect())
 }

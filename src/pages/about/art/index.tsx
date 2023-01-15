@@ -49,9 +49,9 @@ export const Art = () => {
       </ImgWrapper>
       <Quote>
         <Quotation>
-          <span ref={quotationRef}></span>
+          <span ref={quotationRef} />
         </Quotation>
-        <Author ref={authorRef}></Author>
+        <Author ref={authorRef} />
       </Quote>
       <Button onClick={art$.next}>More wisdom</Button>
     </Container>

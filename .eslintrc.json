@@ -39,7 +39,8 @@
 		"no-restricted-imports": [
 			"error",
 			"pipe-ts",
-			"solid-styled-components"
+			"solid-styled-components",
+			"lodash"
 		],
 		"max-len": [
 			"warn"
