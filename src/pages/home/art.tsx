@@ -38,7 +38,6 @@ const BaseContainer = styled('div')`
 const Container = styled(BaseContainer)`
   position: absolute;
   right: 0;
-  z-index: -2;
   opacity: 0.8;
 `
 
@@ -63,7 +62,6 @@ const ArtContainer = styled('div')`
     var(--rv-width) / var(--rv-width-to-squirrel-height-ratio)
   );
 
-  /* z-index: -1; */
   position: absolute;
   top: 60px;
   right: 0px;

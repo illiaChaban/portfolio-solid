@@ -17,7 +17,6 @@ export const Particles = () => {
         box-sizing: border-box;
         width: 100%;
         height: 100%;
-        z-index: -10;
         position: fixed;
         overflow: hidden;
         top: 0;

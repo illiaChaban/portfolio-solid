@@ -57,6 +57,8 @@ const IntroWrapper = styled('div')`
 
   overflow: hidden;
 
+  z-index: 1;
+
   ${({ theme }) => media(theme.breakpoints.down('md'))} {
     margin-left: 0;
   }

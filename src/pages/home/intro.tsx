@@ -83,7 +83,6 @@ const Container = styled('h1')`
   margin: 0;
   /* aligning HI to the rest of the header */
   transform: translate(-25px, 15px);
-  z-index: -1;
 `
 
 const LettersContainer = styled('span')`
