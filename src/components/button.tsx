@@ -189,7 +189,7 @@ const ripple = (button: HTMLElement) => {
   bindEventWithCleanup(button, 'click', (e: MouseEvent) => {
     const rect = rect$()!
 
-    const duration = 400
+    const duration = 2000
 
     const distanceToClick = distanceToPoint({ x: e.pageX, y: e.pageY })
 
@@ -236,11 +236,11 @@ const Ripple = styled('span')`
   transform: scale(0);
   animation-name: ${keyframes`
     to {
-      transform: scale(1);
+      transform: scale(4);
     }
   `};
-  animation-timing-function: ease-in-out;
-  background: radial-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.3));
+  animation-timing-function: ease-out;
+  background: radial-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.35));
 `
 
 type Point = { x: number; y: number }
