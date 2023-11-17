@@ -115,6 +115,7 @@ export const GlobalStyles = createGlobalStyles`
     background-size: cover;
     background-position: center;
     position: relative;
+    overscroll-behavior: none;
   }
 
   @media (max-width: 960px) {
