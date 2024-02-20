@@ -1,21 +1,11 @@
-import { Accessor, createMemo, For, onMount } from 'solid-js'
-import { useComputedStyles } from '../../hooks'
+import { For, JSX } from 'solid-js'
 import { useAtom } from '../../hooks/use-atom'
-import { Ref, useRef } from '../../hooks/use-ref'
 import { css, styled, useBreakpoint, useTheme } from '../../theme'
-import { flow, pipe } from '../../utils'
-import { extractFloat, iif, scope } from '../../utils/lodash'
+import { bindEventWithCleanup } from '../../utils'
+import { debounce } from '../../utils/lodash'
 import { cx, media } from '../../utils/styles'
+import { calcClipPath, NAV_HEIGHT, NAV_LENGTH } from './clip-path'
 import { NavIcon } from './nav-icon'
-import {
-  Curve,
-  curveToString,
-  getCircleCurveMultiplier,
-  mirrorCurve,
-  oneLine,
-  rotateCurve90Deg,
-  toRadians,
-} from './path-utils'
 
 const MenuContainer = styled('div')(({ theme }) => ({
   color: 'var(--color-subtle)',
@@ -39,8 +29,6 @@ const MenuContainer = styled('div')(({ theme }) => ({
     borderRight: 'none',
   },
 }))
-
-const navLength = 300
 
 export const Navbar = () => {
   const index$ = useAtom<number>()
@@ -74,11 +62,11 @@ const NavContainer = styled('div')`
   align-items: center;
 
   text-align: center;
-  width: ${navLength}px;
+  width: ${NAV_LENGTH}px;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
   ${p => media(p.theme.breakpoints.up('md'))} {
-    height: ${navLength}px;
+    height: ${NAV_LENGTH}px;
     width: 100%;
     flex-direction: column;
   }
@@ -86,153 +74,98 @@ const NavContainer = styled('div')`
 
 const useStyles = () => {
   const theme = useTheme()
+
   return {
-    backdropBorder: css`
-      position: absolute;
-      height: 100%;
+    shared: css`
+      height: ${NAV_HEIGHT.toString()}px;
       width: 100%;
-      background-color: #7ff6ff40;
-      ${media(theme.breakpoints.down('md'))} {
-        top: -1.5px;
-      }
+      position: absolute;
+      transition: translate 0.2s ease-out;
+      bottom: 1.5px;
       ${media(theme.breakpoints.up('md'))} {
-        right: -1.5px;
+        bottom: auto;
+        left: 1.5px;
       }
     `,
+    backdropBorder: css`
+      background-color: #7ff6ff40;
+    `,
     backdrop: css`
-      height: 100%;
-      width: 100%;
-      background: #000000d6;
-      ${media(theme.breakpoints.down('md'))} {
-        background: #000000c4;
-        backdrop-filter: blur(2px);
+      bottom: 0;
+      ${media(theme.breakpoints.up('md'))} {
+        bottom: auto;
+        left: 0;
+      }
+
+      background: #000000c4;
+      backdrop-filter: blur(2px);
+      ${media(theme.breakpoints.up('md'))} {
+        background: #000000d6;
       }
     `,
   }
 }
 
 const Bar = (p: { index: number | undefined }) => {
+  const theme = useTheme()
   const styles = useStyles()
 
-  const backdropRef = useRef()
-  const clipPath$ = useClipPath(backdropRef, () => p.index)
+  const clipPath$ = useClipPath()
 
-  const backdropTransitionStyles$ = scope(() => {
-    const afterMounted$ = useAtom(false)
-    // wait for initial clip-path to be applied
-    onMount(() => setTimeout(() => afterMounted$(true), 0))
-    return () =>
-      p.index &&
-      afterMounted$() &&
-      css`
-        transition: clip-path ${0.2}s ease-out;
-      `
-  })
+  const isDesktop$ = useBreakpoint('md')
+
+  const sharedStyles = (): JSX.CSSProperties => {
+    const { path, fullLength } = clipPath$()
+    const isDesktop = isDesktop$()
+    return {
+      'clip-path': `path('${path}')`,
+      translate: `${isDesktop ? '0' : ''} ${60 * ((p.index ?? 0) - 2)}px`,
+      [isDesktop ? 'height' : 'width']: `${fullLength}px`,
+    }
+  }
 
   return (
     <div
       class={css`
+        /* adjust for border because overflow-x otherwise cuts the top for some reason */
+        height: calc(100% + 2px);
         width: 100%;
-        height: 100%;
+        ${media(theme.breakpoints.up('md'))} {
+          height: 100%;
+          width: calc(100% + 2px);
+        }
         position: absolute;
+        overflow-x: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
       `}
     >
       {/* Using another DIV to create border instead of 
-      "filter: drop-shadow(0px -1px 3px var(--color-highlight));" on the parent 
-      because of the animation bug on mobile (visible only on an actual phone)
-      */}
+        "filter: drop-shadow(0px -1px 3px var(--color-highlight));" on the parent 
+        because of the animation bug on mobile (visible only on an actual phone)
+        */}
       <div
-        class={cx(styles.backdropBorder, backdropTransitionStyles$())}
-        style={`clip-path: path('${clipPath$()}');`}
+        class={cx(styles.shared, styles.backdropBorder)}
+        style={sharedStyles()}
       />
-      <div
-        ref={backdropRef}
-        class={cx(styles.backdrop, backdropTransitionStyles$())}
-        style={`clip-path: path('${clipPath$()}');`}
-      />
+      <div class={cx(styles.shared, styles.backdrop)} style={sharedStyles()} />
     </div>
   )
 }
 
-type Direction = 'down' | 'right'
-const useClipPath = (elRef: Ref, index$: Accessor<number | undefined>) => {
-  const circleWidth = 60
-  const radius = circleWidth / 2
-
-  const precurveSize = 8
-  const startPoint$ = () => -precurveSize + (index$() ?? 0) * circleWidth
-
-  const angle = 90
-  const curveMultiplier = pipe(angle, toRadians, getCircleCurveMultiplier)
-
-  const curve = (direction: Direction) => {
-    const pre: Curve = [
-      Math.round(precurveSize / 2 + 1),
-      0.5,
-      precurveSize - 1,
-      precurveSize - Math.round(precurveSize / 2),
-      precurveSize,
-      precurveSize,
-    ]
-    const preMid: Curve = [
-      3.5,
-      radius * curveMultiplier - 7,
-      radius * (1 - curveMultiplier) - 2.5,
-      radius - precurveSize + 0.5,
-      radius,
-      radius - precurveSize + 0.5,
-    ]
-    const postMid = mirrorCurve(preMid)
-    const post = mirrorCurve(pre)
-
-    return [pre, preMid, postMid, post]
-      .map(flow(iif(direction === 'down', rotateCurve90Deg), curveToString))
-      .join(' ')
-  }
-
-  const backdropDimensions$ = scope(() => {
-    const styles$ = useComputedStyles(elRef)
-    return () => ({
-      width: extractFloat(styles$()?.width) ?? 0,
-      height: extractFloat(styles$()?.height) ?? 0,
-    })
-  })
-  const getBackdropPadding = (length: number) => {
-    return length && (length - navLength) / 2
-  }
-
+const useClipPath = () => {
   const isDesktop$ = useBreakpoint('md')
+  const calcWindowLength = () =>
+    (isDesktop$() ? window.innerHeight : window.innerWidth) || 10000
 
-  const top$ = (direction: Direction) => {
-    const length =
-      backdropDimensions$()[direction === 'right' ? 'width' : 'height']
-    const line = direction === 'right' ? 'h' : 'v'
-    return oneLine(`
-      ${line}${getBackdropPadding(length)}
-      ${line}${startPoint$()}
-      ${curve(direction)}
-      ${line}${navLength - startPoint$() - circleWidth - precurveSize * 2}
-      ${line}${getBackdropPadding(length)}
-    `).replace('--', '')
-  }
+  const windowLength = useAtom(calcWindowLength())
 
-  const clipPath$ = createMemo(() =>
-    isDesktop$()
-      ? oneLine(`
-        M0,0
-        h${backdropDimensions$().width} 
-        ${top$('down')}
-        h-${backdropDimensions$().width} 
-        z
-      `)
-      : oneLine(`
-        M0,0
-        ${top$('right')}
-        v${backdropDimensions$().height} 
-        h-${backdropDimensions$().width}
-        z
-      `),
+  bindEventWithCleanup(
+    window,
+    'resize',
+    debounce(100)(() => windowLength(calcWindowLength())),
   )
 
-  return clipPath$
+  return () => calcClipPath(isDesktop$() ? 'down' : 'right', windowLength())
 }

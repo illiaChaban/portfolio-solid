@@ -1,6 +1,6 @@
 {
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
+    "source.fixAll.eslint": "explicit"
   },
   // DO NOT ADD THIS OR PRETTIFY WILL CONFLICT WITH ESLINT
   // "editor.formatOnSave": true,
