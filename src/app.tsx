@@ -13,34 +13,13 @@ import Home from './pages/home'
 import NotFound from './pages/not-found'
 import Projects from './pages/projects'
 import Skills from './pages/skills'
-import { css, makeStyles } from './theme'
 import { ThemeProvider } from './theme/theme'
-import { media } from './utils/styles'
-
-const useStyles = makeStyles()({
-  content: ({ breakpoints, misc }) =>
-    css({
-      boxSizing: 'border-box',
-      width: '100%',
-      height: '100%',
-      position: 'relative',
-      paddingLeft: misc.navOffset,
-      minHeight: '100vh',
-      display: 'flex',
-      flexDirection: 'column',
-
-      [media(breakpoints.down('md'))]: {
-        paddingLeft: 0,
-        paddingBottom: misc.navOffset,
-      },
-    }),
-})
+import { tw } from './utils/tw'
 
 export const App: Component = withProviders(
   ThemeProvider,
   Router,
 )(() => {
-  const styles = useStyles()
   const contentRef = useRef<HTMLElement>()
 
   return (
@@ -50,7 +29,16 @@ export const App: Component = withProviders(
       <main>
         <Navbar />
 
-        <div class={styles.content()} ref={contentRef}>
+        <div
+          class={tw`
+            relative 
+            flex flex-col 
+            w-full h-full min-h-[100vh] 
+            box-border 
+            pb-[--menu-offset] md:pb-0 md:pl-[--menu-offset]
+          `}
+          ref={contentRef}
+        >
           <PageTransition>
             <Routes>
               <Route path="/" element={<Home {...{ contentRef }} />} />
