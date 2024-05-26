@@ -1,70 +1,39 @@
-import { For } from 'solid-js'
-import { css, keyframes, useTheme } from '../../theme'
-import { cx, range } from '../../utils'
+import { For, JSX } from 'solid-js'
+import { range } from '../../utils'
+import { tw } from '../../utils/tw'
+import styles from './art.module.css'
 
 // TODO: fix animation restarting after page transition
-
 const linesNum = 15
-export const Art = (p: { class?: string; style?: string }) => {
-  const { sharedStyles, colors } = useTheme()
+export const Art = (p: { class?: string; style?: JSX.CSSProperties }) => {
   return (
-    <div
-      class={cx(
-        sharedStyles.tags.div,
-        css`
-          align-self: center;
-          position: relative;
-        `,
-        p.class,
-      )}
-      style={p.style}
-    >
+    <div class={tw`tags-div self-center relative ${p.class}`} style={p.style}>
       <div
-        class={css`
-          width: 90%;
-          height: 95%;
-          position: relative;
-          transform-style: preserve-3d;
-          transform: perspective(500px) translate(10px, -20px) rotateX(60deg);
-          display: flex;
-          justify-content: center;
-          align-items: center;
-
-          width: 72%;
-          left: 150px;
-          transform: perspective(500px) translate(-150px, -25px) rotateX(60deg);
-          margin-right: 20px;
-          margin-left: auto;
-          margin-bottom: 5px;
-
-          & > span {
-            position: absolute;
-            display: block;
-            border: 2px solid orange;
-            box-sizing: border-box;
-            border-radius: 50%;
-            transform: translateZ(-100px);
-            -webkit-animation: ${waveAnimation} 3s ease-in-out infinite;
-            animation: ${waveAnimation} 3s ease-in-out infinite;
-          }
+        class={tw`
+          w-[72%] h-[95%]
+          mr-5 ml-auto mb-5px
+          relative left-[150px]
+          flex justify-center items-center
+          [transform-style:preserve-3d]
+          [transform:perspective(500px)_translate(-150px,-25px)_rotateX(60deg)]
         `}
       >
         <For each={range(linesNum)}>
           {i => {
-            const colorsArr = [colors.primary, colors.text.primary]
+            const borders = ['border-primary', 'border-text-primary']
             const diagonalToContainerRatio = (100 / linesNum) * (i + 1)
             const distanceBetweenCircles = i / 10
-            const colorIdx = i % colorsArr.length
-            const color = colorsArr[colorIdx]
+            const idx = i % borders.length
+            const border = borders[idx]
             return (
-              <span
+              <Wave
+                class={border}
                 // FIXME: workaround for animation reset after page transition
-                style={`
-                  width: ${diagonalToContainerRatio}%;
-                  height: ${diagonalToContainerRatio}%;
-                  animation-delay: ${distanceBetweenCircles + 1.05}s;
-                  border-color: ${color};
-                `}
+                style={{
+                  width: `${diagonalToContainerRatio}%`,
+                  height: `${diagonalToContainerRatio}%`,
+                  'animation-delay': `${distanceBetweenCircles + 1.05}s`,
+                }}
               />
             )
           }}
@@ -74,13 +43,9 @@ export const Art = (p: { class?: string; style?: string }) => {
   )
 }
 
-const waveAnimation = keyframes`
-  0%, 100% {
-    -webkit-transform: translateZ(-100px);
-            transform: translateZ(-100px);
-  }
-  50% {
-    -webkit-transform: translateZ(100px);
-            transform: translateZ(100px);
-  }
+const Wave = tw('div')`
+  absolute box-border 
+  border-2 border-solid rounded-[50%]
+  [transform:translateZ(-100px)] 
+  ${styles.wave}
 `

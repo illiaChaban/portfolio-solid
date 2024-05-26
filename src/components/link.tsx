@@ -2,69 +2,23 @@ import { Link as LinkBase, LinkProps } from '@solidjs/router'
 import { ComponentProps } from 'solid-js'
 import { delayNavigationOnTouch } from '../directives'
 import { use } from '../hooks'
-import { css, useTheme } from '../theme'
 import { OmitSafe, Page } from '../types'
-import { cx } from '../utils'
+import cssStyles from './link.module.css'
+import { tw } from '../utils/tw'
 
-type StyleProps = { color?: 'primary' | 'text' }
-const useStyles = ({ color = 'primary' }: StyleProps) => {
-  const { colors } = useTheme()
-  const padding = '4px'
+type StyleProps = { $color?: 'primary' | 'text' }
 
-  const base = css`
-    display: inline-block;
-    position: relative;
-    transition: 0.3s;
-    text-decoration: none;
-
-    &:hover {
-      color: ${colors.accent.black};
-      transform: scale(1.1);
-    }
-    &::after,
-    &::before {
-      content: '';
-      position: absolute;
-      height: 50%;
-      transition: 0.3s;
-      z-index: -1;
-      background-color: ${colors.primary};
-    }
-
-    &::after,
-    &::before {
-      width: calc(100% + ${padding} * 2);
-      transform: scaleX(0);
-    }
-    &::after {
-      transform-origin: right;
-      top: 0;
-      right: calc(-${padding} * 1.65);
-    }
-    &::before {
-      transform-origin: left;
-      bottom: 0;
-      left: calc(-${padding} * 1.65);
-    }
-    &:hover::after,
-    &:hover::before {
-      transform: scaleX(1);
-    }
-  `
-  const dynamic = css`
-    color: ${color === 'text' ? colors.text.primary : colors.primary};
-  `
-  return cx(base, dynamic)
-}
+const StyledLink = tw('a')<StyleProps>`
+  ${cssStyles.externalLink} 
+  ${p => (p.$color === 'text' ? 'text-text-primary' : 'text-primary')}
+`
 
 export const ExternalLink = (
-  p: OmitSafe<ComponentProps<'a'>, 'target' | 'className' | 'rel'> & StyleProps,
+  p: OmitSafe<ComponentProps<'a'>, 'target' | 'rel'> & StyleProps,
 ) => {
-  const styles = useStyles(p)
   return (
-    <a
+    <StyledLink
       {...p}
-      class={cx(styles, p.class)}
       target="_blank"
       rel="external"
       ref={use(delayNavigationOnTouch(350))}
@@ -79,9 +33,7 @@ export const PageLinkBase = (p: PageLinkBaseProps) => {
   return <LinkBase {...p} href={p.page === 'home' ? '/' : `/${p.page}`} />
 }
 
-export const PageLink = (
-  p: OmitSafe<PageLinkBaseProps, 'className'> & StyleProps,
-) => {
-  const styles = useStyles(p)
-  return <PageLinkBase {...p} class={cx(styles, p.class)} />
+export const PageLink = (p: PageLinkBaseProps & StyleProps) => {
+  // @ts-expect-error "as" type issues
+  return <StyledLink as={PageLinkBase} {...p} />
 }

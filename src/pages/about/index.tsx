@@ -1,16 +1,13 @@
 import { Heading, PageLink } from '../../components'
-import { styled, useTheme } from '../../theme'
-import { cx, media } from '../../utils'
+import { tw } from '../../utils/tw'
 import { Art } from './art'
 
 export default () => {
-  const { sharedStyles } = useTheme()
-
   return (
-    <Container class={cx(sharedStyles.tags.body)} id="about">
+    <Container class="tags-body" id="about">
       <Content>
         <Heading>About</Heading>
-        <div class={sharedStyles.tags.divEnd}>
+        <div class="tags-div-end">
           <P>
             <Subtle>2016</Subtle> - moved to Atlanta, GA from Kyiv, Ukraine
           </P>
@@ -49,7 +46,6 @@ export default () => {
             When I’m not coding you can find me playing soccer, bouldering at
             Stone Summit or taking a nap. I love naps.
           </P>
-          <P></P>
         </div>
       </Content>
       <ArtContainer>
@@ -59,55 +55,29 @@ export default () => {
   )
 }
 
-export const Content = styled('div')`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 15px;
-  padding-left: 5%;
-  min-width: 250px;
-  width: 40%;
-
-  ${({ theme }) => media(theme.breakpoints.down(780))} {
-    box-sizing: border-box;
-    width: 100%;
-    padding-top: 0;
-  }
+export const Content = tw('div')`
+  flex flex-col justify-center
+  p-[15px]
+  pl-[5%]
+  min-w-[250px]
+  w-2/5
+  max-sm_md:box-border
+  max-sm_md:w-full
+  max-sm_md:pt-0
+`
+export const P = tw('p')`
+  my-[18px] first:mt-2 last:mb-2
+  text-[0.9rem] leading-[1.1rem]
 `
 
-export const P = styled('p')`
-  margin: 18px 0;
-  font-size: 0.9rem;
-  line-height: 1.1rem;
-  &:first-child {
-    margin-top: 8px;
-  }
-  &:last-child {
-    margin-bottom: 8px;
-  }
+export const Container = tw('div')`
+  relative 
+  flex justify-between flex-auto 
+  max-sm_md:flex-col
 `
 
-export const Container = styled('div')`
-  display: flex;
-  justify-content: space-between;
-  position: relative;
-  flex-grow: 1;
-  flex-shrink: 1;
-  flex-basis: auto;
-  ${({ theme }) => media(theme.breakpoints.down(780))} {
-    flex-direction: column;
-  }
+export const ArtContainer = tw('div')`
+  flex flex-grow justify-center items-center relative min-h-[200px]
 `
 
-export const ArtContainer = styled('div')`
-  display: flex;
-  flex-grow: 1;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  min-height: 200px;
-`
-
-const Subtle = styled('span')`
-  color: ${({ theme }) => theme.colors.text.subtle2};
-`
+const Subtle = tw('span')`text-text-subtle2`

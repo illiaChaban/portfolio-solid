@@ -3,66 +3,34 @@ import { Icon, ExternalLink } from '../../components'
 import { PageTransitionContext } from '../../components/page-transition'
 import { textScramble } from '../../directives'
 import { RefSetter, use } from '../../hooks'
-import { useTheme, css, styled } from '../../theme'
-import { cx } from '../../utils'
 import { MediaLink } from './media-link'
+import { tw } from '../../utils/tw'
 
 export const ContactInfo = (p: { ref?: RefSetter<HTMLDivElement> }) => {
-  const { sharedStyles, colors } = useTheme()
-
   return (
-    <div
-      class={cx(
-        sharedStyles.tags.div,
-        css`
-          padding: 35px 0;
-        `,
-      )}
-      ref={use(p.ref)}
-    >
+    <div class="tags-div py-[35px]" ref={use(p.ref)}>
       <IntroHeading />
-      <div
-        class={css`
-          margin: 30px 0;
-        `}
-      >
+      <div class="my-[30px]">
         <LinkWrapper>
-          <ExternalLink href="mailto:illia.chaban.8@gmail.com" color="text">
-            <Icon
-              name="envelope"
-              class={css`
-                position: relative;
-                top: 2px;
-              `}
-            />{' '}
+          <ExternalLink href="mailto:illia.chaban.8@gmail.com" $color="text">
+            <Icon name="envelope" class="relative top-0.5" />{' '}
             illia.chaban.8@gmail.com
           </ExternalLink>
         </LinkWrapper>
         <LinkWrapper>
           <ExternalLink
             href="https://docs.google.com/viewer?url=https://docs.google.com/document/d/1Q1eJ4p3lnqyGA5hYGV61Woh0eHEu0M6OcytNqIVpr0g/export?format=pdf"
-            color="text"
+            $color="text"
           >
             <Icon name="pdf" /> Resume
           </ExternalLink>
         </LinkWrapper>
 
-        <LinkWrapper
-          class={css`
-            color: ${colors.text.subtle2};
-            opacity: 0.85;
-          `}
-        >
+        <LinkWrapper class="text-text-subtle2 opacity-85">
           <Icon name="mapMarker" /> Atlanta, GA
         </LinkWrapper>
       </div>
-      <div
-        class={css`
-          display: flex;
-          justify-content: space-between;
-          width: 100%;
-        `}
-      >
+      <div class="flex justify-between w-full">
         <MediaLink
           href="https://www.linkedin.com/in/illia-chaban/"
           aria-label="my-linkedin"
@@ -83,40 +51,31 @@ export const ContactInfo = (p: { ref?: RefSetter<HTMLDivElement> }) => {
   )
 }
 
-const LinkWrapper = styled('h2')`
-  margin-top: 0.85em;
-  margin-bottom: 0.85em;
-  font-family: 'Inconsolata', 'Saira', monospace;
-  line-height: 130%;
+const LinkWrapper = tw('h2')`
+  my-[0.85em]
+  [line-height:130%]
+  font-mono
 `
-
 const IntroHeading = () => {
-  const theme = useTheme()
   const { maskTransitionEnabled$ } = useContext(PageTransitionContext)
   return (
     <h3
       ref={use(
         textScramble({
           delay: maskTransitionEnabled$() ? 1000 : 250,
-          // eslint-disable-next-line quotes
-          phrases: ['Hello friend,', "Let's build something great!"],
+          phrases,
           interval: 2000,
-          doodleStyle: css`
-            color: ${theme.colors.primary};
-            opacity: 0.8;
-          `,
+          doodleStyle: tw`text-primary opacity-80`,
         }),
       )}
-      class={css`
-        margin: 0;
-        color: ${theme.colors.text.subtle1};
-        font-size: 1.3rem;
-        font-weight: 100;
-        text-transform: uppercase;
-        font-family: 'Inconsolata', monospace;
+      class={tw`
+        m-0 text-text-subtle1 uppercase 
+        [font-size:1.3rem] font-thin font-mono
       `}
     >
-      Hello friend,
+      {phrases[0]}
     </h3>
   )
 }
+// eslint-disable-next-line quotes
+const phrases = ['Hello friend,', "Let's build something great!"]

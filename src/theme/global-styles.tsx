@@ -59,13 +59,11 @@ const tagStyles = `
 
   .div-tags::before {
     content: '<div>';
-    /* bottom: 100%; */
     top: 0;
   }
   .div-tags::after,
   .div-tags-end::after {
     content: '</div>';
-    /* top: calc( 100% + .5rem ); */
     bottom: 0px;
   }
 

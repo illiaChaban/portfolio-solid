@@ -1,0 +1,14 @@
+@keyframes waveAnimation {
+  0%, 100% {
+    -webkit-transform: translateZ(-100px);
+            transform: translateZ(-100px);
+  }
+  50% {
+    -webkit-transform: translateZ(100px);
+            transform: translateZ(100px);
+  }
+}
+
+.wave {
+  animation: waveAnimation 3s ease-in-out infinite;
+}

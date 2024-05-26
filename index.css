@@ -1,3 +1,71 @@
-/* @tailwind base;
-@tailwind components; */
+/* @tailwind base; */
+/* @tailwind components; */
 @tailwind utilities;
+
+
+/* Tag styles */
+.tags-h1,
+.tags-body,
+.tags-div,
+.tags-div-end
+{
+  position: relative;
+}
+
+.tags-div-end {
+  padding-bottom: 25px;
+}
+
+.tags-body {
+  padding: 45px 0;
+}
+
+.tags-h1::after,
+.tags-h1::before,
+.tags-body::after,
+.tags-body::before,
+.tags-div::after,
+.tags-div::before,
+.tags-div-end::after
+{
+  color: var(--color-subtle);
+  position: absolute;
+  left: 0;
+  font-family: 'League Script', 'Courier New', 'Inconsolata', cursive;
+  font-weight: 900;
+  font-size: .8rem;
+  text-transform: none;
+}
+
+.tags-body::before {
+  content: '<body>';
+  top: 20px;
+}
+.tags-body::after {
+  content: '</body>';
+  bottom: 20px;
+}
+.tags-body::before,
+.tags-body::after
+{
+  left: 2%;
+}
+
+.tags-h1::before {
+  content: "<h1>";
+  bottom: 100%;
+}
+.tags-h1::after {
+  content: "</h1>";
+  top: calc( 100% + .4rem);
+}
+
+.tags-div::before {
+  content: '<div>';
+  top: 0;
+}
+.tags-div::after,
+.tags-div-end::after {
+  content: '</div>';
+  bottom: 0px;
+}
