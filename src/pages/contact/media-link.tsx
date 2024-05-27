@@ -2,18 +2,19 @@ import {
   ComponentProps,
   createEffect,
   For,
+  JSX,
   JSXElement,
   splitProps,
 } from 'solid-js'
 import { delayNavigationOnTouch } from '../../directives'
 import { use, useHovering, useRef } from '../../hooks'
-import { css, styled, useTheme, withUniqueClass } from '../../theme'
 import { OmitSafe } from '../../types'
 import { range } from '../../utils'
+import { tw } from '../../utils/tw'
 
 const tilesNum = 5
 
-export const MediaLink = withUniqueClass('media-link')((
+export const MediaLink = (
   p: OmitSafe<ComponentProps<typeof LinkBase>, 'target' | 'rel' | 'ref'>,
 ) => {
   const [props, linkProps] = splitProps(p, ['children'])
@@ -29,88 +30,65 @@ export const MediaLink = withUniqueClass('media-link')((
     >
       <TileWrapper>
         <For each={range(tilesNum)}>
-          {i => (
-            <Tile hovering={hovering$()} index={i}>
-              {tilesNum - 1 === i && props.children}
-            </Tile>
-          )}
+          {i => {
+            const isLast = tilesNum - 1 === i
+            return (
+              <Tile
+                hovering={hovering$()}
+                index={i}
+                class={tw`
+                  size-full
+                  border border-solid rounded-md
+                  box-border 
+                  [transition:all_0.4s]
+                  ${
+                    isLast
+                      ? 'flex justify-center items-center relative overflow-hidden'
+                      : 'absolute top-0 left-0'
+                  }
+                `}
+                style={{
+                  transform: `translate(${i * 5}px, -${i * 5}px) scale(0.6)`,
+                  opacity: `${(1 / tilesNum) * (i + 1)}`,
+                }}
+              >
+                {isLast && props.children}
+              </Tile>
+            )
+          }}
         </For>
       </TileWrapper>
     </LinkBase>
   )
-})
-
-const LinkBase = styled('a')`
-  color: ${({ theme }) => theme.colors.text.primary};
-  font-family: 'Inconsolata', 'Saira', monospace;
-  -webkit-tap-highlight-color: transparent;
-  display: block;
-  width: 5.25rem;
-  height: 5.25rem;
-  position: relative;
-  font-size: 3rem;
-  text-decoration: none;
-`
-
-const TileWrapper = styled('div')`
-  width: 100%;
-  height: 100%;
-  transform: rotate(-35deg) skew(20deg) translate(-10px, 10px);
-`
-
-const useTileStyles = () => {
-  return css`
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border: 1px solid currentColor;
-
-    border-radius: 5px;
-    box-sizing: border-box;
-    transition: all 0.4s;
-
-    &:last-child {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      position: relative;
-      overflow: hidden;
-    }
-
-    ${range(tilesNum)
-      .map(
-        i => `
-        &:nth-child(${i + 1}) {
-          transform: translate(${i * 5}px, -${i * 5}px) scale(0.6);
-          opacity: ${(1 / tilesNum) * (i + 1)};
-          .${MediaLink.class}:hover & {
-            transform: translate(${i * 5}px, -${i * 5}px) scale(0.65);
-          }
-        }
-      `,
-      )
-      .join(' ')}
-  `
 }
+
+const LinkBase = tw('a')`
+  relative block size-[5.25rem]
+  text-text-primary font-mono [font-size:3rem] no-underline 
+  [-webkit-tap-highlight-color:transparent]
+`
+
+const TileWrapper = tw('div')`
+  size-full
+  [transform:rotate(-35deg)_skew(20deg)_translate(-10px,10px)]
+`
 
 const Tile = (p: {
   children?: JSXElement
   hovering: boolean
   index: number
+  style?: JSX.CSSProperties
+  class?: string
 }) => {
-  const styles = useTileStyles()
   const ref = useRef<HTMLSpanElement>()
-
-  const theme = useTheme()
 
   createEffect(() => {
     if (p.hovering) {
       ref.current.animate(
         {
-          backgroundColor: theme.colors.primary,
-          color: theme.colors.background,
+          backgroundColor: 'var(--tw-colors-highlight)',
+          color: 'var(--tw-background)',
+          scale: 1.08,
         },
         {
           duration: 150,
@@ -122,7 +100,8 @@ const Tile = (p: {
       ref.current.animate(
         {
           backgroundColor: 'transparent',
-          color: theme.colors.text.primary,
+          color: 'var(--tw-colors-text-primary)',
+          scale: 1,
         },
         {
           duration: 150,
@@ -134,7 +113,7 @@ const Tile = (p: {
   })
 
   return (
-    <span ref={ref} class={styles}>
+    <span ref={ref} class={p.class} style={p.style}>
       {p.children}
     </span>
   )

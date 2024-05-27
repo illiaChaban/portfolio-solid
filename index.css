@@ -1,5 +1,13 @@
 /* @tailwind base; */
 /* @tailwind components; */
+
+/* exposing some theme variables */
+:root {
+  --tw-colors-highlight: theme(colors.highlight);
+  --tw-background: theme(colors.background);
+  --tw-colors-text-primary: theme(colors.text.primary);
+}
+
 @tailwind utilities;
 
 

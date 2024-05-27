@@ -1,0 +1,23 @@
+@keyframes blinkCursor {
+  0%, 25%, 80%, 100% {
+    opacity: 1;
+  }
+  30%, 75% {
+    opacity: 0;
+  }
+}
+
+.typing {}
+
+.cursor {
+  &::after {
+    content: '|';
+    color: theme(colors.text.primary);
+    font-family: Helvetica, sans-serif;
+    opacity: 1;
+    animation: blinkCursor 1s infinite;
+  }
+  &.typing::after {
+    animation: none;
+  }
+}

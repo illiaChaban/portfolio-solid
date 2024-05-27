@@ -1,5 +1,4 @@
-import { css, keyframes } from '../../../theme'
-import { scope } from '../../../utils'
+import styles from './text-typer.module.css'
 
 export class TextTyper {
   private cursorBlinkerTimeoutId: number | undefined
@@ -119,32 +118,3 @@ export class TextTyper {
     return this
   }
 }
-
-const styles = scope(() => {
-  const blinkTextCursor = keyframes`
-    0%, 25%, 80%, 100% {
-      opacity: 1;
-    }
-    30%, 75% {
-      opacity: 0;
-    }
-  `
-  const typing = css``
-
-  return {
-    cursor: css`
-      &::after {
-        content: '|';
-        color: var(--color-main);
-        font-family: Helvetica, sans-serif;
-        opacity: 1;
-        -webkit-animation: ${blinkTextCursor} 1s infinite;
-        animation: ${blinkTextCursor} 1s infinite;
-      }
-      &.${typing}::after {
-        animation: none;
-      }
-    `,
-    typing,
-  }
-})
