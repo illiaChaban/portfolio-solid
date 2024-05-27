@@ -20,7 +20,7 @@ export const Art = (p: { class?: string; style?: JSX.CSSProperties }) => {
       >
         <For each={range(linesNum)}>
           {i => {
-            const borders = ['border-primary', 'border-text-primary']
+            const borders = ['border-primary', 'border-text-highlight']
             const diagonalToContainerRatio = (100 / linesNum) * (i + 1)
             const distanceBetweenCircles = i / 10
             const idx = i % borders.length

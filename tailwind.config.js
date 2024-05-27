@@ -13,7 +13,7 @@ module.exports = {
       xl: '1536px',
     },
     colors: {
-      primary: '#7fffff',
+      highlight: '#7fffff',
       text: {
         primary: '#fdfbeb',
         subtle1: '#7f838a',
@@ -34,9 +34,11 @@ module.exports = {
       navbar: 3,
       pageTranstion: 2,
     },
+
     extend: {
       fontFamily: {
-        mono: ['Inconsolata', 'Saira', 'monospace']
+        mono: ['Inconsolata', 'Saira', 'monospace'],
+        // serif: ['Inconsolata', 'sans-serif'],
       }
     },
   },

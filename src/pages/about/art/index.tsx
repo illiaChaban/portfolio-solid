@@ -3,8 +3,8 @@ import { Dynamic } from 'solid-js/web'
 import { Button } from '../../../components'
 import { SpinnerSuspence } from '../../../components/spinner-suspence'
 import { useAtom, useRef } from '../../../hooks'
-import { styled } from '../../../theme'
-import { media, scope } from '../../../utils'
+import { scope } from '../../../utils'
+import { tw } from '../../../utils/tw'
 import { TextTyper } from './text-typer'
 
 export const Art = () => {
@@ -58,71 +58,37 @@ export const Art = () => {
   )
 }
 
-const Container = styled('div')`
-  min-height: 400px;
-  width: 400px;
-  max-width: 100vw;
-  position: relative;
-  bottom: 5%;
-
-  ${({ theme }) => media(theme.breakpoints.down(780))} {
-    min-width: auto;
-    padding: 10px;
-  }
+const Container = tw('div')`
+  min-h-[400px] w-[400px] max-w-[100vw]
+  relative bottom-[5%]
+  max-sm_md:min-w-[auto] max-sm_md:p-2.5
 `
 
-const ImgWrapper = styled('div')`
-  width: 100%;
-  height: 400px;
-  position: relative;
-
-  & svg {
-    opacity: 0.5;
-    width: 100%;
-    height: auto;
-    position: absolute;
-    bottom: 0;
-  }
-
-  ${({ theme }) => media(theme.breakpoints.down(780))} {
-    height: 320px;
-    & svg {
-      max-height: 100%;
-    }
-  }
+const ImgWrapper = tw('div')`
+  w-full h-[400px] max-sm_md:h-[320px]
+  relative
+  [&>svg]:opacity-50
+  [&>svg]:w-full [&>svg]:h-auto [&>svg]:max-sm_md:max-h-full
+  [&>svg]:absolute [&>svg]:bottom-0
 `
 
-const Quote = styled('div')`
-  color: ${({ theme }) => theme.colors.text.primary};
-  font-family: 'Inconsolata', sans-serif; /* 'Special Elite',  */
-  font-size: 0.9rem;
-  line-height: 1.2rem;
-  /* color: var(--color-subtle); */
-  position: relative;
-  min-height: 4rem;
-  padding: 15px 0;
-
-  display: flex;
-  flex-direction: column;
+// TODO: replace with text-sm & py-4 ?
+const Quote = tw('div')`
+  text-text-primary
+  font-mono 
+  [font-size:0.9rem] [line-height:1.2rem]
+  relative
+  min-h-[4rem]
+  py-[15px]
+  flex flex-col
 `
 
-const Quotation = styled('div')`
-  &::before,
-  &::after {
-    color: ${({ theme }) => theme.colors.text.subtle1};
-  }
-  &::before {
-    content: '<< ';
-  }
-  &::after {
-    content: ' >>';
-  }
+const Quotation = tw('div')`
+  before:text-text-subtle1 after:text-text-subtle1
+  before:content-['<<_'] after:content-['_>>']
 `
 
-const Author = styled('div')`
-  color: var(--color-highlight);
-  opacity: 0.8;
-`
+const Author = tw('div')`text-highlight opacity-80`
 
 //TODO: test how much memory it takes to load these images in prod
 // VS in dev VS vanilla JS

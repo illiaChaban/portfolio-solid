@@ -1,5 +1,6 @@
 import { ComponentProps } from 'solid-js'
 import { keyframes, styled } from '../theme'
+import { tw } from '../utils/tw'
 
 export const BlobSpinner = (p: ComponentProps<typeof Container>) => {
   return (
@@ -12,15 +13,21 @@ export const BlobSpinner = (p: ComponentProps<typeof Container>) => {
   )
 }
 
-const Container = styled('div')`
-  --spinner-color: ${({ theme }) => theme.colors.primary};
-  position: absolute;
-  width: 30px;
-  height: 30px;
-  top: 50%;
-  left: 50%;
-  -webkit-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
+// const Container = styled('div')`
+//   --spinner-color: ${({ theme }) => theme.colors.primary};
+//   position: absolute;
+//   width: 30px;
+//   height: 30px;
+//   top: 50%;
+//   left: 50%;
+//   -webkit-transform: translate(-50%, -50%);
+//   transform: translate(-50%, -50%);
+// `
+// TODO: update to use current color?
+const Container = tw('div')`
+  [--spinner-color:theme(colors.highlight)]
+  absolute size-[30px] 
+  top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
 `
 
 const BlobBase = styled('div')`

@@ -16,7 +16,7 @@
     height: 50%;
     transition: 0.3s;
     z-index: -1;
-    background-color: theme(colors.primary);
+    background-color: theme(colors.highlight);
   }
 
   &::after,

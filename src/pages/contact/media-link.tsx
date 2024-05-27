@@ -13,32 +13,32 @@ import { range } from '../../utils'
 
 const tilesNum = 5
 
-export const MediaLink = withUniqueClass('media-link')(
-  (p: OmitSafe<ComponentProps<typeof LinkBase>, 'target' | 'rel' | 'ref'>) => {
-    const [props, linkProps] = splitProps(p, ['children'])
+export const MediaLink = withUniqueClass('media-link')((
+  p: OmitSafe<ComponentProps<typeof LinkBase>, 'target' | 'rel' | 'ref'>,
+) => {
+  const [props, linkProps] = splitProps(p, ['children'])
 
-    const [hovering$, registerHovering] = useHovering()
+  const [hovering$, registerHovering] = useHovering()
 
-    return (
-      <LinkBase
-        {...linkProps}
-        target="_blank"
-        rel="noopener"
-        ref={use(delayNavigationOnTouch(400), registerHovering)}
-      >
-        <TileWrapper>
-          <For each={range(tilesNum)}>
-            {i => (
-              <Tile hovering={hovering$()} index={i}>
-                {tilesNum - 1 === i && props.children}
-              </Tile>
-            )}
-          </For>
-        </TileWrapper>
-      </LinkBase>
-    )
-  },
-)
+  return (
+    <LinkBase
+      {...linkProps}
+      target="_blank"
+      rel="noopener"
+      ref={use(delayNavigationOnTouch(400), registerHovering)}
+    >
+      <TileWrapper>
+        <For each={range(tilesNum)}>
+          {i => (
+            <Tile hovering={hovering$()} index={i}>
+              {tilesNum - 1 === i && props.children}
+            </Tile>
+          )}
+        </For>
+      </TileWrapper>
+    </LinkBase>
+  )
+})
 
 const LinkBase = styled('a')`
   color: ${({ theme }) => theme.colors.text.primary};

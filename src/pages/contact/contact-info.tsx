@@ -65,7 +65,7 @@ const IntroHeading = () => {
           delay: maskTransitionEnabled$() ? 1000 : 250,
           phrases,
           interval: 2000,
-          doodleStyle: tw`text-primary opacity-80`,
+          doodleStyle: tw`text-highlight opacity-80`,
         }),
       )}
       class={tw`
