@@ -1,4 +1,5 @@
-import { createGlobalStyles } from './type-overrides'
+// eslint-disable-next-line no-restricted-imports
+import { createGlobalStyles } from 'solid-styled-components'
 
 export const GlobalStyles = createGlobalStyles`
 

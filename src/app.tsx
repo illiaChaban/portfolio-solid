@@ -13,17 +13,15 @@ import Home from './pages/home'
 import NotFound from './pages/not-found'
 import Projects from './pages/projects'
 import Skills from './pages/skills'
-import { ThemeProvider } from './theme/theme'
 import { tw } from './utils/tw'
+import { GlobalStyles } from './theme/global-styles'
 
-export const App: Component = withProviders(
-  ThemeProvider,
-  Router,
-)(() => {
+export const App: Component = withProviders(Router)(() => {
   const contentRef = useRef<HTMLElement>()
 
   return (
     <>
+      <GlobalStyles />
       {isProduction && <GTag />}
       <Particles />
       <main>
