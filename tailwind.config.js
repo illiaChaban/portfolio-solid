@@ -3,6 +3,7 @@ module.exports = {
   content: [
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
+  experimental: { optimizeUniversalDefaults: true },
   theme: {
     screens: {
       xs: "320px",
@@ -37,8 +38,12 @@ module.exports = {
     },
 
     extend: {
+      borderRadius: {
+        md: '5px'
+      },
       fontFamily: {
-        mono: ['Inconsolata', 'Saira', 'monospace'],
+        mono: ["'Inconsolata'", "'Saira'", 'monospace'],
+        serif: ["'Saira'", 'Helvetica', 'Arial', 'sans-serif']
         // serif: ['Inconsolata', 'sans-serif'],
       }
     },

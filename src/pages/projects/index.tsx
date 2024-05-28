@@ -1,9 +1,9 @@
 import { For, JSXElement, Show } from 'solid-js'
 import { Icon } from '../../components'
-import { css, styled, withSharedStyles } from '../../theme'
 import { FC } from '../../types'
 import { MediaLink } from './media-link'
 import { Project } from './project'
+import { tw } from '../../utils/tw'
 
 // TODO: mention recent projects at caribou (elk, metabase, new forms approach)
 // TODO: mention AMP (+ udpate tacklebox links to Microsoft)
@@ -330,27 +330,15 @@ export default () => {
   )
 }
 
-const Container = withSharedStyles(s => s.flex1)(styled('div')`
-  justify-content: space-evenly;
-  align-items: center;
-  flex-wrap: wrap;
-  padding: 20px;
-  display: flex;
-`)
-
-const Title = styled('h2')`
-  margin: 0;
-  width: 100%;
-  text-align: center;
+const Container = tw('div')`
+  p-5 flex-auto flex justify-evenly items-center flex-wrap
 `
 
-const Ul = styled('ul')`
-  padding-left: 15px;
-  font-size: 0.8rem;
-  line-height: 1.2rem;
-  & li:not(:last-child) {
-    margin-bottom: 4px;
-  }
+const Title = tw('h2')`m-0 w-full text-center`
+
+// TODO: text-sm?
+const Ul = tw('ul')`
+  pl-[15px] [font-size:0.8rem] [line-height:1.2rem] flex flex-col gap-1
 `
 
 const List: FC<{ items: string[] }> = p => (
@@ -359,50 +347,22 @@ const List: FC<{ items: string[] }> = p => (
   </Ul>
 )
 
-const Row = withSharedStyles(s => s.flex1)(styled('div')`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-  align-items: center;
-  flex-wrap: wrap;
-`)
+const Row = tw('div')`flex justify-evenly items-center flex-wrap flex-auto`
 
 const Heading = (p: { at?: string; children: JSXElement }) => (
-  <h2
-    class={css`
-      text-align: center;
-      margin-top: 4px;
-      font-size: 1.3rem;
-      line-height: 1.4rem;
-    `}
-  >
+  <h2 class="text-center mt-1 [font-size:1.3rem] [line-height:1.4rem]">
     {p.children}
     {<Show when={p.at}>{<At>@{p.at}</At>}</Show>}
   </h2>
 )
 
-const At = styled('span')`
-  color: ${({ theme }) => theme.colors.text.subtle2};
-  font-size: 0.6em;
-  display: block;
-`
+const At = tw('span')`block [font-size:0.6em] text-text-subtle2`
 
 const Subtitle = (p: { children: string }) => (
   <>
-    <span
-      class={css`
-        font-weight: 900;
-        text-decoration: underline;
-      `}
-    >
-      {p.children}
-    </span>
+    <span class="font-black underline">{p.children}</span>
     <br />
   </>
 )
 
-const LinksContainer = styled('div')`
-  display: flex;
-  justify-content: space-evenly;
-  font-size: 2rem;
-`
+const LinksContainer = tw('div')`flex [font-size:2rem] justify-evenly`

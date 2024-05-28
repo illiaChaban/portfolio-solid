@@ -2,12 +2,12 @@ import anime, { AnimeInstance } from 'animejs'
 import { createEffect, JSX, on } from 'solid-js'
 import { Icon } from '../../components'
 import { useBool, useRef } from '../../hooks'
-import { css, styled, useTheme } from '../../theme'
+import { css, styled } from '../../theme'
 import { getUniqueId } from '../../utils'
+import { tw } from '../../utils/tw'
 
 export const Project = (p: { front: JSX.Element; back: JSX.Element }) => {
   const showBack$ = useBool()
-  const theme = useTheme()
 
   const polygonRef = useRef()
   const displacementRef = useRef()
@@ -120,8 +120,8 @@ export const Project = (p: { front: JSX.Element; back: JSX.Element }) => {
               baseFrequency="0.05"
               numOctaves="2"
               result="turbulence"
-              style="transform: scale(1);"
-            ></feTurbulence>
+              style={{ transform: 'scale(1)' }}
+            />
             <feDisplacementMap
               in2="turbulence"
               in="SourceGraphic"
@@ -129,14 +129,14 @@ export const Project = (p: { front: JSX.Element; back: JSX.Element }) => {
               xChannelSelector="R"
               yChannelSelector="G"
               ref={displacementRef}
-            ></feDisplacementMap>
+            />
           </filter>
           <polygon
             ref={polygonRef}
             points={startAnimationValues.points}
-            fill={theme.colors.primary}
-            style={`filter: url(#${filterId}); transform: scale(1);`}
-          ></polygon>
+            class="fill-highlight"
+            style={{ filter: `url(#${filterId}); transform: scale(1)` }}
+          />
         </svg>
 
         <Back visible={showBack$()}>{p.back}</Back>
@@ -148,6 +148,7 @@ export const Project = (p: { front: JSX.Element; back: JSX.Element }) => {
 const Container = styled('section')`
   position: relative;
   width: 14rem;
+  min-width: 14rem;
   height: 19rem;
   min-height: 330px;
   margin: 20px;
@@ -160,49 +161,26 @@ const Container = styled('section')`
 
   font-size: 0.8rem;
 `
-
-const Shadow = styled('div')`
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  box-shadow: 0 5px 55px black;
-  z-index: -1;
+const Shadow = tw('div')`
+  size-full absolute top-0 left-0 [box-shadow:0_5px_55px_black] z-[-1]
 `
 
-const Content = styled('div')`
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  border-radius: 5px;
-  border: 1px solid ${({ theme }) => theme.colors.primary};
-  position: relative;
+const Content = tw('div')`
+  size-full overflow-hidden relative 
+  rounded-md border border-solid border-highlight
 `
 
-const ToggleBtn = styled('button')`
-  background: transparent;
-  border: none;
-  position: absolute;
-  font-size: 0.8rem;
-  font-family: 'Saira', Courier, monospace;
-  color: black;
-  bottom: 0px;
-  right: 0px;
-  z-index: 2;
-  padding: 5px 10px;
-  transition: color 0.2s;
-
-  &:focus {
-    outline: none;
-  }
+const ToggleBtn = tw('button')`
+  bg-[transparent] border-none 
+  absolute bottom-0 right-0 z-[2]
+  text-accent-black
+  font-serif [font-size:0.8rem]
+  py-[5px] px-[10px]
+  [transition:color_0.2s]
+  focus:outline-none
 `
 
-const IconArrow = styled(Icon)`
-  transition: all 0s linear;
-  position: relative;
-  top: 2px;
-`
+const IconArrow = tw(Icon)`transition-none relative top-0.5`
 
 /**
  * NOTE:
@@ -222,8 +200,12 @@ const FrontBase = styled('div')`
   -webkit-transform: translateY(0);
   transform: translateY(0);
 
-  -webkit-transition: transform 0.6s, opacity 0.6s;
-  transition: transform 0.6s, opacity 0.6s;
+  -webkit-transition:
+    transform 0.6s,
+    opacity 0.6s;
+  transition:
+    transform 0.6s,
+    opacity 0.6s;
   transition-delay: 0.3s;
 
   > p:first-child {
@@ -265,7 +247,9 @@ const BackBase = styled('div')`
   opacity: 0;
   color: black;
 
-  transition: transform 0.5s, opacity 0.2s;
+  transition:
+    transform 0.5s,
+    opacity 0.2s;
 
   > *:first-child {
     margin-top: 0;
