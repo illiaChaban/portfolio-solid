@@ -1,34 +1,22 @@
 import { For, JSX } from 'solid-js'
 import { useAtom } from '../../hooks/use-atom'
-import { css, styled, useBreakpoint, useTheme } from '../../theme'
+import { useBreakpoint } from '../../theme'
 import { bindEventWithCleanup } from '../../utils'
 import { debounce } from '../../utils/lodash'
-import { cx, media } from '../../utils/styles'
 import { calcClipPath, NAV_HEIGHT, NAV_LENGTH } from './clip-path'
 import { NavIcon } from './nav-icon'
+import { tw } from '../../utils/tw'
 
-const MenuContainer = styled('div')(({ theme }) => ({
-  color: 'var(--color-subtle)',
-  width: theme.misc.navOffset,
-  height: '100%',
-  position: 'fixed',
-  top: 0,
-  zIndex: theme.zIndex.navbar,
-
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-
-  [media(theme.breakpoints.down('md'))]: {
-    width: '100%',
-    height: theme.misc.navOffset,
-    minHeight: 0,
-    bottom: 0,
-    top: 'auto',
-
-    borderRight: 'none',
-  },
-}))
+const MenuContainer = tw('div')`
+  text-text-subtle1
+  w-[theme(misc.navOffset)]
+  fixed top-0 h-full
+  z-[theme(zIndex.navbar)]
+  flex justify-center items-center
+  max-md:w-full max-md:h-[theme(misc.navOffset)] 
+  max-md:bottom-0
+  max-md:min-h-0 max-md:b-0 max-md:top-auto max-md:border-r-0
+`
 
 export const Navbar = () => {
   const index$ = useAtom<number>()
@@ -38,7 +26,7 @@ export const Navbar = () => {
       {/* https://www.youtube.com/watch?v=ArTVfdHOB-M&ab_channel=OnlineTutorials */}
       <Bar index={index$()} />
 
-      <NavContainer>
+      <NavContainer style={{ '--nav-size': `${NAV_LENGTH}px` }}>
         <For
           each={[
             NavIcon.Home,
@@ -55,61 +43,14 @@ export const Navbar = () => {
   )
 }
 
-const NavContainer = styled('div')`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  align-items: center;
-
-  text-align: center;
-  width: ${NAV_LENGTH}px;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-
-  ${p => media(p.theme.breakpoints.up('md'))} {
-    height: ${NAV_LENGTH}px;
-    width: 100%;
-    flex-direction: column;
-  }
+const NavContainer = tw('div')`
+  flex justify-around items-center 
+  text-center w-[--nav-size]
+  md:h-[--nav-size] md:w-full md:flex-col
+  [-webkit-tap-highlight-color:rgba(0,0,0,0)]
 `
 
-const useStyles = () => {
-  const theme = useTheme()
-
-  return {
-    shared: css`
-      height: ${NAV_HEIGHT.toString()}px;
-      width: 100%;
-      position: absolute;
-      transition: translate 0.2s ease-out;
-      bottom: 1.5px;
-      ${media(theme.breakpoints.up('md'))} {
-        bottom: auto;
-        left: 1.5px;
-      }
-    `,
-    backdropBorder: css`
-      background-color: #7ff6ff40;
-    `,
-    backdrop: css`
-      bottom: 0;
-      ${media(theme.breakpoints.up('md'))} {
-        bottom: auto;
-        left: 0;
-      }
-
-      background: #000000c4;
-      backdrop-filter: blur(2px);
-      ${media(theme.breakpoints.up('md'))} {
-        background: #000000d6;
-      }
-    `,
-  }
-}
-
 const Bar = (p: { index: number | undefined }) => {
-  const theme = useTheme()
-  const styles = useStyles()
-
   const clipPath$ = useClipPath()
 
   const isDesktop$ = useBreakpoint('md')
@@ -124,32 +65,40 @@ const Bar = (p: { index: number | undefined }) => {
     }
   }
 
+  const Shared = tw('div')`
+    w-full h-[--nav-height]
+    absolute 
+    [transition:translate_0.2s_ease-out]
+  `
+
+  const BackdropBorder = tw(Shared)`
+    bottom-[1.5px] md:bottom-auto md:left-[1.5px] 
+    bg-[#7ff6ff40]
+  `
+  const Backdrop = tw(Shared)`
+    bottom-0 md:bottom-auto md:left-0
+    bg-[#000000c4] md:bg-[#000000d6]
+    backdrop-blur-[2px]]
+  `
+
   return (
     <div
-      class={css`
-        /* adjust for border because overflow-x otherwise cuts the top for some reason */
-        height: calc(100% + 2px);
-        width: 100%;
-        ${media(theme.breakpoints.up('md'))} {
-          height: 100%;
-          width: calc(100% + 2px);
-        }
-        position: absolute;
-        overflow-x: hidden;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      `}
+      style={{ '--nav-height': `${NAV_HEIGHT}px` }}
+      /* adjust for border because overflow-x otherwise cuts the top for some reason */
+      class={tw`
+          [--size:calc(100%+2px)]
+          h-[--size] w-full
+          md:h-full md:w-[--size]
+          absolute overflow-x-hidden 
+          flex justify-center items-center
+        `}
     >
       {/* Using another DIV to create border instead of 
         "filter: drop-shadow(0px -1px 3px var(--color-highlight));" on the parent 
         because of the animation bug on mobile (visible only on an actual phone)
         */}
-      <div
-        class={cx(styles.shared, styles.backdropBorder)}
-        style={sharedStyles()}
-      />
-      <div class={cx(styles.shared, styles.backdrop)} style={sharedStyles()} />
+      <BackdropBorder style={sharedStyles()} />
+      <Backdrop style={sharedStyles()} />
     </div>
   )
 }
