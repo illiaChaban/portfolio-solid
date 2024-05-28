@@ -1,8 +1,6 @@
 .mediaLink {
   position: relative;
-}
-@media (hover: hover) and (pointer: fine) {
-  .mediaLink i {
+  & i {
     &::after {
       content: var(--hover-text, 'navigate');
       font-size: 0.7rem;
@@ -27,7 +25,8 @@
       transition: opacity 0.2s ease-out;
     }
   }
-
+}
+@media (hover: hover) and (pointer: fine) {
   .mediaLink:hover i {
     &::before {
       opacity: 0;

@@ -1,7 +1,7 @@
 import anime from 'animejs'
-import { onCleanup, onMount } from 'solid-js'
+import { onMount } from 'solid-js'
 import { useRef } from '../../hooks'
-import { keyframes, styled } from '../../theme'
+import { tw } from '../../utils/tw'
 
 export const Intro = () => {
   const circleWhite = useRef()
@@ -63,8 +63,12 @@ export const Intro = () => {
   return (
     <Container>
       <LettersContainer>
-        <Letters ref={letters}>Hi</Letters>
-        <Bang ref={bang}>!</Bang>
+        <Letters ref={letters} class="top-[-0.2em]">
+          Hi
+        </Letters>
+        <Letters ref={bang} class="left-[-0.06em]">
+          !
+        </Letters>
       </LettersContainer>
       <CircleWhite ref={circleWhite} />
       <CircleDark ref={circleDark} />
@@ -75,78 +79,35 @@ export const Intro = () => {
   )
 }
 
-const Container = styled('h1')`
-  font-weight: 900;
-  width: 3em;
-  height: 3em;
-  position: relative;
-  margin: 0;
-  /* aligning HI to the rest of the header */
-  transform: translate(-25px, 15px);
+const Container = tw('h1')`
+  font-black 
+  size-[3em] relative m-0 
+  [transform:translate(-25px,15px)]
 `
 
-const LettersContainer = styled('span')`
-  position: absolute;
-  left: 0;
-  right: 0;
-  margin: auto;
-  top: 0;
-  bottom: 0;
-  height: 1em;
-  text-align: center;
+const LettersContainer = tw('span')`absolute inset-0 m-auto h-[1em] text-center`
+
+const Letters = tw('span')`relative z-[2] inline-block [line-height:0.7em]`
+
+const Circle = tw('span')`absolute inset-0 m-auto`
+
+const CircleWhite = tw(Circle)`
+  size-[3em]
+  border-2 border-dashed border-text-primary rounded-[2em]
 `
 
-const Letters = styled('span')`
-  position: relative;
-  z-index: 2;
-  display: inline-block;
-  line-height: 0.7em;
-  top: -0.2em;
+const CircleDark = tw(Circle)`
+  size-[2.2em]
+  bg-[#316673]
+  rounded-[3em]
+  z-[1]
 `
 
-const Bang = styled(Letters)`
-  top: auto;
-  left: -0.06em;
-`
-
-const Circle = styled('span')`
-  position: absolute;
-  left: 0;
-  right: 0;
-  margin: auto;
-  top: 0;
-  bottom: 0;
-`
-
-const CircleWhite = styled(Circle)`
-  width: 3em;
-  height: 3em;
-  border: 2px dashed var(--color-main, white);
-  border-radius: 2em;
-`
-
-const CircleDark = styled(Circle)`
-  width: 2.2em;
-  height: 2.2em;
-  background-color: #316673;
-  border-radius: 3em;
-  z-index: 1;
-`
-
-const CircleDarkDashed = styled(Circle)`
-  border-radius: 2.4em;
-  background-color: transparent;
-  border: 2px dashed var(--color-highlight);
-  width: 2.3em;
-  height: 2.3em;
-
-  animation: ${keyframes`
-      from {
-        transform: rotateZ(0deg);
-      }
-
-      to {
-        transform: rotateZ(360deg);
-      }
-    `} 8s linear infinite;
+const CircleDarkDashed = tw(Circle)`
+  rounded-[2.4em]
+  bg-[transparent]
+  border-2 border-dashed border-highlight
+  size-[2.3em]
+  animate-spin
+  [animation-duration:8s]
 `
