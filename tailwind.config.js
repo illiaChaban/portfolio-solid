@@ -12,9 +12,9 @@ module.exports = {
       md: '960px',
       lg: '1200px',
       xl: '1536px',
-      // desktopHover: { 'raw': '(hover: hover) and (pointer: fine)' }
     },
     colors: {
+      curr: 'currentcolor',
       transparent: 'transparent',
       highlight: '#7fffff',
       text: {

@@ -1,0 +1,69 @@
+
+@keyframes blobTopAnimation {
+  50% {
+    top: 0;
+    left: 50%;
+  }
+  75%, 100% {
+    top: 50%;
+    left: 0;
+  }
+}
+.blobTop {
+  top: 0;
+  animation: blobTopAnimation 1s infinite ease-in;
+}
+
+@keyframes blobBottomAnimation {
+  25%, 50%, 75% {
+    top: 50%;
+    left: 100%;
+  }
+  100% {
+    top: 0;
+    left: 50%;
+  }
+}
+
+.blobBottom {
+  top: 100%;
+  animation: blobBottomAnimation 1s infinite ease-in;
+}
+
+@keyframes blobLeftAnimation {
+  25% {
+    top: 50%;
+    left: 0;
+  }
+  50%, 100% {
+    top: 100%;
+    left: 50%;
+  }
+}
+.blobLeft {
+  left: 0;
+  animation: blobLeftAnimation 1s infinite ease-in;
+}
+
+@keyframes blobMoveAnimation {
+  0%, 100% {
+    top: 0;
+    left: 50%;
+  }
+  25% {
+    top: 50%;
+    left: 100%;
+  }
+  50% {
+    top: 100%;
+    left: 50%;
+  }
+  75% {
+    top: 50%;
+    left: 0;
+  }
+}
+.blobMove {
+  top: 0;
+  animation: blobMoveAnimation 1s infinite ease-in;
+}

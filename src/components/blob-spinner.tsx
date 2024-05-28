@@ -1,6 +1,6 @@
 import { ComponentProps } from 'solid-js'
-import { keyframes, styled } from '../theme'
 import { tw } from '../utils/tw'
+import styles from './blob-spinner.module.css'
 
 export const BlobSpinner = (p: ComponentProps<typeof Container>) => {
   return (
@@ -16,105 +16,16 @@ export const BlobSpinner = (p: ComponentProps<typeof Container>) => {
 const centerAbsolute = tw`
   absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
 `
+const Container = tw('div')`${centerAbsolute} size-[30px]`
 
-// const Container = styled('div')`
-//   --spinner-color: ${({ theme }) => theme.colors.primary};
-//   position: absolute;
-//   width: 30px;
-//   height: 30px;
-//   top: 50%;
-//   left: 50%;
-//   -webkit-transform: translate(-50%, -50%);
-//   transform: translate(-50%, -50%);
-// `
-// TODO: update to use current color?
-const Container = tw('div')`
-  [--spinner-color:theme(colors.highlight)]
-  size-[30px] 
+const BlobBase = tw('div')`
   ${centerAbsolute}
+  text-highlight
+  border-2 border-solid border-curr
+  size-2.5 rounded-circle
 `
 
-const BlobBase = styled('div')`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  -webkit-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-  border: 2px solid var(--spinner-color);
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-`
-
-const blobTop = keyframes`
-  50% {
-    top: 0;
-    left: 50%;
-  }
-  75%, 100% {
-    top: 50%;
-    left: 0;
-  }
-`
-const BlobTop = styled(BlobBase)`
-  top: 0;
-  -webkit-animation: ${blobTop} 1s infinite ease-in;
-  animation: ${blobTop} 1s infinite ease-in;
-`
-
-const blobBottom = keyframes`
-  25%, 50%, 75% {
-    top: 50%;
-    left: 100%;
-  }
-  100% {
-    top: 0;
-    left: 50%;
-  }
-`
-const BlobBottom = styled(BlobBase)`
-  top: 100%;
-  -webkit-animation: ${blobBottom} 1s infinite ease-in;
-  animation: ${blobBottom} 1s infinite ease-in;
-`
-
-const blobLeft = keyframes`
-  25% {
-    top: 50%;
-    left: 0;
-  }
-  50%, 100% {
-    top: 100%;
-    left: 50%;
-  }
-`
-const BlobLeft = styled(BlobBase)`
-  left: 0;
-  -webkit-animation: ${blobLeft} 1s infinite ease-in;
-  animation: ${blobLeft} 1s infinite ease-in;
-`
-
-const blobMove = keyframes`
-  0%, 100% {
-    top: 0;
-    left: 50%;
-  }
-  25% {
-    top: 50%;
-    left: 100%;
-  }
-  50% {
-    top: 100%;
-    left: 50%;
-  }
-  75% {
-    top: 50%;
-    left: 0;
-  }
-`
-const BlobMove = styled(BlobBase)`
-  background: var(--spinner-color);
-  top: 0;
-  -webkit-animation: ${blobMove} 1s infinite ease-in;
-  animation: ${blobMove} 1s infinite ease-in;
-`
+const BlobTop = tw(BlobBase)`${styles.blobTop}`
+const BlobBottom = tw(BlobBase)`${styles.blobBottom}`
+const BlobLeft = tw(BlobBase)`${styles.blobLeft}`
+const BlobMove = tw(BlobBase)`bg-curr ${styles.blobMove}`
