@@ -1,0 +1,72 @@
+.active {
+  @media (max-width:theme(screens.md)) {
+    position: relative;
+    color: theme(colors.highlight);
+  
+    &::before {
+      content: var(--hover-text);
+      color: theme(colors.highlight);
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      font-size: 10px;
+      text-transform: uppercase;
+      transform: translateY(34px);
+    }
+  }
+
+  @media (min-width:theme(screens.md)) {
+    background-color: theme(colors.highlight);
+    color: theme(colors.background);
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+.iconToTextOnHover {
+  position: relative;
+
+  @media (hover: hover) and (pointer:fine) and (min-width: theme(screens.md)) {
+    i {
+      &::after {
+        content: var(--hover-text, 'navigate');
+        font-size: 0.7rem;
+        letter-spacing: 0.1px;
+        position: absolute;
+        display: block;
+
+        top: 50%;
+        left: 50%;
+
+        -webkit-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+
+        opacity: 0;
+        color: theme(colors.highlight);
+        text-transform: uppercase;
+        font-family: 'Inconsolata', monospace;
+        font-weight: 100;
+      }
+
+      &::before,
+      &::after {
+        -webkit-transition: opacity 0.2s ease-out;
+        transition: opacity 0.2s ease-out;
+      }
+    }
+
+    &:hover i {
+      &::before {
+        opacity: 0;
+      }
+      &::after {
+        opacity: 1;
+      }
+    }
+  }
+}

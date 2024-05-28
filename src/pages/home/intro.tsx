@@ -2,6 +2,7 @@ import anime from 'animejs'
 import { onMount } from 'solid-js'
 import { useRef } from '../../hooks'
 import { tw } from '../../utils/tw'
+import { css } from '../../theme'
 
 export const Intro = () => {
   const circleWhite = useRef()
@@ -110,4 +111,6 @@ const CircleDarkDashed = tw(Circle)`
   size-[2.3em]
   animate-spin
   [animation-duration:8s]
+  [background-size:100%_100%]
+  ${css({ backgroundSize: '100% 100%' })}
 `
