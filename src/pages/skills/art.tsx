@@ -1,7 +1,7 @@
-import { css, styled } from '../../theme'
 import { default as WordCloud } from 'tag-canvas'
-import { getCssVariable, hoverMedia, media } from '../../utils'
+import { getCssVariable } from '../../utils'
 import { JSX, onMount } from 'solid-js'
+import { tw } from '../../utils/tw'
 
 export default () => {
   const canvasId = 'skills-canvas'
@@ -95,33 +95,18 @@ export default () => {
   )
 }
 
-const Container = styled('div')`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 0.9rem;
-  pointer-events: none;
-
-  ${media(hoverMedia)} {
-    pointer-events: auto;
-  }
-
-  @media (min-width: 1100px) {
-    font-size: 0.8rem;
-  }
-
-  & canvas {
-    width: 90%;
-    max-width: 650px;
-    height: auto;
-  }
+const Container = tw('div')`
+  size-full
+  flex justify-center items-center
+  [font-size:0.9rem]
+  pointer-events-none desktopHover:pointer-events-auto
+  min-[1100px]:[font-size:0.8rem]
+  [&_canvas]:w-[90%] [&_canvas]:max-w-[650px] [&_canvas]:h-auto
 `
 
 // Needs to be a hook to get css variable
 const useSkillsCloudOptions = () => ({
-  textColour: getCssVariable('--color-highlight'),
+  textColour: getCssVariable('--tw-colors-highlight'),
 
   maxSpeed: 0.04,
   freezeActive: true,
@@ -144,18 +129,17 @@ const useSkillsCloudOptions = () => ({
 
 type Size = 0 | 1 | 2 | 3
 const ListLink = (p: { href: string; size?: Size; children: JSX.Element }) => {
+  const fontSizes = [
+    tw`[font-size:1em]`,
+    tw`[font-size:1.15em]`,
+    tw`[font-size:1.3em]`,
+    tw`[font-size:1.45em]`,
+  ]
   return (
     <li>
       <a
         href={p.href}
-        class={css`
-          font-size: ${{
-            0: 1,
-            1: 1.15,
-            2: 1.3,
-            3: 1.45,
-          }[p.size ?? 0] ?? 1}em;
-        `}
+        class={fontSizes[p.size ?? 0]}
         target="_blank"
         rel="noopener"
       >

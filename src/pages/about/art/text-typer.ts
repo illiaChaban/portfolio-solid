@@ -1,7 +1,7 @@
 import styles from './text-typer.module.css'
 
 export class TextTyper {
-  private cursorBlinkerTimeoutId: number | undefined
+  private cursorBlinkerTimeoutId: NodeJS.Timeout | undefined
   private waitCharacters = '.?!'
   private stopAnimation = false
   private currPromiseChain = Promise.resolve()

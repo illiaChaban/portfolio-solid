@@ -1,27 +1,15 @@
 import { lazy } from 'solid-js'
 import { Heading, PageLink } from '../../components'
 import { SpinnerSuspence } from '../../components/spinner-suspence'
-import { css, useTheme } from '../../theme'
-import { cx, media } from '../../utils'
 import { ArtContainer, Container, Content, P } from '../about'
 
 export default () => {
-  const { sharedStyles, breakpoints } = useTheme()
   return (
-    <Container class={cx(sharedStyles.tags.body)} id="skills">
-      <Content
-        class={css`
-          width: 35%;
-          ${media(breakpoints.down(780))} {
-            box-sizing: border-box;
-            width: 100%;
-            padding-top: 0;
-          }
-        `}
-      >
+    <Container class="tags-body" id="skills">
+      <Content class="w-[35%] max-sm_md:box-border max-sm_md:w-full max-sm_md:pt-0">
         <Heading>Skills</Heading>
 
-        <div class={sharedStyles.tags.divEnd}>
+        <div class="tags-div-end">
           <P>
             I am an all-around web developer with good knowledge of front-end
             and back-end techniques.
