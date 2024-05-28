@@ -95,3 +95,23 @@
     top: 0px;
   }
 }
+
+@keyframes titleAnimation {
+  to {
+    background-position: right;
+  }
+}
+
+.animateTitle {
+  background: linear-gradient(
+    to right,
+    theme(colors.text.primary),
+    theme(colors.text.primary) 60%,
+    theme(colors.highlight)
+  );
+  background-size: 200%;
+  background-position: left;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: titleAnimation linear 1.5s forwards;
+}

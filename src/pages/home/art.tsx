@@ -4,7 +4,7 @@ import { Ref, useAtom } from '../../hooks'
 import { bindEventWithCleanup } from '../../utils'
 import { default as imgs } from './images'
 import { tw } from '../../utils/tw'
-import styles from './art.module.css'
+import styles from './home.module.css'
 
 export const Art = (p: { contentRef: Ref<HTMLElement> }) => {
   const contentWidth$ = useOffsetWidth(p.contentRef)

@@ -2,36 +2,23 @@ import anime from 'animejs'
 import { For, onMount } from 'solid-js'
 import { Button } from '../../components/button'
 import { Ref, useBool, useRef } from '../../hooks'
-import { css, keyframes, styled, useTheme } from '../../theme'
-import { cx, media } from '../../utils/styles'
 import { Art } from './art'
 import { Intro } from './intro'
+import { tw } from '../../utils/tw'
+import styles from './home.module.css'
 
 export default (p: { contentRef: Ref<HTMLElement> }) => {
-  const { sharedStyles } = useTheme()
-
   return (
-    <div
-      class={css`
-        display: flex;
-        flex-grow: 1;
-      `}
-    >
-      <IntroWrapper class={sharedStyles.tags.body}>
-        <IntroContainer class={sharedStyles.tags.div}>
+    <div class="flex flex-grow">
+      <IntroWrapper class="tags-body">
+        <IntroContainer class="tags-div">
           <Intro />
 
           <Header />
           <Subheading>
             Full Stack | TypeScript | React | Angular | C#
           </Subheading>
-          <Button
-            page="about"
-            class={css`
-              margin-top: 20px;
-              margin-bottom: 45px;
-            `}
-          >
+          <Button page="about" class="mt-5 mb-[45px]">
             More About Me
           </Button>
         </IntroContainer>
@@ -41,41 +28,19 @@ export default (p: { contentRef: Ref<HTMLElement> }) => {
   )
 }
 
-const IntroWrapper = styled('div')`
-  color: ${({ theme }) => theme.colors.text.primary};
-  font-size: 2rem;
-  font-family: 'Special Elite', cursive;
-  font-weight: 900;
-
-  min-height: 400px;
-  position: relative;
-
-  flex-grow: 1;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-
-  overflow: hidden;
-
-  z-index: 1;
-
-  ${({ theme }) => media(theme.breakpoints.down('md'))} {
-    margin-left: 0;
-  }
-  ${({ theme }) => media(theme.breakpoints.down(480))} {
-    font-size: 1.6rem;
-  }
+const IntroWrapper = tw('div')`
+  text-text-primary
+  [font-size:2rem] [font-family:'Special_Elite',cursive] font-black
+  min-h-[400px]
+  relative
+  flex items-center flex-grow
+  overflow-hidden z-[1]
+  max-md:ml-0 max-[480px]:[font-size:1.6rem]
 `
 
-const IntroContainer = styled('div')`
-  margin-left: 5%;
-  ${({ theme }) => media(theme.breakpoints.down(660))} {
-    margin-top: 70px;
-  }
-`
+const IntroContainer = tw('div')`ml-[5%] max-[660px]:mt-[70px]`
 
 const Header = () => {
-  const theme = useTheme()
   const ref = useRef()
 
   const animatedShow$ = useBool()
@@ -100,33 +65,10 @@ const Header = () => {
   return (
     <h1
       ref={ref}
-      class={cx(
-        css`
-          color: ${theme.colors.text.primary};
-          text-align: left;
-          letter-spacing: 2px;
-          line-height: 1.2em;
-          margin: 0;
-        `,
-        animatedShow$() &&
-          css`
-            background: linear-gradient(
-              to right,
-              ${theme.colors.text.primary},
-              ${theme.colors.text.primary} 60%,
-              ${theme.colors.primary}
-            );
-            background-size: 200%;
-            background-position: left;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: ${keyframes`
-                to {
-                  background-position: right;
-                }
-              `} linear 1.5s forwards;
-          `,
-      )}
+      class={tw`
+        text-text-primary text-left tracking-[2px] [line-height:1.2em] m-0 
+        ${animatedShow$() && styles.animateTitle}
+      `}
     >
       <WrapLetterInSpan>I'm Illia,</WrapLetterInSpan>
       <br />
@@ -135,13 +77,9 @@ const Header = () => {
   )
 }
 
-const Subheading = styled('h3')`
-  font-size: 1rem;
-  color: ${({ theme }) => theme.colors.text.subtle1};
-  font-family: 'Inconsolata', monospace;
-  font-weight: 100;
-  margin: 0;
-  letter-spacing: -1px;
+const Subheading = tw('h3')`
+  [font-size:1rem] text-text-subtle1 font-mono font-thin
+  m-0 tracking-[-1px]
 `
 
 const WrapLetterInSpan = (p: { children: string }) => (
