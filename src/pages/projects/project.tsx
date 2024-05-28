@@ -2,7 +2,7 @@ import anime, { AnimeInstance } from 'animejs'
 import { createEffect, JSX, on } from 'solid-js'
 import { Icon } from '../../components'
 import { useBool, useRef } from '../../hooks'
-import { css, styled } from '../../theme'
+import { styled } from '../../theme'
 import { getUniqueId } from '../../utils'
 import { tw } from '../../utils/tw'
 
@@ -108,11 +108,7 @@ export const Project = (p: { front: JSX.Element; back: JSX.Element }) => {
         <svg
           viewBox="0 0 100 100"
           preserveAspectRatio="none"
-          class={css`
-            display: block;
-            width: 100%;
-            height: 100%;
-          `}
+          class="block size-full"
         >
           <filter id={filterId}>
             <feTurbulence
@@ -135,7 +131,7 @@ export const Project = (p: { front: JSX.Element; back: JSX.Element }) => {
             ref={polygonRef}
             points={startAnimationValues.points}
             class="fill-highlight"
-            style={{ filter: `url(#${filterId}); transform: scale(1)` }}
+            style={{ filter: `url(#${filterId})`, transform: 'scale(1)' }}
           />
         </svg>
 
@@ -145,22 +141,14 @@ export const Project = (p: { front: JSX.Element; back: JSX.Element }) => {
   )
 }
 
-const Container = styled('section')`
-  position: relative;
-  width: 14rem;
-  min-width: 14rem;
-  height: 19rem;
-  min-height: 330px;
-  margin: 20px;
-  background: ${({ theme }) => theme.colors.background};
-  background: radial-gradient(
-    circle at 50% 0%,
-    #0a1515,
-    ${({ theme }) => theme.colors.background} 80%
-  );
-
-  font-size: 0.8rem;
+const Container = tw('section')`
+  relative 
+  size-0 min-w-[224px] min-h-[330px]
+  m-5 [font-size:0.8rem]
+  bg-background
+  [background:radial-gradient(circle_at_50%_0%,#0a1515,theme(colors.background)_80%)]
 `
+
 const Shadow = tw('div')`
   size-full absolute top-0 left-0 [box-shadow:0_5px_55px_black] z-[-1]
 `
