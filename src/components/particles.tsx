@@ -1,5 +1,5 @@
 import { onMount } from 'solid-js'
-import { getCssVariable } from '../utils/styles/get-css-var'
+import { getCssVariable } from '../utils/styles'
 
 export const Particles = () => {
   const containerId = 'particles'
