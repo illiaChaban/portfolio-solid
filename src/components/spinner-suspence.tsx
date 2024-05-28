@@ -1,19 +1,15 @@
 import { JSX, Suspense } from 'solid-js'
 import { Transition } from 'solid-transition-group'
-import { css } from '../theme'
 import { bindEvent } from '../utils'
 import { BlobSpinner } from './blob-spinner'
+import { tw } from '../utils/tw'
 
 export const SpinnerSuspence = (p: { children?: JSX.Element }) => {
   const spinnerId = 'spinner'
   const isSpinner = (el: Element) => el.getAttribute('data-id') === spinnerId
 
-  const hideCss = css`
-    opacity: 0 !important;
-  `
-  const transitionCss = css`
-    transition: opacity 200ms;
-  `
+  const hideCss = tw`!opacity-0`
+  const transitionCss = tw`[transition:opacity_200ms]`
 
   return (
     <Transition

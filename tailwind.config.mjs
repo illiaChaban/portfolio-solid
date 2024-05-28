@@ -1,18 +1,21 @@
+export const breakpoints = {
+  xs: 320,
+  sm: 600,
+  sm_md: 780,
+  md: 960,
+  lg: 1200,
+  xl: 1536,
+}
+
+
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+export default {
   content: [
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
   experimental: { optimizeUniversalDefaults: true },
   theme: {
-    screens: {
-      xs: "320px",
-      sm: '600px',
-      sm_md: '780px',
-      md: '960px',
-      lg: '1200px',
-      xl: '1536px',
-    },
+    screens: Object.fromEntries(Object.entries(breakpoints).map(([key, value]) => [key, `${value}px`])),
     colors: {
       curr: 'currentcolor',
       transparent: 'transparent',
@@ -48,6 +51,13 @@ module.exports = {
         serif: ["'Saira'", 'Helvetica', 'Arial', 'sans-serif']
         // serif: ['Inconsolata', 'sans-serif'],
       },
+      keyframes: {
+        fadeIn: {
+          'from': {
+            opacity: 0
+          }
+        }
+      }
     },
   },
   plugins: [

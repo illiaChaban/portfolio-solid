@@ -1,6 +1,6 @@
 import { createComputed, createEffect, createMemo } from 'solid-js'
 import { useAtom } from '../../hooks/use-atom'
-import { css } from '../../theme'
+import { tw } from '../../utils/tw'
 
 export const Fps = () => {
   const fps$ = useAtom<number>()
@@ -17,18 +17,13 @@ export const Fps = () => {
 
   return (
     <div
-      class={css`
-        position: fixed;
-        top: 0;
-        left: 0;
-        background: black;
-        border-radius: 16px;
-        min-height: 50px;
-        min-width: 50px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 5000;
+      class={tw`
+        fixed top-0 left-0
+        bg-accent-black
+        rounded-[16px]
+        size-[50px]
+        flex justify-center items-center 
+        z-[5000]
       `}
     >
       FPS: {fps$()}

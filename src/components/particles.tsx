@@ -1,5 +1,4 @@
 import { onMount } from 'solid-js'
-import { css } from '../theme'
 import { getCssVariable } from '../utils/styles/get-css-var'
 
 export const Particles = () => {
@@ -13,15 +12,8 @@ export const Particles = () => {
   return (
     <div
       id={containerId}
-      class={css`
-        box-sizing: border-box;
-        width: 100%;
-        height: 100%;
-        position: fixed;
-        overflow: hidden;
-        top: 0;
-      `}
-    ></div>
+      class="size-full fixed top-0 overflow-hidden box-border"
+    />
   )
 }
 

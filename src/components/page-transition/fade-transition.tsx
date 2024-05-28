@@ -1,20 +1,13 @@
 import { JSX } from 'solid-js'
 import { Transition } from 'solid-transition-group'
-import { css, keyframes } from '../../theme'
+import { tw } from '../../utils/tw'
 
 export const FadeInTransition = (p: { children: JSX.Element }) => {
   return (
     <Transition
       onBeforeEnter={el => {
         el.classList.add(
-          css`
-            opacity: 1;
-            animation: ${keyframes`
-              from {
-                opacity: 0;
-              }
-            `} 250ms ease-out;
-          `,
+          ...tw`opacity-100 animate-[fadeIn_250ms_ease-out]`.split(' '),
         )
       }}
       onExit={(el, done) => {
