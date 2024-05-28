@@ -1,13 +1,7 @@
-import {
-  default as classnames,
-  Argument as ArgumentBase,
-  Value,
-  Mapping,
-} from 'classnames'
-type NewMapping = Record<string, Value>
-// Make sure to disallow functions as parameter
-type Argument = Exclude<ArgumentBase, Mapping> | NewMapping | Argument[]
-export const cx = (...args: Argument[]): string => classnames(...args)
+export const getCssVariable = (name: string): string => {
+  const bodyStyle = getComputedStyle(document.body)
+  const value = bodyStyle.getPropertyValue(name).trim()
+  return value
+}
 
-export * from './get-css-var'
-export * from './media'
+export const hoverMedia = '(hover: hover) and (pointer: fine)'

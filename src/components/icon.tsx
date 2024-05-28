@@ -1,5 +1,5 @@
 import { JSX, splitProps } from 'solid-js'
-import { cx } from '../utils/styles'
+import { tw } from '../utils/tw'
 
 const icons = {
   home: 'fas fa-home',
@@ -28,6 +28,6 @@ export type IconName = keyof typeof icons
 type Props = { name: IconName } & JSX.IntrinsicElements['i']
 
 export const Icon = (p: Props) => {
-  const [p1, others] = splitProps(p, ['class', 'className', 'name'])
-  return <i class={cx(p1.class, p1.className, icons[p1.name])} {...others} />
+  const [p1, others] = splitProps(p, ['class', 'name'])
+  return <i class={tw`${p1.class} ${icons[p1.name]}`} {...others} />
 }
