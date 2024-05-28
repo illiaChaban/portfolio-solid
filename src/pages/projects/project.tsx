@@ -2,7 +2,6 @@ import anime, { AnimeInstance } from 'animejs'
 import { createEffect, JSX, on } from 'solid-js'
 import { Icon } from '../../components'
 import { useBool, useRef } from '../../hooks'
-import { styled } from '../../theme'
 import { getUniqueId } from '../../utils'
 import { tw } from '../../utils/tw'
 
@@ -171,9 +170,12 @@ const ToggleBtn = tw('button')`
 
 const IconArrow = tw(Icon)`transition-none relative top-0.5`
 
-const Front = tw('div')<{ visible: boolean }>`
-  absolute inset-0
-  p-[15px] box-border
+const InfoContainerBase = tw('div')`
+  absolute inset-0 box-border
+`
+
+const Front = tw(InfoContainerBase)<{ visible: boolean }>`
+  p-[15px]
   [&>p:first-child]:mt-0
   [&>*:last-child]:mt-0
   ${p =>
@@ -191,51 +193,22 @@ const Front = tw('div')<{ visible: boolean }>`
       `}
 `
 
-const BackBase = styled('div')`
-  width: 100%;
-  height: 100%;
-
-  box-sizing: border-box;
-  padding: 10px;
-
-  position: absolute;
-  top: 0;
-  left: 0;
-
-  -webkit-transform: translateX(50%);
-  transform: translateX(50%);
-
-  opacity: 0;
-  color: black;
-
-  transition:
-    transform 0.5s,
-    opacity 0.2s;
-
-  > *:first-child {
-    margin-top: 0;
-  }
-  > *:last-child {
-    margin-top: 0;
-  }
-
-  & a {
-    color: black;
-  }
-`
-const Back = styled(BackBase)`
-  ${({ visible }: { visible: boolean }) =>
-    visible
-      ? `
-        -webkit-transform: translateX(0);
-        transform: translateX(0);
-        opacity: 1;
-
-        transition: transform 0.5s, opacity 0.5s, -webkit-transform 0.5s;
-
-        transition-delay: 0.2s;
-      `
-      : `
-        pointer-events: none;
-      `}
+const Back = tw(InfoContainerBase)<{ visible: boolean }>`
+  p-[10px] text-accent-black
+  [&>*:first-child]:mt-0
+  [&>*:last-child]:mt-0
+  [&_a]:text-accent-black
+  ${p =>
+    p.visible
+      ? tw`
+          [transform:translateX(0)] 
+          opacity-100 
+          [transition:transform_.5s_.2s,opacity_.5s_.2s]
+        `
+      : tw`
+          [transform:translateX(50%)] 
+          opacity-0 
+          [transition:transform_.5s,opacity_.2s] 
+          pointer-events-none
+        `}
 `
