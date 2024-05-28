@@ -3,7 +3,7 @@ import { JSX } from 'solid-js/jsx-runtime'
 // eslint-disable-next-line no-restricted-imports
 import { ThemeProvider as ThemeProviderBase } from 'solid-styled-components'
 import { breakpoints } from './breakpoints'
-import { GlobalStyles, sharedStyles } from './global-styles'
+import { GlobalStyles } from './global-styles'
 
 const theme = {
   colors: {
@@ -26,7 +26,6 @@ const theme = {
   misc: {
     navOffset: 'var(--menu-offset)',
   },
-  sharedStyles,
   zIndex: {
     navbar: 3,
     pageTranstion: 2,
