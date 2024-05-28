@@ -106,7 +106,7 @@ const CircleDark = tw(Circle)`
 
 const CircleDarkDashed = tw(Circle)`
   rounded-[2.4em]
-  bg-[transparent]
+  bg-transparent
   border-2 border-dashed border-highlight
   size-[2.3em]
   animate-spin

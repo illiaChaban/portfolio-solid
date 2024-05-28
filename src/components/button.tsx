@@ -9,49 +9,11 @@ import {
 } from 'solid-js'
 import { PageLinkBase, PageLinkBaseProps } from '.'
 import { use, useRect } from '../hooks'
-import { css, keyframes, styled, useTheme } from '../theme'
 import { OmitSafe, Page } from '../types'
-import { bindEventWithCleanup, cx, throttle, withActions } from '../utils'
+import { bindEventWithCleanup, throttle, withActions } from '../utils'
 import { has, minMax, pick } from '../utils/lodash'
-
-const useStyles = () => {
-  const { colors } = useTheme()
-  return {
-    btn: css`
-      --btn-color: ${colors.primary};
-
-      position: relative;
-
-      box-shadow: 0 0 10px var(--btn-color);
-      text-decoration: none;
-      color: var(--btn-color);
-      background: transparent;
-      font-weight: 100;
-
-      padding: 8px 12px;
-      border-radius: 5px;
-      border: 1px solid var(--btn-color);
-
-      font-family: 'Saira', Helvetica, Arial, sans-serif;
-      font-size: 1.5rem;
-
-      display: inline-block;
-      text-transform: uppercase;
-      cursor: pointer;
-      outline: none;
-      overflow: hidden;
-
-      transition: color 0.4s;
-
-      &:focus {
-        box-shadow: 0 0 20px 1px var(--btn-color);
-      }
-    `,
-    hover: css`
-      color: ${colors.background};
-    `,
-  }
-}
+import { tw } from '../utils/tw'
+import styles from './button.module.css'
 
 type ButtonProps = {
   children: JSX.Element
@@ -89,22 +51,22 @@ export const Button = (p: ButtonProps): JSX.Element => {
         distanceToElement > buffer
           ? 0
           : distanceToElement === 0
-          ? 1
-          : (buffer - distanceToElement) / buffer
+            ? 1
+            : (buffer - distanceToElement) / buffer
 
       return {
         x:
           x > right + buffer
             ? width + buffer
             : x < left - buffer
-            ? -buffer
-            : x - left,
+              ? -buffer
+              : x - left,
         y:
           y < top - buffer
             ? -buffer
             : y > bottom + buffer
-            ? height + buffer
-            : y - top,
+              ? height + buffer
+              : y - top,
         opacity: closeness === 1 ? 1 : closeness * 0.5,
         from: closeness === 1 ? 0.5 : closeness * 0.1,
         to: closeness === 1 ? 1 : minMax(0.3, 0.7)(closeness),
@@ -119,30 +81,41 @@ export const Button = (p: ButtonProps): JSX.Element => {
       )
     : (props: JSX.DOMAttributes<HTMLButtonElement>) => <button {...props} />
 
-  const styles = useStyles()
+  // const styles = useStyles()
 
   return (
     <>
       <Component
         ref={use(rect$.track, ripple)}
-        class={cx(
-          styles.btn,
-          // using hover detected with JS, because CSS doesn't react to scroll
-          // even when mouse is over the button
-          gradient$().isHovering && styles.hover,
-          p.class,
-        )}
+        // using hover detected with JS, because CSS doesn't react to scroll
+        // even when mouse is over the button
+        class={tw`
+          [--btn-color:theme(colors.highlight)]
+          relative inline-block py-2 px-3
+          rounded-md border border-solid border-[--btn-color]
+          bg-transparent 
+          font-thin uppercase no-underline
+          [font-family:'Saira',Helvetica,Arial,sans-serif] [font-size:1.5rem]
+          cursor-pointer outline-none
+          overflow-hidden
+          [transition:color_.4s]
+          [box-shadow:0_0_10px_var(--btn-color)] 
+          focus:[box-shadow:0_0_20px_1px_var(--btn-color)]
+          ${gradient$().isHovering ? 'text-background' : 'text-[--btn-color]'}
+          ${p.class}
+        `}
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         onClick={p.onClick as any}
       >
         <Backdrop
-          style={`
-            opacity: ${gradient$().opacity};
-            background: radial-gradient(
+          style={{
+            opacity: gradient$().opacity,
+            background: `radial-gradient(
               circle at ${gradient$().x}px ${gradient$().y}px,
               var(--btn-color) calc(100% * ${gradient$().from}),
               rgba(0, 0, 0, 0) calc(100% * ${gradient$().to})
-            );
-          `}
+            )`,
+          }}
         />
         {p.children}
       </Component>
@@ -172,15 +145,7 @@ const useMousePosition = (): Accessor<Point> => {
   return () => pick(mousePosition$(), ['x', 'y'])
 }
 
-const Backdrop = styled('div')`
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  left: 0;
-  top: 0;
-  z-index: -1;
-  pointer-events: none;
-`
+const Backdrop = tw('div')`absolute inset-0 z-[-1] pointer-events-none`
 
 const ripple = (button: HTMLElement) => {
   const rect$ = useRect()
@@ -208,13 +173,13 @@ const ripple = (button: HTMLElement) => {
     createRoot(dispose => {
       const els = children(() => (
         <Ripple
-          style={`
-            width: ${diameter}px;
-            height: ${diameter}px;
-            left: ${e.pageX - (rect.left + radius)}px;
-            top: ${e.pageY - (rect.top + radius)}px;
-            animation-duration: ${duration}ms;
-          `}
+          style={{
+            width: `${diameter}px`,
+            height: `${diameter}px`,
+            left: `${e.pageX - (rect.left + radius)}px`,
+            top: `${e.pageY - (rect.top + radius)}px`,
+            'animation-duration': `${duration}ms`,
+          }}
         />
       ))
         .toArray()
@@ -230,18 +195,7 @@ const ripple = (button: HTMLElement) => {
   })
 }
 
-const Ripple = styled('span')`
-  position: absolute;
-  border-radius: 50%;
-  transform: scale(0);
-  animation-name: ${keyframes`
-    to {
-      transform: scale(4);
-    }
-  `};
-  animation-timing-function: ease-out;
-  background: radial-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.35));
-`
+const Ripple = tw('span')`absolute rounded-circle ${styles.ripple}`
 
 type Point = { x: number; y: number }
 const distanceToPoint =

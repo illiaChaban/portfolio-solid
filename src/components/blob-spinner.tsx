@@ -13,6 +13,10 @@ export const BlobSpinner = (p: ComponentProps<typeof Container>) => {
   )
 }
 
+const centerAbsolute = tw`
+  absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
+`
+
 // const Container = styled('div')`
 //   --spinner-color: ${({ theme }) => theme.colors.primary};
 //   position: absolute;
@@ -26,8 +30,8 @@ export const BlobSpinner = (p: ComponentProps<typeof Container>) => {
 // TODO: update to use current color?
 const Container = tw('div')`
   [--spinner-color:theme(colors.highlight)]
-  absolute size-[30px] 
-  top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
+  size-[30px] 
+  ${centerAbsolute}
 `
 
 const BlobBase = styled('div')`

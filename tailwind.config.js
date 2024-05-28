@@ -15,6 +15,7 @@ module.exports = {
       // desktopHover: { 'raw': '(hover: hover) and (pointer: fine)' }
     },
     colors: {
+      transparent: 'transparent',
       highlight: '#7fffff',
       text: {
         primary: '#fdfbeb',
@@ -39,13 +40,14 @@ module.exports = {
 
     extend: {
       borderRadius: {
-        md: '5px'
+        md: '5px',
+        circle: '50%'
       },
       fontFamily: {
         mono: ["'Inconsolata'", "'Saira'", 'monospace'],
         serif: ["'Saira'", 'Helvetica', 'Arial', 'sans-serif']
         // serif: ['Inconsolata', 'sans-serif'],
-      }
+      },
     },
   },
   plugins: [

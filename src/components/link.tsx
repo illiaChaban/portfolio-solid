@@ -10,7 +10,7 @@ type StyleProps = { $color?: 'primary' | 'text' }
 
 const StyledLink = tw('a')<StyleProps>`
   ${cssStyles.externalLink} 
-  ${p => (p.$color === 'text' ? 'text-text-primary' : 'text-highlight text-opacity-40')}
+  ${p => (p.$color === 'text' ? 'text-text-primary' : 'text-highlight')}
 `
 
 export const ExternalLink = (

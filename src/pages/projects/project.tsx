@@ -159,7 +159,7 @@ const Content = tw('div')`
 `
 
 const ToggleBtn = tw('button')`
-  bg-[transparent] border-none 
+  bg-transparent border-none 
   absolute bottom-0 right-0 z-[2]
   text-accent-black
   font-serif [font-size:0.8rem]

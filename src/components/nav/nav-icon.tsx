@@ -29,7 +29,7 @@ const NavIconBase = (p: IconBaseProps): JSX.Element => {
     <div
       classList={{
         [tw`
-          rounded-[50%]
+          rounded-circle
           size-[50px]
           z-[1]
           [transition:transform_0.3s] sm:[transition:transform_0.2s]

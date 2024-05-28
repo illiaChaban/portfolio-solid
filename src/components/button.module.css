@@ -1,0 +1,12 @@
+@keyframes scale4 {
+  to {
+    transform: scale(4);
+  }
+}
+
+.ripple {
+  transform: scale(0);
+  animation-name: scale4;
+  animation-timing-function: ease-out;
+  background: radial-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.35));
+}
