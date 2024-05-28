@@ -1,16 +1,13 @@
 import { ComponentProps, useContext } from 'solid-js'
 import { textScramble } from '../directives'
 import { RefSetter, use } from '../hooks'
-import { css, styled, useTheme } from '../theme'
 import { WithOverrides } from '../types'
-import { cx } from '../utils'
+import { tw } from '../utils/tw'
 import { PageTransitionContext } from './page-transition'
 
-const HeadingBase = styled('h1')`
-  font-family: Courier;
-  font-size: 3rem;
-  position: relative;
-  color: ${({ theme }) => theme.colors.primary};
+const HeadingBase = tw('h1')`
+  text-highlight relative
+  [font-family:Courier] [font-size:3rem]
 `
 
 export const Heading = (
@@ -21,20 +18,16 @@ export const Heading = (
     }
   >,
 ) => {
-  const theme = useTheme()
   const { maskTransitionEnabled$ } = useContext(PageTransitionContext)
 
   return (
     <HeadingBase
       {...p}
-      class={cx(theme.sharedStyles.tags.h1, p.class, p.className)}
+      class={tw`tags-h1 ${p.class}`}
       ref={use(
         textScramble({
           delay: maskTransitionEnabled$() ? 1000 : 400,
-          doodleStyle: css`
-            color: ${theme.colors.text.subtle1};
-            opacity: 0.4;
-          `,
+          doodleStyle: tw`text-text-subtle1 opacity-40`,
         }),
         p.ref,
       )}

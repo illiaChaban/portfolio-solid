@@ -34,7 +34,7 @@ module.exports = {
     },
     zIndex: {
       navbar: 3,
-      pageTranstion: 2,
+      pageTransition: 2,
     },
 
     extend: {
