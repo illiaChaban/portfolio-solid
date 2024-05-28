@@ -5,7 +5,7 @@ export const Particles = () => {
   const containerId = 'particles'
 
   onMount(async () => {
-    const colorHighlight = getCssVariable('--color-highlight')
+    const colorHighlight = getCssVariable('--tw-colors-highlight')
     await initParticles(containerId, colorHighlight)
   })
 

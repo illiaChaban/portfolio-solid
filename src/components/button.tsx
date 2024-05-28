@@ -101,7 +101,7 @@ export const Button = (p: ButtonProps): JSX.Element => {
           [transition:color_.4s]
           [box-shadow:0_0_10px_var(--btn-color)] 
           focus:[box-shadow:0_0_20px_1px_var(--btn-color)]
-          ${gradient$().isHovering ? 'text-background' : 'text-[--btn-color]'}
+          ${gradient$().isHovering ? 'text-[--tw-background]' : 'text-[--btn-color]'}
           ${p.class}
         `}
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

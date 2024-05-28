@@ -4,11 +4,57 @@
 /* exposing some theme variables */
 :root {
   --tw-colors-highlight: theme(colors.highlight);
-  --tw-background: theme(colors.background);
   --tw-colors-text-primary: theme(colors.text.primary);
+  --tw-background: theme(colors.background);
+  @media (max-width: theme(screens.md)) {
+    --tw-background: #122438;
+  }
 }
 
-@tailwind utilities;
+h1:focus-visible {
+  outline: none;
+}
+
+html, body {
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+html {
+  font-size: 16px;
+}
+
+@media (min-width: 1150px) {
+  html {
+    font-size: 17px;
+  }
+}
+
+body {
+  background: -moz-linear-gradient(110deg, rgb(18, 3, 41) 0%,var(--tw-background) 25%,var(--tw-background) 42%, rgba(10,4,23,1) 100%);
+  background: -webkit-linear-gradient(110deg, rgb(18, 3, 41) 0%,var(--tw-background) 25%,var(--tw-background) 42%, rgba(10,4,23,1) 100%);
+  background: linear-gradient(110deg, rgb(18, 3, 41) 0%,var(--tw-background) 25%,var(--tw-background) 42%, rgba(10,4,23,1) 100%);
+
+  margin: 0;
+  color: theme(colors.text.primary);
+  font-family: 'Saira', Helvetica, Courier, sans-serif;
+
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  overscroll-behavior: none;
+}
+
+@media (max-width: 960px) {
+  body {
+    /* fixing white background on home page on mobile after squirrel jump animation */
+    background: var(--tw-background);
+    background: -webkit-linear-gradient(to left, #243B55, #141E30);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to left, #243B55, #141E30); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  }
+}
 
 
 /* Tag styles */
@@ -36,7 +82,7 @@
 .tags-div::before,
 .tags-div-end::after
 {
-  color: var(--color-subtle);
+  color: theme(colors.text.subtle1);
   position: absolute;
   left: 0;
   font-family: 'League Script', 'Courier New', 'Inconsolata', cursive;
@@ -77,3 +123,5 @@
   content: '</div>';
   bottom: 0px;
 }
+
+@tailwind utilities;

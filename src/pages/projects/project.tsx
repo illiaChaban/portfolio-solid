@@ -143,10 +143,10 @@ export const Project = (p: { front: JSX.Element; back: JSX.Element }) => {
 
 const Container = tw('section')`
   relative 
-  w-[14rem] min-w-[14rem] min-h-[19rem] h-[19rem]
+  w-[14rem] min-w-[14rem] min-h-[330px] h-[19rem]
   m-5 [font-size:0.8rem]
-  bg-background
-  [background:radial-gradient(circle_at_50%_0%,#0a1515,theme(colors.background)_80%)]
+  bg-[--tw-background]
+  [background:radial-gradient(circle_at_50%_0%,#0a1515,var(--tw-background)_80%)]
 `
 
 const Shadow = tw('div')`

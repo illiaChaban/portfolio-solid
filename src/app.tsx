@@ -14,14 +14,12 @@ import NotFound from './pages/not-found'
 import Projects from './pages/projects'
 import Skills from './pages/skills'
 import { tw } from './utils/tw'
-import { GlobalStyles } from './theme/global-styles'
 
 export const App: Component = withProviders(Router)(() => {
   const contentRef = useRef<HTMLElement>()
 
   return (
     <>
-      <GlobalStyles />
       {isProduction && <GTag />}
       <Particles />
       <main>
@@ -33,7 +31,7 @@ export const App: Component = withProviders(Router)(() => {
             flex flex-col 
             w-full h-full min-h-[100vh] 
             box-border 
-            pb-[--menu-offset] md:pb-0 md:pl-[--menu-offset]
+            pb-[theme(misc.navOffset)] md:pb-0 md:pl-[theme(misc.navOffset)]
           `}
           ref={contentRef}
         >

@@ -77,19 +77,3 @@ export default {
 
   ],
 }
-
-// tags: {
-//   body: 'body-tags',
-//   div: 'div-tags',
-//   divEnd: 'div-tags-end',
-//   h1: 'h1-tags',
-// },
-
-// --menu-offset: 56px;
-
-// --color-subtle-text: #73aeb9;
-// --color-subtle: #7f838a;
-// --color-main: #fdfbeb;
-// --color-highlight: #7fffff;
-
-// --body-background-color: #112d44; 
