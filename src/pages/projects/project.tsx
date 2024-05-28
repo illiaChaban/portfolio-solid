@@ -104,6 +104,7 @@ export const Project = (p: { front: JSX.Element; back: JSX.Element }) => {
         </ToggleBtn>
 
         <Front visible={!showBack$()}>{p.front}</Front>
+        {/* <Front $visible={!showBack$()}>{p.front}</Front> */}
 
         <svg
           viewBox="0 0 100 100"
@@ -143,7 +144,7 @@ export const Project = (p: { front: JSX.Element; back: JSX.Element }) => {
 
 const Container = tw('section')`
   relative 
-  size-0 min-w-[224px] min-h-[330px]
+  w-[14rem] min-w-[14rem] min-h-[19rem] h-[19rem]
   m-5 [font-size:0.8rem]
   bg-background
   [background:radial-gradient(circle_at_50%_0%,#0a1515,theme(colors.background)_80%)]
@@ -170,52 +171,24 @@ const ToggleBtn = tw('button')`
 
 const IconArrow = tw(Icon)`transition-none relative top-0.5`
 
-/**
- * NOTE:
- * Separating components into Front & FrontBase makes sure
- * that opacity transitioning as expected. Looks like it's being
- * reset if a different class is applied
- */
-const FrontBase = styled('div')`
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  padding: 15px;
-  box-sizing: border-box;
-  opacity: 1;
-  -webkit-transform: translateY(0);
-  transform: translateY(0);
-
-  -webkit-transition:
-    transform 0.6s,
-    opacity 0.6s;
-  transition:
-    transform 0.6s,
-    opacity 0.6s;
-  transition-delay: 0.3s;
-
-  > p:first-child {
-    margin-top: 0;
-  }
-  > *:last-child {
-    margin-top: 0;
-  }
-`
-const Front = styled(FrontBase)`
-  ${({ visible }: { visible: boolean }) =>
-    visible
-      ? `
-      pointer-events: none;
-    `
-      : `
-      -webkit-transform: translateY(-50%);
-      transform: translateY(-50%);
-      opacity: 0;
-      -webkit-transition: opacity 0.3s, transform 0s 0.6s;
-      transition: opacity 0.3s, transform 0s 0.6s;
-    `}
+const Front = tw('div')<{ visible: boolean }>`
+  absolute inset-0
+  p-[15px] box-border
+  [&>p:first-child]:mt-0
+  [&>*:last-child]:mt-0
+  ${p =>
+    p.visible
+      ? tw`
+        [transform:translateY(0)] 
+        opacity-100 
+        [transition:transform_0.6s_0.1s,opacity_0.6s_0.1s]
+        pointer-events-none 
+      `
+      : tw`
+        [transform:translateY(-50%)] 
+        opacity-0 
+        [transition:opacity_0.6s,transform_0s_0.6s]
+      `}
 `
 
 const BackBase = styled('div')`
