@@ -63,6 +63,11 @@ export default {
   plugins: [
     ({ addUtilities, theme }) => {
       addUtilities({
+        '.center': {
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+        },
         // added inside global index.css
         '.tags-h1': {},
         '.tags-body': {

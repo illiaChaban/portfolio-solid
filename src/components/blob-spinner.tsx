@@ -13,13 +13,10 @@ export const BlobSpinner = (p: ComponentProps<typeof Container>) => {
   )
 }
 
-const centerAbsolute = tw`
-  absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
-`
-const Container = tw('div')`${centerAbsolute} size-[30px]`
+const Container = tw('div')`absolute center size-[30px]`
 
 const BlobBase = tw('div')`
-  ${centerAbsolute}
+  absolute center
   text-highlight
   border-2 border-solid border-curr
   size-2.5 rounded-circle

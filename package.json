@@ -36,6 +36,7 @@
     "lodash": "^4.17.21",
     "pipe-ts": "0.0.9",
     "solid-js": "^1.6.9",
+    "solid-styled-components": "^0.28.5",
     "solid-transition-group": "^0.0.12",
     "tag-canvas": "^0.0.5"
   }
