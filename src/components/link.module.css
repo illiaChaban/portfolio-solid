@@ -17,13 +17,10 @@
     transition: 0.3s;
     z-index: -1;
     background-color: theme(colors.highlight);
-  }
-
-  &::after,
-  &::before {
     width: calc(100% + var(--padding) * 2);
     transform: scaleX(0);
   }
+
   &::after {
     transform-origin: right;
     top: 0;

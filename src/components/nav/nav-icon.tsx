@@ -3,7 +3,6 @@ import { createRenderEffect, on } from 'solid-js'
 import { JSX } from 'solid-js/jsx-runtime'
 import { tw } from '../../utils/tw'
 import { Icon } from '../icon'
-import styles from './nav-icon.module.css'
 
 type IconBaseProps = {
   href: string
@@ -29,7 +28,6 @@ const NavIconBase = (p: IconBaseProps): JSX.Element => {
     <div
       classList={{
         [tw`
-          rounded-circle
           size-[50px]
           z-[1]
           [transition:transform_0.3s] sm:[transition:transform_0.2s]
@@ -50,45 +48,77 @@ const NavIconBase = (p: IconBaseProps): JSX.Element => {
             relative inline-block 
             [font-size:22px] font-mono
             h-[51px] [line-height:51px] w-full
+            [&_*]:[transition:opacity_.2s_ease-out]
           `]: true,
-          [styles.active]: isActivated$(),
-          [styles.iconToTextOnHover]: !isActivated$(),
+          [tw`
+            text-highlight
+            md:bg-highlight md:size-[35px] md:rounded-circle 
+            md:text-background
+            md:flex md:justify-center md:items-center
+          `]: isActivated$(),
+          // make sure icon descriptions on hover don't mess up activation transition
+          ['group']: !isActivated$(),
         }}
-        style={`--hover-text: '${name()}'`}
         aria-label={`nav-menu--${name()}`}
         noScroll
       >
+        <NavIconText
+          class={tw`
+            md:hidden
+            absolute left-0 bottom-0 w-full
+            [font-size:10px] 
+            [transform:translateY(34px)]
+          `}
+        >
+          {name()}
+        </NavIconText>
         {p.children}
+        <NavIconText
+          class={tw`
+            hidden md:block
+            absolute center opacity-0
+            desktopHover:group-hover:opacity-100
+            [font-size:0.7rem]
+          `}
+        >
+          {name()}
+        </NavIconText>
       </NavLink>
     </div>
   )
 }
 
+const NavIconText = tw('div')`
+  text-highlight uppercase font-mono font-thin tracking-[0.1px]
+`
+
+const StyledIcon = tw(Icon)`md:desktopHover:group-hover:opacity-0`
+
 type Props = Pick<IconBaseProps, 'onActivate'>
 export const NavIcon = {
   Home: (p: Props) => (
     <NavIconBase href="/" end name="home" onActivate={p.onActivate}>
-      <Icon name="home" />
+      <StyledIcon name="home" />
     </NavIconBase>
   ),
   About: (p: Props) => (
     <NavIconBase href="/about" onActivate={p.onActivate}>
-      <Icon name="user" />
+      <StyledIcon name="user" />
     </NavIconBase>
   ),
   Skills: (p: Props) => (
     <NavIconBase href="/skills" onActivate={p.onActivate}>
-      <Icon name="cog" />
+      <StyledIcon name="cog" />
     </NavIconBase>
   ),
   Projects: (p: Props) => (
     <NavIconBase href="/projects" onActivate={p.onActivate}>
-      <Icon name="laptop" class="[font-size:0.9em]" />
+      <StyledIcon name="laptop" class="[font-size:0.9em]" />
     </NavIconBase>
   ),
   Contact: (p: Props) => (
     <NavIconBase href="/contact" onActivate={p.onActivate}>
-      <Icon name="envelope" />
+      <StyledIcon name="envelope" />
     </NavIconBase>
   ),
 }

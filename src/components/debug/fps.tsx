@@ -1,4 +1,4 @@
-import { createComputed, createEffect, createMemo } from 'solid-js'
+import { createMemo } from 'solid-js'
 import { useAtom } from '../../hooks/use-atom'
 import { tw } from '../../utils/tw'
 
