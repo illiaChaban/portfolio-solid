@@ -7,7 +7,7 @@ import { PageTransitionContext } from './page-transition'
 
 const HeadingBase = tw('h1')`
   text-highlight relative
-  [font-family:Courier] [font-size:3rem]
+  [font-family:Courier] text-5xl leading-tight
 `
 
 export const Heading = (

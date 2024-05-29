@@ -30,12 +30,12 @@ export default (p: { contentRef: Ref<HTMLElement> }) => {
 
 const IntroWrapper = tw('div')`
   text-text-primary
-  [font-size:2rem] [font-family:'Special_Elite',cursive] font-black
+  text-[1.6rem] sm:text-[2rem] lg:text-[2.5rem] 
+  [font-family:'Special_Elite',cursive] font-black
   min-h-[400px]
   relative
   flex items-center flex-grow
   overflow-hidden z-[1]
-  max-md:ml-0 max-[480px]:[font-size:1.6rem]
 `
 
 const IntroContainer = tw('div')`ml-[5%] max-[660px]:mt-[70px]`
@@ -78,7 +78,7 @@ const Header = () => {
 }
 
 const Subheading = tw('h3')`
-  [font-size:1rem] text-text-subtle1 font-mono font-thin
+  text-lg text-text-subtle1 font-mono font-thin
   m-0 tracking-[-1px]
 `
 

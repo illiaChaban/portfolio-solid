@@ -338,7 +338,7 @@ const Title = tw('h2')`m-0 w-full text-center`
 
 // TODO: text-sm?
 const Ul = tw('ul')`
-  pl-[15px] [font-size:0.8rem] [line-height:1.2rem] flex flex-col gap-1
+  pl-[15px] flex flex-col gap-1
 `
 
 const List: FC<{ items: string[] }> = p => (
@@ -350,13 +350,13 @@ const List: FC<{ items: string[] }> = p => (
 const Row = tw('div')`flex justify-evenly items-center flex-wrap flex-auto`
 
 const Heading = (p: { at?: string; children: JSXElement }) => (
-  <h2 class="text-center mt-1 [font-size:1.3rem] [line-height:1.4rem]">
+  <h2 class="text-center mt-1 text-[1.3rem] leading-[1.4rem]">
     {p.children}
     {<Show when={p.at}>{<At>@{p.at}</At>}</Show>}
   </h2>
 )
 
-const At = tw('span')`block [font-size:0.6em] text-text-subtle2`
+const At = tw('span')`block text-[0.6em] text-text-subtle2`
 
 const Subtitle = (p: { children: string }) => (
   <>
@@ -365,4 +365,4 @@ const Subtitle = (p: { children: string }) => (
   </>
 )
 
-const LinksContainer = tw('div')`flex [font-size:2rem] justify-evenly`
+const LinksContainer = tw('div')`flex text-[2rem] justify-evenly`

@@ -143,8 +143,8 @@ export const Project = (p: { front: JSX.Element; back: JSX.Element }) => {
 
 const Container = tw('section')`
   relative 
-  w-[14rem] min-w-[14rem] min-h-[330px] h-[19rem]
-  m-5 [font-size:0.8rem]
+  w-[14rem] min-w-[240px] min-h-[330px] h-[19rem]
+  m-5 
   bg-[--tw-background]
   [background:radial-gradient(circle_at_50%_0%,#0a1515,var(--tw-background)_80%)]
 `
@@ -156,13 +156,14 @@ const Shadow = tw('div')`
 const Content = tw('div')`
   size-full overflow-hidden relative 
   rounded-md border border-solid border-highlight
+  text-sm 
 `
 
 const ToggleBtn = tw('button')`
   bg-transparent border-none 
   absolute bottom-0 right-0 z-[2]
   text-accent-black
-  font-serif [font-size:0.8rem]
+  font-serif text-[0.8rem]
   py-[5px] px-[10px]
   [transition:color_0.2s]
   focus:outline-none

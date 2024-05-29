@@ -64,7 +64,7 @@ export const MediaLink = (
 
 const LinkBase = tw('a')`
   relative block size-[5.25rem]
-  text-text-primary font-mono [font-size:3rem] no-underline 
+  text-text-primary font-mono text-5xl no-underline 
   [-webkit-tap-highlight-color:transparent]
 `
 

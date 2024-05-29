@@ -81,8 +81,6 @@ export const Button = (p: ButtonProps): JSX.Element => {
       )
     : (props: JSX.DOMAttributes<HTMLButtonElement>) => <button {...props} />
 
-  // const styles = useStyles()
-
   return (
     <>
       <Component
@@ -91,11 +89,10 @@ export const Button = (p: ButtonProps): JSX.Element => {
         // even when mouse is over the button
         class={tw`
           [--btn-color:theme(colors.highlight)]
-          relative inline-block py-2 px-3
+          relative inline-block p-3
           rounded-md border border-solid border-[--btn-color]
           bg-transparent 
-          font-thin uppercase no-underline
-          [font-family:'Saira',Helvetica,Arial,sans-serif] [font-size:1.5rem]
+          font-serif font-thin uppercase no-underline text-2xl
           cursor-pointer outline-none
           overflow-hidden
           [transition:color_.4s]

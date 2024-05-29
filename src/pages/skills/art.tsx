@@ -98,9 +98,7 @@ export default () => {
 const Container = tw('div')`
   size-full
   flex justify-center items-center
-  [font-size:0.9rem]
   pointer-events-none desktopHover:pointer-events-auto
-  min-[1100px]:[font-size:0.8rem]
   [&_canvas]:w-[90%] [&_canvas]:max-w-[650px] [&_canvas]:h-auto
 `
 
@@ -129,12 +127,7 @@ const useSkillsCloudOptions = () => ({
 
 type Size = 0 | 1 | 2 | 3
 const ListLink = (p: { href: string; size?: Size; children: JSX.Element }) => {
-  const fontSizes = [
-    tw`[font-size:1em]`,
-    tw`[font-size:1.15em]`,
-    tw`[font-size:1.3em]`,
-    tw`[font-size:1.45em]`,
-  ]
+  const fontSizes = [tw`text-base`, tw`text-lg`, tw`text-xl`, tw`text-2xl`]
   return (
     <li>
       <a

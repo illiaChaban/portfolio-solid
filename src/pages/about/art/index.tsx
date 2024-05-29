@@ -75,8 +75,7 @@ const ImgWrapper = tw('div')`
 // TODO: replace with text-sm & py-4 ?
 const Quote = tw('div')`
   text-text-primary
-  font-mono 
-  [font-size:0.9rem] [line-height:1.2rem]
+  font-mono text-sm
   relative
   min-h-[4rem]
   py-[15px]

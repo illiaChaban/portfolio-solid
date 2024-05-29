@@ -66,7 +66,7 @@ const NavIconBase = (p: IconBaseProps): JSX.Element => {
           class={tw`
             md:hidden
             absolute left-0 bottom-0 w-full
-            [font-size:10px] 
+            text-[10px] 
             [transform:translateY(34px)]
           `}
         >
@@ -78,7 +78,7 @@ const NavIconBase = (p: IconBaseProps): JSX.Element => {
             hidden md:block
             absolute center opacity-0
             desktopHover:group-hover:opacity-100
-            [font-size:0.7rem]
+            text-[0.7rem]
           `}
         >
           {name()}

@@ -67,7 +67,7 @@ export const Content = tw('div')`
 `
 export const P = tw('p')`
   my-[18px] first:mt-2 last:mb-2
-  text-[0.9rem] leading-[1.1rem]
+  text-base leading-tight
 `
 
 export const Container = tw('div')`

@@ -51,11 +51,8 @@ export const ContactInfo = (p: { ref?: RefSetter<HTMLDivElement> }) => {
   )
 }
 
-const LinkWrapper = tw('h2')`
-  my-[0.85em]
-  [line-height:130%]
-  font-mono
-`
+const LinkWrapper = tw('h2')`my-[0.85em] text-2xl font-mono`
+
 const IntroHeading = () => {
   const { maskTransitionEnabled$ } = useContext(PageTransitionContext)
   return (
@@ -69,8 +66,8 @@ const IntroHeading = () => {
         }),
       )}
       class={tw`
-        m-0 text-text-subtle1 uppercase 
-        [font-size:1.3rem] font-thin font-mono
+        m-0 text-text-subtle1 uppercase
+        text-[1.3rem] !text-xl font-thin font-mono
       `}
     >
       {phrases[0]}

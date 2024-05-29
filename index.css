@@ -26,12 +26,6 @@ html {
   font-size: 16px;
 }
 
-@media (min-width: 1150px) {
-  html {
-    font-size: 17px;
-  }
-}
-
 body {
   background: -moz-linear-gradient(110deg, rgb(18, 3, 41) 0%,var(--tw-background) 25%,var(--tw-background) 42%, rgba(10,4,23,1) 100%);
   background: -webkit-linear-gradient(110deg, rgb(18, 3, 41) 0%,var(--tw-background) 25%,var(--tw-background) 42%, rgba(10,4,23,1) 100%);
@@ -39,7 +33,7 @@ body {
 
   margin: 0;
   color: theme(colors.text.primary);
-  font-family: 'Saira', Helvetica, Courier, sans-serif;
+  font-family: theme(fontFamily.serif);
 
   background-size: cover;
   background-position: center;
@@ -55,7 +49,6 @@ body {
     background: linear-gradient(to left, #243B55, #141E30); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   }
 }
-
 
 /* Tag styles */
 .tags-h1,
@@ -85,7 +78,7 @@ body {
   color: theme(colors.text.subtle1);
   position: absolute;
   left: 0;
-  font-family: 'League Script', 'Courier New', 'Inconsolata', cursive;
+  font-family: 'League Script', 'Inconsolata', cursive;
   font-weight: 900;
   font-size: .8rem;
   text-transform: none;
