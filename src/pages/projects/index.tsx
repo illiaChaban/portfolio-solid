@@ -359,14 +359,10 @@ const Container = tw('div')`
 
 const Title = tw('h2')`m-0 w-full text-center`
 
-const Ul = tw('ul')`
-  pl-[15px] flex flex-col gap-1
-`
-
 const List: FC<{ items: string[] }> = p => (
-  <Ul>
+  <ul class="pl-[15px] flex flex-col gap-1">
     <For each={p.items}>{text => <li>{text}</li>}</For>
-  </Ul>
+  </ul>
 )
 
 const Row = tw('div')`flex justify-evenly items-center flex-wrap flex-auto`
