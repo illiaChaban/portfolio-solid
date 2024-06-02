@@ -18,7 +18,7 @@ export const ContactInfo = (p: { ref?: RefSetter<HTMLDivElement> }) => {
   return (
     <div class="tags-div py-[35px]" ref={use(p.ref)}>
       <IntroHeading />
-      <div class="my-[30px] space-y-[0.85em]">
+      <div class="my-[30px] flex flex-col gap-7 items-start">
         <ContactHeading
           as={ExternalLink}
           href="mailto:illia.chaban.8@gmail.com"
@@ -59,9 +59,8 @@ export const ContactInfo = (p: { ref?: RefSetter<HTMLDivElement> }) => {
   )
 }
 
-const ContactHeading = tw(
-  'h3',
-)`!block text-2xl font-mono font-bold *:align-middle`
+const ContactHeading = tw('h3')`text-[1.5em] sm:text-[1.6em] 
+font-mono font-bold m-0 [&>svg]:align-text-top`
 
 const IntroHeading = () => {
   const { maskTransitionEnabled$ } = useContext(PageTransitionContext)
@@ -77,7 +76,7 @@ const IntroHeading = () => {
       )}
       class={tw`
         m-0 text-text-subtle1 uppercase
-        text-[1.3rem] !text-xl font-thin font-mono
+        font-thin font-mono text-2xl
       `}
     >
       {phrases[0]}

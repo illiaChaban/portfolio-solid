@@ -145,7 +145,6 @@ export const Project = (p: { front: JSX.Element; back: JSX.Element }) => {
 const Container = tw('section')`
   relative 
   w-[14rem] min-w-[240px] min-h-[330px] h-[19rem]
-  m-5 
   bg-[--tw-background]
   [background:radial-gradient(circle_at_50%_0%,#0a1515,var(--tw-background)_80%)]
 `
