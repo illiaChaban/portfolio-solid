@@ -6,6 +6,7 @@ import { Art } from './art'
 import { Intro } from './intro'
 import { tw } from '../../utils/tw'
 import styles from './home.module.css'
+import { homeIntroText } from './home-intro-text'
 
 export default (p: { contentRef: Ref<HTMLElement> }) => {
   return (
@@ -70,9 +71,9 @@ const Header = () => {
         ${animatedShow$() && styles.animateTitle}
       `}
     >
-      <WrapLetterInSpan>I'm Illia,</WrapLetterInSpan>
+      <WrapLetterInSpan>{homeIntroText[2]}</WrapLetterInSpan>
       <br />
-      <WrapLetterInSpan>web developer</WrapLetterInSpan>
+      <WrapLetterInSpan>{homeIntroText[3]}</WrapLetterInSpan>
     </h1>
   )
 }

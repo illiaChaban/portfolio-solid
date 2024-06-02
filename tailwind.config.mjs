@@ -49,7 +49,6 @@ export default {
       fontFamily: {
         mono: ["'Inconsolata'", "'Saira'", 'monospace'],
         serif: ["'Saira'", 'Helvetica', 'Arial', 'sans-serif'],
-        // serif: ['Inconsolata', 'sans-serif'],
       },
       keyframes: {
         fadeIn: {

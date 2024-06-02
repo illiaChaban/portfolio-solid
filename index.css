@@ -109,6 +109,12 @@ body {
   text-transform: none;
 }
 
+/* 
+  !!!!
+  IMPORTANT: Font for these is injected inside viteconfig to only download the characters needed 
+  Make sure to update it if content changes
+  !!!!
+*/
 .tags-body::before {
   content: '<body>';
   top: 20px;
@@ -140,5 +146,6 @@ body {
   content: '</div>';
   bottom: 0px;
 }
+/* Tag styles end */
 
 @tailwind utilities;

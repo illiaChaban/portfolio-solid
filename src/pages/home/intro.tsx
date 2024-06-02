@@ -2,6 +2,7 @@ import anime from 'animejs'
 import { onMount } from 'solid-js'
 import { useRef } from '../../hooks'
 import { tw } from '../../utils/tw'
+import { homeIntroText } from './home-intro-text'
 
 export const Intro = () => {
   const circleWhite = useRef()
@@ -64,10 +65,10 @@ export const Intro = () => {
     <Container>
       <LettersContainer>
         <Letters ref={letters} class="top-[-0.2em]">
-          Hi
+          {homeIntroText[0]}
         </Letters>
         <Letters ref={bang} class="left-[-0.06em]">
-          !
+          {homeIntroText[1]}
         </Letters>
       </LettersContainer>
       <CircleWhite ref={circleWhite} />
