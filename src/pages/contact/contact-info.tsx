@@ -76,7 +76,7 @@ const IntroHeading = () => {
       )}
       class={tw`
         m-0 text-text-subtle1 uppercase
-        font-thin font-mono text-2xl
+        font-normal font-mono text-2xl
       `}
     >
       {phrases[0]}

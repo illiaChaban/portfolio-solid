@@ -1,3 +1,4 @@
+/* eslint-disable quotes */
 export const breakpoints = {
   xs: 320,
   sm: 600,
@@ -7,15 +8,14 @@ export const breakpoints = {
   xl: 1536,
 }
 
-
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [
-    "./src/**/*.{js,jsx,ts,tsx}",
-  ],
+  content: ['./src/**/*.{js,jsx,ts,tsx}'],
   experimental: { optimizeUniversalDefaults: true },
   theme: {
-    screens: Object.fromEntries(Object.entries(breakpoints).map(([key, value]) => [key, `${value}px`])),
+    screens: Object.fromEntries(
+      Object.entries(breakpoints).map(([key, value]) => [key, `${value}px`]),
+    ),
     colors: {
       curr: 'currentcolor',
       transparent: 'transparent',
@@ -44,20 +44,20 @@ export default {
     extend: {
       borderRadius: {
         md: '5px',
-        circle: '50%'
+        circle: '50%',
       },
       fontFamily: {
         mono: ["'Inconsolata'", "'Saira'", 'monospace'],
-        serif: ["'Saira'", 'Helvetica', 'Arial', 'sans-serif']
+        serif: ["'Saira'", 'Helvetica', 'Arial', 'sans-serif'],
         // serif: ['Inconsolata', 'sans-serif'],
       },
       keyframes: {
         fadeIn: {
-          'from': {
-            opacity: 0
-          }
-        }
-      }
+          from: {
+            opacity: 0,
+          },
+        },
+      },
     },
   },
   plugins: [
@@ -70,15 +70,13 @@ export default {
         },
         // added inside global index.css
         '.tags-h1': {},
-        '.tags-body': {
-        },
+        '.tags-body': {},
         '.tags-div': {},
-        '.tags-div-end': {}
-      });
+        '.tags-div-end': {},
+      })
     },
     ({ addVariant }) => {
       addVariant('desktopHover', '@media (hover: hover) and (pointer: fine)')
-    }
-
+    },
   ],
 }

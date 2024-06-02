@@ -340,7 +340,7 @@ export default () => {
 
 const AlignedIcon = tw('svg')`relative -top-[2px] align-middle`
 
-const Container = tw('div')`p-5 flex-auto
+const Container = tw('div')`px-4 py-8 flex-auto
 grid gap-10 
 [--card-size:240px]
 grid-cols-[repeat(auto-fill,var(--card-size))] 
@@ -358,7 +358,7 @@ const Heading = (p: {
   subheading?: { type: 'personal' } | { type: 'at'; value: string }
 }) => (
   <h2
-    class={tw`text-center mt-1 text-[1.3rem] leading-[1.4rem] ${
+    class={tw`text-center mt-1 text-[1.3rem] leading-[1.4rem] font-medium ${
       p.subheading ? 'mb-4' : 'mb-5'
     }`}
   >
@@ -375,7 +375,7 @@ const Heading = (p: {
 
 const Subtitle = (p: { children: string }) => (
   <>
-    <span class="font-black underline">{p.children}</span>
+    <span class="font-bold underline">{p.children}</span>
     <br />
   </>
 )

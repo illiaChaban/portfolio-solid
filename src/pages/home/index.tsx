@@ -78,7 +78,7 @@ const Header = () => {
 }
 
 const Subheading = tw('h3')`
-  text-lg text-text-subtle1 font-mono font-thin
+  text-lg text-text-subtle1 font-mono font-normal
   m-0 tracking-[-1px]
 `
 

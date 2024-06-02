@@ -51,22 +51,22 @@ export const Button = (p: ButtonProps): JSX.Element => {
         distanceToElement > buffer
           ? 0
           : distanceToElement === 0
-            ? 1
-            : (buffer - distanceToElement) / buffer
+          ? 1
+          : (buffer - distanceToElement) / buffer
 
       return {
         x:
           x > right + buffer
             ? width + buffer
             : x < left - buffer
-              ? -buffer
-              : x - left,
+            ? -buffer
+            : x - left,
         y:
           y < top - buffer
             ? -buffer
             : y > bottom + buffer
-              ? height + buffer
-              : y - top,
+            ? height + buffer
+            : y - top,
         opacity: closeness === 1 ? 1 : closeness * 0.5,
         from: closeness === 1 ? 0.5 : closeness * 0.1,
         to: closeness === 1 ? 1 : minMax(0.3, 0.7)(closeness),
@@ -92,13 +92,17 @@ export const Button = (p: ButtonProps): JSX.Element => {
           relative inline-block p-3
           rounded-md border border-solid border-[--btn-color]
           bg-transparent 
-          font-serif font-thin uppercase no-underline text-2xl
+          font-serif font-normal uppercase no-underline text-2xl
           cursor-pointer outline-none
           overflow-hidden
           [transition:color_.4s]
           [box-shadow:0_0_10px_var(--btn-color)] 
           focus:[box-shadow:0_0_20px_1px_var(--btn-color)]
-          ${gradient$().isHovering ? 'text-[--tw-background]' : 'text-[--btn-color]'}
+          ${
+            gradient$().isHovering
+              ? 'text-[--tw-background]'
+              : 'text-[--btn-color]'
+          }
           ${p.class}
         `}
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

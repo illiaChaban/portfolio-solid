@@ -15,7 +15,8 @@ h1:focus-visible {
   outline: none;
 }
 
-html, body {
+html,
+body {
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -27,9 +28,27 @@ html {
 }
 
 body {
-  background: -moz-linear-gradient(110deg, rgb(18, 3, 41) 0%,var(--tw-background) 25%,var(--tw-background) 42%, rgba(10,4,23,1) 100%);
-  background: -webkit-linear-gradient(110deg, rgb(18, 3, 41) 0%,var(--tw-background) 25%,var(--tw-background) 42%, rgba(10,4,23,1) 100%);
-  background: linear-gradient(110deg, rgb(18, 3, 41) 0%,var(--tw-background) 25%,var(--tw-background) 42%, rgba(10,4,23,1) 100%);
+  background: -moz-linear-gradient(
+    110deg,
+    rgb(18, 3, 41) 0%,
+    var(--tw-background) 25%,
+    var(--tw-background) 42%,
+    rgba(10, 4, 23, 1) 100%
+  );
+  background: -webkit-linear-gradient(
+    110deg,
+    rgb(18, 3, 41) 0%,
+    var(--tw-background) 25%,
+    var(--tw-background) 42%,
+    rgba(10, 4, 23, 1) 100%
+  );
+  background: linear-gradient(
+    110deg,
+    rgb(18, 3, 41) 0%,
+    var(--tw-background) 25%,
+    var(--tw-background) 42%,
+    rgba(10, 4, 23, 1) 100%
+  );
 
   margin: 0;
   color: theme(colors.text.primary);
@@ -45,8 +64,16 @@ body {
   body {
     /* fixing white background on home page on mobile after squirrel jump animation */
     background: var(--tw-background);
-    background: -webkit-linear-gradient(to left, #243B55, #141E30);  /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to left, #243B55, #141E30); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background: -webkit-linear-gradient(
+      to left,
+      #243b55,
+      #141e30
+    ); /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(
+      to left,
+      #243b55,
+      #141e30
+    ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   }
 }
 
@@ -54,8 +81,7 @@ body {
 .tags-h1,
 .tags-body,
 .tags-div,
-.tags-div-end
-{
+.tags-div-end {
   position: relative;
 }
 
@@ -73,14 +99,13 @@ body {
 .tags-body::before,
 .tags-div::after,
 .tags-div::before,
-.tags-div-end::after
-{
+.tags-div-end::after {
   color: theme(colors.text.subtle1);
   position: absolute;
   left: 0;
   font-family: 'League Script', 'Inconsolata', cursive;
   font-weight: 900;
-  font-size: .8rem;
+  font-size: 0.8rem;
   text-transform: none;
 }
 
@@ -93,18 +118,17 @@ body {
   bottom: 20px;
 }
 .tags-body::before,
-.tags-body::after
-{
+.tags-body::after {
   left: 2%;
 }
 
 .tags-h1::before {
-  content: "<h1>";
+  content: '<h1>';
   bottom: 100%;
 }
 .tags-h1::after {
-  content: "</h1>";
-  top: calc( 100% + .4rem);
+  content: '</h1>';
+  top: calc(100% + 0.4rem);
 }
 
 .tags-div::before {

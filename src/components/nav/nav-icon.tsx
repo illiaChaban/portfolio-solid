@@ -89,7 +89,7 @@ const NavIconBase = (p: IconBaseProps): JSX.Element => {
 }
 
 const NavIconText = tw('div')`
-  text-highlight uppercase font-mono font-thin tracking-[0.1px]
+  text-highlight uppercase font-mono tracking-[0.1px]
 `
 
 const StyledIcon = tw('i')`md:desktopHover:group-hover:opacity-0`
