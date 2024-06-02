@@ -1,6 +1,6 @@
 import anime, { AnimeInstance } from 'animejs'
 import { createEffect, JSX, on } from 'solid-js'
-import { Icon } from '../../components'
+import { IconArrowRight } from '../../components'
 import { useBool, useRef } from '../../hooks'
 import { getUniqueId } from '../../utils'
 import { tw } from '../../utils/tw'
@@ -99,10 +99,11 @@ export const Project = (p: { front: JSX.Element; back: JSX.Element }) => {
 
       <Content>
         <ToggleBtn onTouchEnd={showBack$.toggle}>
-          {showBack$() ? 'Close' : 'Open'} <IconArrow name="arrowRight" />
+          {showBack$() ? 'Close' : 'Open'}{' '}
+          <IconArrowRight class="transition-none relative top-[2.75px]" />
         </ToggleBtn>
 
-        <Front visible={!showBack$()}>{p.front}</Front>
+        <Front $visible={!showBack$()}>{p.front}</Front>
         {/* <Front $visible={!showBack$()}>{p.front}</Front> */}
 
         <svg
@@ -135,7 +136,7 @@ export const Project = (p: { front: JSX.Element; back: JSX.Element }) => {
           />
         </svg>
 
-        <Back visible={showBack$()}>{p.back}</Back>
+        <Back $visible={showBack$()}>{p.back}</Back>
       </Content>
     </Container>
   )
@@ -164,23 +165,19 @@ const ToggleBtn = tw('button')`
   absolute bottom-0 right-0 z-[2]
   text-accent-black
   font-serif text-[0.8rem]
-  py-[5px] px-[10px]
+  p-[5px] pl-[10px] pr-[3px]
   [transition:color_0.2s]
   focus:outline-none
 `
 
-const IconArrow = tw(Icon)`transition-none relative top-0.5`
-
 const InfoContainerBase = tw('div')`
-  absolute inset-0 box-border
+  absolute inset-0 box-border p-3
+  [&>p]:m-0 [&>p+p]:mt-[1em]
 `
 
-const Front = tw(InfoContainerBase)<{ visible: boolean }>`
-  p-[15px]
-  [&>p:first-child]:mt-0
-  [&>*:last-child]:mt-0
+const Front = tw(InfoContainerBase)<{ $visible: boolean }>`
   ${p =>
-    p.visible
+    p.$visible
       ? tw`
         [transform:translateY(0)] 
         opacity-100 
@@ -194,13 +191,10 @@ const Front = tw(InfoContainerBase)<{ visible: boolean }>`
       `}
 `
 
-const Back = tw(InfoContainerBase)<{ visible: boolean }>`
-  p-[10px] text-accent-black
-  [&>*:first-child]:mt-0
-  [&>*:last-child]:mt-0
-  [&_a]:text-accent-black
+const Back = tw(InfoContainerBase)<{ $visible: boolean }>`
+  text-accent-black [&_a]:text-accent-black
   ${p =>
-    p.visible
+    p.$visible
       ? tw`
           [transform:translateX(0)] 
           opacity-100 

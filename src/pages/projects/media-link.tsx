@@ -1,8 +1,8 @@
-import { Icon, IconName } from '../../components'
+import { Component } from 'solid-js'
 import { tw } from '../../utils/tw'
 
 export const MediaLink = (p: {
-  icon: IconName
+  Icon: Component<{ class?: string }>
   label: string
   href: string
 }) => {
@@ -14,7 +14,7 @@ export const MediaLink = (p: {
       aria-label={p.label}
       class="group relative [&_*]:[transition:opacity_.2s_ease-out]"
     >
-      <Icon name={p.icon} class="desktopHover:group-hover:opacity-0" />
+      <p.Icon class="desktopHover:group-hover:opacity-0" />
       <div
         class={tw`
           absolute center opacity-0

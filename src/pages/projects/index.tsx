@@ -1,9 +1,20 @@
 import { For, JSXElement, Show } from 'solid-js'
-import { Icon } from '../../components'
 import { FC } from '../../types'
 import { MediaLink } from './media-link'
 import { Project } from './project'
 import { tw } from '../../utils/tw'
+import {
+  IconAppStore,
+  IconBuilding,
+  IconGithub,
+  IconGlobe,
+  IconGooglePlay,
+  IconLightbulb,
+  IconPalette,
+  IconPlant,
+  IconRunning,
+  IconYoutube,
+} from '../../components'
 
 // TODO: mention recent projects at caribou (elk, metabase, new forms approach)
 // TODO: mention AMP (+ udpate tacklebox links to Microsoft)
@@ -16,7 +27,7 @@ export default () => {
           front={
             <>
               <Heading>
-                Caribou <Icon name="building" />
+                Caribou <AlignedIcon as={IconBuilding} />
               </Heading>
               <List
                 items={[
@@ -40,12 +51,12 @@ export default () => {
               <LinksContainer>
                 <MediaLink
                   href="https://www.caribou.com/"
-                  icon="globe"
                   label="Marketing"
+                  Icon={IconGlobe}
                 />
                 <MediaLink
                   href="https://new.apply.caribou.com/"
-                  icon="globe"
+                  Icon={IconGlobe}
                   label="Auto refinancing"
                 />
               </LinksContainer>
@@ -55,7 +66,10 @@ export default () => {
         <Project
           front={
             <>
-              <Heading at={'Insiten'}>Autowash</Heading>
+              <Heading>
+                Autowash
+                <Subheading>@Insiten</Subheading>
+              </Heading>
               <p>
                 Car wash mobile app and admin page. Created custom svg
                 animations, worked on location services, integrated Stripe
@@ -80,12 +94,12 @@ export default () => {
                 <MediaLink
                   href="https://apps.apple.com/us/app/autowash-car-wash/id1556443611"
                   label="App store"
-                  icon="appStore"
+                  Icon={IconAppStore}
                 />
                 <MediaLink
                   href="https://play.google.com/store/apps/details?id=com.autowashco.autowash&hl=en_US&gl=US"
                   label="Google Play"
-                  icon="googlePlay"
+                  Icon={IconGooglePlay}
                 />
               </LinksContainer>
             </>
@@ -94,7 +108,10 @@ export default () => {
         <Project
           front={
             <>
-              <Heading at={'Insiten'}>Tacklebox</Heading>
+              <Heading>
+                Tacklebox
+                <Subheading>@Insiten</Subheading>
+              </Heading>
               <p>
                 State of the art web app that allows you to link Excel docs to
                 PowerPoint presentations and track any changes. Powerful
@@ -119,7 +136,7 @@ export default () => {
                 <MediaLink
                   href="https://tacklebox.app/"
                   label="Website"
-                  icon="globe"
+                  Icon={IconGlobe}
                 />
               </LinksContainer>
             </>
@@ -129,7 +146,7 @@ export default () => {
           front={
             <>
               <Heading>
-                Capgemini <Icon name="building" />
+                Capgemini <AlignedIcon as={IconBuilding} />
               </Heading>
               <p>
                 Delivered a major project for one of the biggest insurance
@@ -155,7 +172,8 @@ export default () => {
           front={
             <>
               <Heading>
-                Planted <Icon name="plant" />
+                Planted <AlignedIcon as={IconPlant} />
+                <Personal />
               </Heading>
               <p>
                 A mobile app that helps keep your plants thriving. Raspberry Pi
@@ -180,12 +198,12 @@ export default () => {
                 <MediaLink
                   label="code"
                   href="https://github.com/PlantedDC"
-                  icon="github"
+                  Icon={IconGithub}
                 />
                 <MediaLink
                   label="demo"
                   href="https://www.youtube.com/watch?v=lKG6Cvn-An0"
-                  icon="youtube"
+                  Icon={IconYoutube}
                 />
               </LinksContainer>
             </>
@@ -195,7 +213,8 @@ export default () => {
           front={
             <>
               <Heading>
-                BrainstormMe <Icon name="palette" />
+                BrainstormMe <AlignedIcon as={IconPalette} />
+                <Personal />
               </Heading>
               <p>
                 An online real-time whiteboard for collaborative brainstorming
@@ -219,19 +238,19 @@ export default () => {
                 <MediaLink
                   href="https://brain-me.herokuapp.com/"
                   label="website"
-                  icon="globe"
+                  Icon={IconGlobe}
                 />
 
                 <MediaLink
                   label="code"
-                  icon="github"
+                  Icon={IconGithub}
                   href="https://github.com/illiaChaban/BrainstormMe"
                 />
 
                 <MediaLink
                   label="demo"
                   href="https://www.youtube.com/watch?v=flQ2z83v04A"
-                  icon="youtube"
+                  Icon={IconYoutube}
                 />
               </LinksContainer>
             </>
@@ -241,7 +260,8 @@ export default () => {
           front={
             <>
               <Heading>
-                Griddle <Icon name="lightbulb" />
+                Griddle <AlignedIcon as={IconLightbulb} />
+                <Personal />
               </Heading>
               <p>
                 A web application that encourages people to thoughtfully
@@ -266,12 +286,12 @@ export default () => {
                 <MediaLink
                   href="https://griddle-ec3d9.firebaseapp.com/"
                   label="website"
-                  icon="globe"
+                  Icon={IconGlobe}
                 />
                 <MediaLink
                   label="code"
                   href="https://github.com/illiaChaban/griddle"
-                  icon="github"
+                  Icon={IconGithub}
                 />
               </LinksContainer>
             </>
@@ -281,7 +301,8 @@ export default () => {
           front={
             <>
               <Heading>
-                Catalyst <Icon name="runner" />
+                Catalyst <AlignedIcon as={IconRunning} />
+                <Personal />
               </Heading>
               <p>
                 A social network for people that are lacking that extra push to
@@ -309,17 +330,17 @@ export default () => {
                 <MediaLink
                   href="http://ec2-18-204-21-178.compute-1.amazonaws.com/"
                   label="website"
-                  icon="globe"
+                  Icon={IconGlobe}
                 />
                 <MediaLink
                   label="code"
                   href="https://github.com/illiaChaban/Catalyst"
-                  icon="github"
+                  Icon={IconGithub}
                 />
                 <MediaLink
                   label="demo"
                   href="https://www.youtube.com/watch?v=hNMJl7z7fHQ&t=0s"
-                  icon="youtube"
+                  Icon={IconYoutube}
                 />
               </LinksContainer>
             </>
@@ -330,13 +351,14 @@ export default () => {
   )
 }
 
+const AlignedIcon = tw('svg')`relative -top-[2px] align-middle`
+
 const Container = tw('div')`
   p-5 flex-auto flex justify-evenly items-center flex-wrap
 `
 
 const Title = tw('h2')`m-0 w-full text-center`
 
-// TODO: text-sm?
 const Ul = tw('ul')`
   pl-[15px] flex flex-col gap-1
 `
@@ -349,14 +371,10 @@ const List: FC<{ items: string[] }> = p => (
 
 const Row = tw('div')`flex justify-evenly items-center flex-wrap flex-auto`
 
-const Heading = (p: { at?: string; children: JSXElement }) => (
-  <h2 class="text-center mt-1 text-[1.3rem] leading-[1.4rem]">
-    {p.children}
-    {<Show when={p.at}>{<At>@{p.at}</At>}</Show>}
-  </h2>
-)
+const Heading = tw('h2')`text-center mt-1 text-[1.3rem] leading-[1.4rem]`
+const Subheading = tw('span')`block text-[0.6em] text-text-subtle2`
 
-const At = tw('span')`block text-[0.6em] text-text-subtle2`
+const Personal = () => <Subheading>(Personal)</Subheading>
 
 const Subtitle = (p: { children: string }) => (
   <>
@@ -365,4 +383,4 @@ const Subtitle = (p: { children: string }) => (
   </>
 )
 
-const LinksContainer = tw('div')`flex text-[2rem] justify-evenly`
+const LinksContainer = tw('div')`flex text-[2rem] justify-evenly mt-5`

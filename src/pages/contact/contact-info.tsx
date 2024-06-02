@@ -1,5 +1,13 @@
 import { useContext } from 'solid-js'
-import { Icon, ExternalLink } from '../../components'
+import {
+  ExternalLink,
+  IconCodepen,
+  IconEnvelope,
+  IconGithub,
+  IconLinkedIn,
+  IconMapMarker,
+  IconPdf,
+} from '../../components'
 import { PageTransitionContext } from '../../components/page-transition'
 import { textScramble } from '../../directives'
 import { RefSetter, use } from '../../hooks'
@@ -10,48 +18,50 @@ export const ContactInfo = (p: { ref?: RefSetter<HTMLDivElement> }) => {
   return (
     <div class="tags-div py-[35px]" ref={use(p.ref)}>
       <IntroHeading />
-      <div class="my-[30px]">
-        <LinkWrapper>
-          <ExternalLink href="mailto:illia.chaban.8@gmail.com" $color="text">
-            <Icon name="envelope" class="relative top-0.5" />{' '}
-            illia.chaban.8@gmail.com
-          </ExternalLink>
-        </LinkWrapper>
-        <LinkWrapper>
-          <ExternalLink
-            href="https://docs.google.com/viewer?url=https://docs.google.com/document/d/1Q1eJ4p3lnqyGA5hYGV61Woh0eHEu0M6OcytNqIVpr0g/export?format=pdf"
-            $color="text"
-          >
-            <Icon name="pdf" /> Resume
-          </ExternalLink>
-        </LinkWrapper>
+      <div class="my-[30px] space-y-[0.85em]">
+        <ContactHeading
+          as={ExternalLink}
+          href="mailto:illia.chaban.8@gmail.com"
+          $color="text"
+        >
+          <IconEnvelope /> illia.chaban.8@gmail.com
+        </ContactHeading>
+        <ContactHeading
+          as={ExternalLink}
+          href="https://docs.google.com/viewer?url=https://docs.google.com/document/d/1Q1eJ4p3lnqyGA5hYGV61Woh0eHEu0M6OcytNqIVpr0g/export?format=pdf"
+          $color="text"
+        >
+          <IconPdf /> Resume
+        </ContactHeading>
 
-        <LinkWrapper class="text-text-subtle2 opacity-85">
-          <Icon name="mapMarker" /> Atlanta, GA
-        </LinkWrapper>
+        <ContactHeading class="text-text-subtle2 opacity-85">
+          <IconMapMarker /> Atlanta, GA
+        </ContactHeading>
       </div>
       <div class="flex justify-between w-full">
         <MediaLink
           href="https://www.linkedin.com/in/illia-chaban/"
           aria-label="my-linkedin"
         >
-          <Icon name="linkedIn" />
+          <IconLinkedIn />
         </MediaLink>
         <MediaLink href="https://github.com/illiaChaban" aria-label="my-github">
-          <Icon name="github" />
+          <IconGithub />
         </MediaLink>
         <MediaLink
           href="https://codepen.io/illia_chaban/"
           aria-label="my-codepen"
         >
-          <Icon name="codepen" />
+          <IconCodepen />
         </MediaLink>
       </div>
     </div>
   )
 }
 
-const LinkWrapper = tw('h2')`my-[0.85em] text-2xl font-mono`
+const ContactHeading = tw(
+  'h3',
+)`!block text-2xl font-mono font-bold *:align-middle`
 
 const IntroHeading = () => {
   const { maskTransitionEnabled$ } = useContext(PageTransitionContext)

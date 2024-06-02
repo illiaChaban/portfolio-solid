@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { splitProps } from 'solid-js'
+import { ComponentProps, splitProps } from 'solid-js'
 import { JSX } from 'solid-js/jsx-runtime'
 import { Dynamic } from 'solid-js/web'
 
@@ -56,8 +56,8 @@ const createCssStyled = (cssMergeFunction: CssMergeFn = simpleJoinClasses) =>
           : preprocessArg(args[i]),
       ])
 
-      const Styled: StyledComponent<any> = props => {
-        const [, p2] = splitProps(props, ['class', 'as'])
+      const Styled: StyledComponent<any> = (props: any) => {
+        const [, p2] = splitProps(props, ['class' as any, 'as'])
 
         const final = () =>
           cssMergeFunction(
@@ -74,7 +74,7 @@ const createCssStyled = (cssMergeFunction: CssMergeFn = simpleJoinClasses) =>
           // avoid propagating $<key> to html elements
           const keys = Object.keys(p2).filter(k => !k.startsWith('$'))
           // should i use split props here? Is there a performance optimization opportunity?
-          return pick(p2, keys)
+          return pick(p2, keys as any)
         }
 
         return (
@@ -94,15 +94,15 @@ const preprocessArg = (
   typeof arg === 'string'
     ? templateToOneLine(arg)
     : typeof arg === 'function'
-      ? (props: any) => {
-          const v = arg(props)
-          return v && templateToOneLine(v)
-        }
-      : !!arg === false
-        ? ''
-        : (() => {
-            throw `Unsupported type: ${typeof arg}`
-          })()
+    ? (props: any) => {
+        const v = arg(props)
+        return v && templateToOneLine(v)
+      }
+    : !!arg === false
+    ? ''
+    : (() => {
+        throw `Unsupported type: ${typeof arg}`
+      })()
 
 // const templateToClasses = (templateStr: string): string[] => {
 //   return templateStr.split(" ").filter((s) => s.length && s !== "\n");
@@ -133,25 +133,24 @@ const pick = <R extends Record<string, unknown>, P extends keyof R>(
 
 type TagArg<P> = string | Falsy | ((props: P) => string | Falsy)
 
-type InternalProps = {
-  as?: keyof JSX.IntrinsicElements | ((p: {}) => JSX.Element)
-}
+type Component = keyof JSX.IntrinsicElements | ((p: {}) => JSX.Element)
 
 type TagFn<BaseProps extends {}> = <ExtraProps extends {} = {}>(
   classes: TemplateStringsArray,
   ...args: TagArg<ExtraProps>[]
 ) => StyledComponent<BaseProps, ExtraProps>
 
-type StyledComponent<BaseProps extends {}, ExtraProps extends {} = {}> = (
-  // TODO: support conditional props based on "as" internal prop.
-  // i.e. "as" component function accepts certtain props that become "BaseProps"
-  props: BaseProps & ExtraProps & InternalProps,
-) => JSX.Element
+type StyledComponent<BaseProps extends {}, ExtraProps extends {} = {}> = {
+  <As extends Component>(
+    props: { as: As } & ComponentProps<As> & ExtraProps,
+  ): JSX.Element
+  (props: BaseProps & ExtraProps): JSX.Element
+}
 
 export type StyleFn = {
-  <K extends keyof JSX.IntrinsicElements>(
-    component: K,
-  ): TagFn<JSX.IntrinsicElements[K]>
+  <K extends keyof JSX.IntrinsicElements>(component: K): TagFn<
+    JSX.IntrinsicElements[K]
+  >
   <P extends { class?: string }>(component: (p: P) => JSX.Element): TagFn<P>
   // return css class, use for autocomplete purposes
   (

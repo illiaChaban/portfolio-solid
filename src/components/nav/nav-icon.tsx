@@ -2,7 +2,7 @@ import { NavLink, useLocation } from '@solidjs/router'
 import { createRenderEffect, on } from 'solid-js'
 import { JSX } from 'solid-js/jsx-runtime'
 import { tw } from '../../utils/tw'
-import { Icon } from '../icon'
+import { IconCog, IconEnvelope, IconHome, IconLaptop, IconUser } from '../icons'
 
 type IconBaseProps = {
   href: string
@@ -92,33 +92,33 @@ const NavIconText = tw('div')`
   text-highlight uppercase font-mono font-thin tracking-[0.1px]
 `
 
-const StyledIcon = tw(Icon)`md:desktopHover:group-hover:opacity-0`
+const StyledIcon = tw('i')`md:desktopHover:group-hover:opacity-0`
 
 type Props = Pick<IconBaseProps, 'onActivate'>
 export const NavIcon = {
   Home: (p: Props) => (
     <NavIconBase href="/" end name="home" onActivate={p.onActivate}>
-      <StyledIcon name="home" />
+      <StyledIcon as={IconHome} />
     </NavIconBase>
   ),
   About: (p: Props) => (
     <NavIconBase href="/about" onActivate={p.onActivate}>
-      <StyledIcon name="user" />
+      <StyledIcon as={IconUser} />
     </NavIconBase>
   ),
   Skills: (p: Props) => (
     <NavIconBase href="/skills" onActivate={p.onActivate}>
-      <StyledIcon name="cog" />
+      <StyledIcon as={IconCog} />
     </NavIconBase>
   ),
   Projects: (p: Props) => (
     <NavIconBase href="/projects" onActivate={p.onActivate}>
-      <StyledIcon name="laptop" class="[font-size:0.9em]" />
+      <StyledIcon as={IconLaptop} class="size-[1.05em]" />
     </NavIconBase>
   ),
   Contact: (p: Props) => (
     <NavIconBase href="/contact" onActivate={p.onActivate}>
-      <StyledIcon name="envelope" />
+      <StyledIcon as={IconEnvelope} />
     </NavIconBase>
   ),
 }
