@@ -34,9 +34,9 @@ export const Art = (p: { contentRef: Ref<HTMLElement> }) => {
   )
 }
 
-const BaseContainer = tw('div')`relative size-full`
+const BaseContainer = tw.div`relative size-full`
 
-const Container = tw('div')`size-full absolute right-0 opacity-80`
+const Container = tw.div`size-full absolute right-0 opacity-80`
 
 const Mountain = tw(ProgressiveImage)`absolute right-0 w-full opaicity-80`
 

@@ -8,7 +8,7 @@ import { tw } from '../utils/tw'
 
 type StyleProps = { $color?: 'primary' | 'text' }
 
-const StyledLink = tw('a')<StyleProps>`
+const StyledLink = tw.a<StyleProps>`
   ${cssStyles.externalLink} 
   ${p => (p.$color === 'text' ? 'text-text-primary' : 'text-highlight')}
 `

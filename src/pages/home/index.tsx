@@ -29,7 +29,7 @@ export default (p: { contentRef: Ref<HTMLElement> }) => {
   )
 }
 
-const IntroWrapper = tw('div')`
+const IntroWrapper = tw.div`
   text-text-primary
   text-[1.6rem] sm:text-[2rem] lg:text-[2.5rem] 
   [font-family:'Special_Elite',cursive] font-black
@@ -39,7 +39,7 @@ const IntroWrapper = tw('div')`
   overflow-hidden z-[1]
 `
 
-const IntroContainer = tw('div')`ml-[5%] max-[660px]:mt-[70px]`
+const IntroContainer = tw.div`ml-[5%] max-[660px]:mt-[70px]`
 
 const Header = () => {
   const ref = useRef()
@@ -78,7 +78,7 @@ const Header = () => {
   )
 }
 
-const Subheading = tw('h3')`
+const Subheading = tw.h3`
   text-lg text-text-subtle1 font-mono font-normal
   m-0 tracking-[-1px]
 `

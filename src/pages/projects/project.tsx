@@ -142,24 +142,24 @@ export const Project = (p: { front: JSX.Element; back: JSX.Element }) => {
   )
 }
 
-const Container = tw('section')`
+const Container = tw.section`
   relative 
   w-[14rem] min-w-[240px] min-h-[330px] h-[19rem]
   bg-[--tw-background]
   [background:radial-gradient(circle_at_50%_0%,#0a1515,var(--tw-background)_80%)]
 `
 
-const Shadow = tw('div')`
+const Shadow = tw.div`
   size-full absolute top-0 left-0 [box-shadow:0_5px_55px_black] z-[-1]
 `
 
-const Content = tw('div')`
+const Content = tw.div`
   size-full overflow-hidden relative 
   rounded-md border border-solid border-highlight
   text-sm 
 `
 
-const ToggleBtn = tw('button')`
+const ToggleBtn = tw.button`
   bg-transparent border-none 
   absolute bottom-0 right-0 z-[2]
   text-accent-black
@@ -169,7 +169,7 @@ const ToggleBtn = tw('button')`
   focus:outline-none
 `
 
-const InfoContainerBase = tw('div')`
+const InfoContainerBase = tw.div`
   absolute inset-0 box-border p-3
   [&>p]:m-0 [&>p+p]:mt-[1em]
 `

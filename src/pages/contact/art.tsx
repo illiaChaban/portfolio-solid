@@ -43,7 +43,7 @@ export const Art = (p: { class?: string; style?: JSX.CSSProperties }) => {
   )
 }
 
-const Wave = tw('div')`
+const Wave = tw.div`
   absolute box-border 
   border-2 border-solid rounded-circle
   [transform:translateZ(-100px)] 

@@ -5,7 +5,7 @@ import { WithOverrides } from '../types'
 import { tw } from '../utils/tw'
 import { PageTransitionContext } from './page-transition'
 
-const HeadingBase = tw('h1')`
+const HeadingBase = tw.h1`
   text-highlight relative
   [font-family:Courier] text-[3.15rem] leading-tight
 `

@@ -59,7 +59,7 @@ export const ContactInfo = (p: { ref?: RefSetter<HTMLDivElement> }) => {
   )
 }
 
-const ContactHeading = tw('h3')`text-[1.5em] sm:text-[1.6em] 
+const ContactHeading = tw.h3`text-[1.5em] sm:text-[1.6em] 
 font-mono font-bold m-0 [&>svg]:align-text-top`
 
 const IntroHeading = () => {

@@ -62,13 +62,13 @@ export const MediaLink = (
   )
 }
 
-const LinkBase = tw('a')`
+const LinkBase = tw.a`
   relative block size-[5.6rem]
   text-text-primary font-mono text-5xl no-underline 
   [-webkit-tap-highlight-color:transparent]
 `
 
-const TileWrapper = tw('div')`
+const TileWrapper = tw.div`
   size-full
   [transform:rotate(-35deg)_skew(20deg)_translate(-10px,10px)]
 `

@@ -146,7 +146,7 @@ const useMousePosition = (): Accessor<Point> => {
   return () => pick(mousePosition$(), ['x', 'y'])
 }
 
-const Backdrop = tw('div')`absolute inset-0 z-[-1] pointer-events-none`
+const Backdrop = tw.div`absolute inset-0 z-[-1] pointer-events-none`
 
 const ripple = (button: HTMLElement) => {
   const rect$ = useRect()
@@ -196,7 +196,7 @@ const ripple = (button: HTMLElement) => {
   })
 }
 
-const Ripple = tw('span')`absolute rounded-circle ${styles.ripple}`
+const Ripple = tw.span`absolute rounded-circle ${styles.ripple}`
 
 type Point = { x: number; y: number }
 const distanceToPoint =

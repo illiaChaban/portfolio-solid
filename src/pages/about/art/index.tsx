@@ -58,13 +58,13 @@ export const Art = () => {
   )
 }
 
-const Container = tw('div')`
+const Container = tw.div`
   min-h-[400px] w-[400px] max-w-[100vw]
   relative bottom-[5%]
   max-sm_md:min-w-[auto] max-sm_md:p-2.5
 `
 
-const ImgWrapper = tw('div')`
+const ImgWrapper = tw.div`
   w-full h-[400px] max-sm_md:h-[320px]
   relative
   [&>svg]:opacity-50
@@ -73,7 +73,7 @@ const ImgWrapper = tw('div')`
 `
 
 // TODO: replace with text-sm & py-4 ?
-const Quote = tw('div')`
+const Quote = tw.div`
   text-text-primary
   font-mono text-sm
   relative
@@ -82,12 +82,12 @@ const Quote = tw('div')`
   flex flex-col
 `
 
-const Quotation = tw('div')`
+const Quotation = tw.div`
   before:text-text-subtle1 after:text-text-subtle1
   before:content-['<<_'] after:content-['_>>']
 `
 
-const Author = tw('div')`text-highlight opacity-80`
+const Author = tw.div`text-highlight opacity-80`
 
 //TODO: test how much memory it takes to load these images in prod
 // VS in dev VS vanilla JS

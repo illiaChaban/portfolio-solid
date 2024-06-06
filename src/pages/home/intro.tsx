@@ -80,17 +80,17 @@ export const Intro = () => {
   )
 }
 
-const Container = tw('h1')`
+const Container = tw.h1`
   font-black 
   size-[3em] relative m-0 
   [transform:translate(-25px,15px)]
 `
 
-const LettersContainer = tw('span')`absolute inset-0 m-auto h-[1em] text-center`
+const LettersContainer = tw.span`absolute inset-0 m-auto h-[1em] text-center`
 
-const Letters = tw('span')`relative z-[2] inline-block [line-height:0.7em]`
+const Letters = tw.span`relative z-[2] inline-block [line-height:0.7em]`
 
-const Circle = tw('span')`absolute inset-0 m-auto`
+const Circle = tw.span`absolute inset-0 m-auto`
 
 const CircleWhite = tw(Circle)`
   size-[3em]

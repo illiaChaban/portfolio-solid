@@ -7,7 +7,7 @@ import { calcClipPath, NAV_HEIGHT, NAV_LENGTH } from './clip-path'
 import { NavIcon } from './nav-icon'
 import { tw } from '../../utils/tw'
 
-const MenuContainer = tw('div')`
+const MenuContainer = tw.div`
   text-text-subtle1
   w-[theme(misc.navOffset)]
   fixed top-0 h-full
@@ -43,7 +43,7 @@ export const Navbar = () => {
   )
 }
 
-const NavContainer = tw('div')`
+const NavContainer = tw.div`
   flex justify-around items-center 
   text-center w-[--nav-size]
   md:h-[--nav-size] md:w-full md:flex-col
@@ -65,7 +65,7 @@ const Bar = (p: { index: number | undefined }) => {
     }
   }
 
-  const Shared = tw('div')`
+  const Shared = tw.div`
     w-full h-[--nav-height]
     absolute 
     [transition:translate_0.2s_ease-out]

@@ -55,7 +55,7 @@ export default () => {
   )
 }
 
-export const Content = tw('div')`
+export const Content = tw.div`
   flex flex-col justify-center
   p-[15px]
   pl-[5%]
@@ -65,19 +65,19 @@ export const Content = tw('div')`
   max-sm_md:w-full
   max-sm_md:pt-0
 `
-export const P = tw('p')`
+export const P = tw.p`
   my-[18px] first:mt-2 last:mb-2
   text-base leading-tight
 `
 
-export const Container = tw('div')`
+export const Container = tw.div`
   relative 
   flex justify-between flex-auto 
   max-sm_md:flex-col
 `
 
-export const ArtContainer = tw('div')`
+export const ArtContainer = tw.div`
   flex flex-grow justify-center items-center relative min-h-[200px]
 `
 
-const Subtle = tw('span')`text-text-subtle2`
+const Subtle = tw.span`text-text-subtle2`

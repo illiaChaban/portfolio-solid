@@ -88,11 +88,11 @@ const NavIconBase = (p: IconBaseProps): JSX.Element => {
   )
 }
 
-const NavIconText = tw('div')`
+const NavIconText = tw.div`
   text-highlight uppercase font-mono tracking-[0.1px]
 `
 
-const StyledIcon = tw('i')`md:desktopHover:group-hover:opacity-0`
+const StyledIcon = tw.i`md:desktopHover:group-hover:opacity-0`
 
 type Props = Pick<IconBaseProps, 'onActivate'>
 export const NavIcon = {

@@ -191,7 +191,7 @@ const Mask = (p: {
   )
 }
 
-const ControlsContainer = tw('div')`fixed top-5 right-5 z-[1000] opacity-100`
+const ControlsContainer = tw.div`fixed top-5 right-5 z-[1000] opacity-100`
 
 const animateSteps = ({
   steps,

@@ -29,7 +29,7 @@ const Contact = () => {
   )
 }
 
-const Container = tw('div')`
+const Container = tw.div`
   flex justify-around flex-auto tags-body
 `
 

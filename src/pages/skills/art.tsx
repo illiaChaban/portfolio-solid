@@ -95,7 +95,7 @@ export default () => {
   )
 }
 
-const Container = tw('div')`
+const Container = tw.div`
   size-full
   flex justify-center items-center
   pointer-events-none desktopHover:pointer-events-auto

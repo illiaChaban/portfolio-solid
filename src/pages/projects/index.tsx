@@ -338,9 +338,9 @@ export default () => {
   )
 }
 
-const AlignedIcon = tw('svg')`relative -top-[2px] align-middle`
+const AlignedIcon = tw.svg`relative -top-[2px] align-middle`
 
-const Container = tw('div')`px-4 py-8 flex-auto
+const Container = tw.div`px-4 py-8 flex-auto
 grid gap-10 
 [--card-size:240px]
 grid-cols-[repeat(auto-fill,var(--card-size))] 
@@ -380,4 +380,4 @@ const Subtitle = (p: { children: string }) => (
   </>
 )
 
-const LinksContainer = tw('div')`flex text-[2rem] justify-evenly mt-5`
+const LinksContainer = tw.div`flex text-[2rem] justify-evenly mt-5`
