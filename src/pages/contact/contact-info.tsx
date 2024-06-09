@@ -64,24 +64,30 @@ font-mono font-bold m-0 [&>svg]:align-text-top`
 
 const IntroHeading = () => {
   const { maskTransitionEnabled$ } = useContext(PageTransitionContext)
+  const longestPhrase = phrases.reduce((a, b) => (a.length > b.length ? a : b))
+
   return (
-    <h3
-      ref={use(
-        textScramble({
-          delay: maskTransitionEnabled$() ? 1000 : 250,
-          phrases,
-          interval: 2000,
-          doodleStyle: tw`text-highlight opacity-80`,
-        }),
-      )}
-      class={tw`
-        m-0 text-text-subtle1 uppercase
-        font-normal font-mono text-2xl
-      `}
-    >
-      {phrases[0]}
-    </h3>
+    <>
+      <Title
+        ref={use(
+          textScramble({
+            delay: maskTransitionEnabled$() ? 1000 : 250,
+            phrases,
+            interval: 2000,
+            doodleStyle: tw`text-highlight opacity-80`,
+          }),
+        )}
+      >
+        {phrases[0]}
+      </Title>
+      {/* add invisible title to avoid layout shift on mobile on title update */}
+      <Title class="invisible h-0">{longestPhrase}</Title>
+    </>
   )
 }
+const Title = tw.h3`
+m-0 text-text-subtle1 uppercase
+font-normal font-mono text-2xl
+`
 // eslint-disable-next-line quotes
 const phrases = ['Hello friend,', "Let's build something great!"]
