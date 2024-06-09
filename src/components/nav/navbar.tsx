@@ -5,8 +5,9 @@ import { bindEventWithCleanup, range } from '../../utils'
 import { debounce } from '../../utils/lodash'
 import { calcClipPath, NAV_HEIGHT, NAV_LENGTH } from './clip-path'
 import { NavIcon } from './nav-icon'
-import { tw, withStyle } from '../../utils/tw'
+import { tw } from '../../utils/tw'
 import { _, compareNumbers, filter, isNil, sort } from '@illlia/ts-utils'
+import { withStyle } from '@illlia/css-styled/solid'
 
 const MenuContainer = tw.div`
   text-text-subtle1

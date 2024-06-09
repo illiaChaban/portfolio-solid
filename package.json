@@ -32,7 +32,7 @@
     "vitest": "^0.27.1"
   },
   "dependencies": {
-    "@illlia/css-styled": "^0.0.8",
+    "@illlia/css-styled": "^0.0.9",
     "@illlia/ts-utils": "^0.0.12",
     "@solidjs/router": "^0.6.0",
     "animejs": "^3.2.1",
