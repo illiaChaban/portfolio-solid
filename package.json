@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "@illlia/css-styled": "^0.0.8",
-    "@illlia/ts-utils": "^0.0.11",
+    "@illlia/ts-utils": "^0.0.12",
     "@solidjs/router": "^0.6.0",
     "animejs": "^3.2.1",
     "lodash": "^4.17.21",

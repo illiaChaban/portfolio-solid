@@ -55,7 +55,7 @@ export const Navbar = () => {
                   activeStylesIndex$(to)
                   return
                 }
-                const [min, max] = _([from, to], sort<number>(compareNumbers()))
+                const [min, max] = _([from, to], sort(compareNumbers()))
                 const direction = from < to ? 'asc' : 'desc'
                 const affected = _(
                   range(icons.length),
