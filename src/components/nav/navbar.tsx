@@ -5,7 +5,7 @@ import { bindEventWithCleanup, range } from '../../utils'
 import { debounce } from '../../utils/lodash'
 import { calcClipPath, NAV_HEIGHT, NAV_LENGTH } from './clip-path'
 import { NavIcon } from './nav-icon'
-import { tw } from '../../utils/tw'
+import { tw, withStyle } from '../../utils/tw'
 import { _, compareNumbers, filter, isNil, sort } from '@illlia/ts-utils'
 
 const MenuContainer = tw.div`
@@ -111,12 +111,15 @@ export const Navbar = () => {
   )
 }
 
-const NavContainer = tw.div`
-  flex justify-around items-center 
-  text-center w-[--nav-size]
-  md:h-[--nav-size] md:w-full md:flex-col
-  [-webkit-tap-highlight-color:rgba(0,0,0,0)]
-`
+const NavContainer = withStyle(
+  { '--nav-size': `${NAV_LENGTH}px` },
+  tw.div`
+    flex justify-around items-center 
+    text-center w-[--nav-size]
+    md:h-[--nav-size] md:w-full md:flex-col
+    [-webkit-tap-highlight-color:rgba(0,0,0,0)]
+  `,
+)
 
 const Bar = (p: { index: number | undefined; transitionDuration: number }) => {
   const clipPath$ = useClipPath()
@@ -133,11 +136,18 @@ const Bar = (p: { index: number | undefined; transitionDuration: number }) => {
     }
   }
 
-  const Shared = tw.div`
-    w-full h-[--nav-height]
-    absolute 
-    [transition:translate_var(--transition-duration)_ease-out]
-  `
+  const Shared = withStyle(
+    {
+      '--nav-height': `${NAV_HEIGHT}px`,
+      '--transition-duration': () => `${p.transitionDuration}ms`,
+    },
+    tw.div`
+      w-full h-[--nav-height]
+      absolute 
+      [transition:translate_var(--transition-duration)_ease-out]
+    `,
+  )
+
   const BackdropBorder = tw(Shared)`
     bottom-[1.5px] md:bottom-auto md:left-[1.5px] 
     bg-[#7ff6ff40]
@@ -150,10 +160,6 @@ const Bar = (p: { index: number | undefined; transitionDuration: number }) => {
 
   return (
     <div
-      style={{
-        '--nav-height': `${NAV_HEIGHT}px`,
-        '--transition-duration': `${p.transitionDuration}ms`,
-      }}
       /* adjust for border because overflow-x otherwise cuts the top for some reason */
       class={tw`
           [--size:calc(100%+2px)]
