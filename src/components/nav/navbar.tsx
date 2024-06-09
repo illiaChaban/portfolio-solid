@@ -1,11 +1,12 @@
 import { For, JSX } from 'solid-js'
 import { useAtom } from '../../hooks/use-atom'
 import { useBreakpoint } from '../../theme'
-import { bindEventWithCleanup } from '../../utils'
+import { bindEventWithCleanup, range } from '../../utils'
 import { debounce } from '../../utils/lodash'
 import { calcClipPath, NAV_HEIGHT, NAV_LENGTH } from './clip-path'
 import { NavIcon } from './nav-icon'
 import { tw } from '../../utils/tw'
+import { _, compareNumbers, filter, isNil, sort } from '@illlia/ts-utils'
 
 const MenuContainer = tw.div`
   text-text-subtle1
@@ -19,24 +20,90 @@ const MenuContainer = tw.div`
 `
 
 export const Navbar = () => {
-  const index$ = useAtom<number>()
+  const isDesktop$ = useBreakpoint('md')
+
+  const currIndex$ = useAtom<number>()
+  const activeStylesIndex$ = useAtom<number>()
+  const transitionDuration$ = useAtom<number>(0)
+
+  const icons = [
+    NavIcon.Home,
+    NavIcon.About,
+    NavIcon.Skills,
+    NavIcon.Projects,
+    NavIcon.Contact,
+  ]
+  const refs = new Array<HTMLDivElement>(icons.length).fill(null as any)
 
   return (
     <MenuContainer>
       {/* https://www.youtube.com/watch?v=ArTVfdHOB-M&ab_channel=OnlineTutorials */}
-      <Bar index={index$()} />
+      <Bar index={currIndex$()} transitionDuration={transitionDuration$()} />
 
       <NavContainer style={{ '--nav-size': `${NAV_LENGTH}px` }}>
-        <For
-          each={[
-            NavIcon.Home,
-            NavIcon.About,
-            NavIcon.Skills,
-            NavIcon.Projects,
-            NavIcon.Contact,
-          ]}
-        >
-          {(Icon, i) => <Icon onActivate={() => index$(i)} />}
+        <For each={icons}>
+          {(Icon, i) => (
+            <Icon
+              isActive={activeStylesIndex$() === i()}
+              ref={el => (refs[i()] = el)}
+              onActivate={() => {
+                const from = currIndex$()
+                const to = i()
+                currIndex$(to)
+
+                if (isNil(from)) {
+                  activeStylesIndex$(to)
+                  return
+                }
+                const [min, max] = _([from, to], sort<number>(compareNumbers()))
+                const direction = from < to ? 'asc' : 'desc'
+                const affected = _(
+                  range(icons.length),
+                  sort(compareNumbers(direction)),
+                  filter(x => x >= min && x <= max && x !== from),
+                )
+                const duration =
+                  (isDesktop$() ? 250 : 150) + 50 * affected.length
+                transitionDuration$(duration)
+                const speed = duration / affected.length
+                affected.forEach((i, order) => {
+                  if (i === to) {
+                    activeStylesIndex$(-1)
+                    setTimeout(
+                      () => activeStylesIndex$(to),
+                      order * speed * 0.8,
+                    )
+                    return
+                  }
+                  const el = refs[i]
+                  const translate = (n: number) =>
+                    isDesktop$() ? `translateX(${n}px)` : `translateY(${-n}px)`
+                  el.animate(
+                    [
+                      {
+                        opacity: 1,
+                        offset: 0,
+                      },
+                      {
+                        opacity: 0,
+                        offset: 0.2,
+                      },
+                      {
+                        opacity: 0,
+                        transform: translate(-8),
+                        offset: 0.7,
+                      },
+                      { opacity: 1, transform: translate(0), offset: 1 },
+                    ],
+                    {
+                      duration: speed + 200,
+                      delay: order * speed * 0.8,
+                    },
+                  )
+                })
+              }}
+            />
+          )}
         </For>
       </NavContainer>
     </MenuContainer>
@@ -50,7 +117,7 @@ const NavContainer = tw.div`
   [-webkit-tap-highlight-color:rgba(0,0,0,0)]
 `
 
-const Bar = (p: { index: number | undefined }) => {
+const Bar = (p: { index: number | undefined; transitionDuration: number }) => {
   const clipPath$ = useClipPath()
 
   const isDesktop$ = useBreakpoint('md')
@@ -68,9 +135,8 @@ const Bar = (p: { index: number | undefined }) => {
   const Shared = tw.div`
     w-full h-[--nav-height]
     absolute 
-    [transition:translate_0.2s_ease-out]
+    [transition:translate_var(--transition-duration)_ease-out]
   `
-
   const BackdropBorder = tw(Shared)`
     bottom-[1.5px] md:bottom-auto md:left-[1.5px] 
     bg-[#7ff6ff40]
@@ -83,7 +149,10 @@ const Bar = (p: { index: number | undefined }) => {
 
   return (
     <div
-      style={{ '--nav-height': `${NAV_HEIGHT}px` }}
+      style={{
+        '--nav-height': `${NAV_HEIGHT}px`,
+        '--transition-duration': `${p.transitionDuration}ms`,
+      }}
       /* adjust for border because overflow-x otherwise cuts the top for some reason */
       class={tw`
           [--size:calc(100%+2px)]

@@ -10,22 +10,21 @@ type IconBaseProps = {
   name?: string
   children: JSX.Element
   onActivate?: () => void
-}
+  isActive: boolean
+} & Pick<JSX.CustomAttributes<HTMLDivElement>, 'ref'>
+
 const NavIconBase = (p: IconBaseProps): JSX.Element => {
   const removeSlashes = (str: string) => str.replace('/', '')
   const name = () => p.name ?? removeSlashes(p.href)
 
   const location$ = useLocation()
-  const isActivated$ = () => location$.pathname === p.href
+  const isCurrent$ = () => location$.pathname === p.href
 
-  createRenderEffect(
-    on(isActivated$, isActive => {
-      isActive && p.onActivate?.()
-    }),
-  )
+  createRenderEffect(on(isCurrent$, isCurrent => isCurrent && p.onActivate?.()))
 
   return (
     <div
+      ref={p.ref}
       classList={{
         [tw`
           size-[50px]
@@ -36,7 +35,7 @@ const NavIconBase = (p: IconBaseProps): JSX.Element => {
         [tw`
           md:flex md:justify-center md:items-center 
           [transform:translateY(-20px)] md:[transform:translateX(27px)]
-        `]: isActivated$(),
+        `]: p.isActive,
       }}
     >
       <NavLink
@@ -55,9 +54,9 @@ const NavIconBase = (p: IconBaseProps): JSX.Element => {
             md:bg-highlight md:size-[35px] md:rounded-circle 
             md:text-background
             md:flex md:justify-center md:items-center
-          `]: isActivated$(),
+          `]: p.isActive,
           // make sure icon descriptions on hover don't mess up activation transition
-          ['group']: !isActivated$(),
+          ['group']: !p.isActive,
         }}
         aria-label={`nav-menu--${name()}`}
         noScroll
@@ -94,30 +93,30 @@ const NavIconText = tw.div`
 
 const StyledIcon = tw.i`md:desktopHover:group-hover:opacity-0`
 
-type Props = Pick<IconBaseProps, 'onActivate'>
+type Props = Pick<IconBaseProps, 'onActivate' | 'ref' | 'isActive'>
 export const NavIcon = {
   Home: (p: Props) => (
-    <NavIconBase href="/" end name="home" onActivate={p.onActivate}>
+    <NavIconBase href="/" end name="home" {...p}>
       <StyledIcon as={IconHome} />
     </NavIconBase>
   ),
   About: (p: Props) => (
-    <NavIconBase href="/about" onActivate={p.onActivate}>
+    <NavIconBase href="/about" {...p}>
       <StyledIcon as={IconUser} />
     </NavIconBase>
   ),
   Skills: (p: Props) => (
-    <NavIconBase href="/skills" onActivate={p.onActivate}>
+    <NavIconBase href="/skills" {...p}>
       <StyledIcon as={IconCog} />
     </NavIconBase>
   ),
   Projects: (p: Props) => (
-    <NavIconBase href="/projects" onActivate={p.onActivate}>
+    <NavIconBase href="/projects" {...p}>
       <StyledIcon as={IconLaptop} class="size-[1.05em]" />
     </NavIconBase>
   ),
   Contact: (p: Props) => (
-    <NavIconBase href="/contact" onActivate={p.onActivate}>
+    <NavIconBase href="/contact" {...p}>
       <StyledIcon as={IconEnvelope} />
     </NavIconBase>
   ),
