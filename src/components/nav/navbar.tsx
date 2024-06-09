@@ -98,6 +98,7 @@ export const Navbar = () => {
                     {
                       duration: speed + 200,
                       delay: order * speed * 0.8,
+                      easing: 'ease-out',
                     },
                   )
                 })
