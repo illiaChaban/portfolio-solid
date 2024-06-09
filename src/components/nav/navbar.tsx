@@ -111,8 +111,7 @@ export const Navbar = () => {
   )
 }
 
-const NavContainer = withStyle(
-  { '--nav-size': `${NAV_LENGTH}px` },
+const NavContainer = withStyle({ '--nav-size': `${NAV_LENGTH}px` })(
   tw.div`
     flex justify-around items-center 
     text-center w-[--nav-size]
@@ -136,11 +135,10 @@ const Bar = (p: { index: number | undefined; transitionDuration: number }) => {
     }
   }
 
-  const Shared = withStyle(
-    {
-      '--nav-height': `${NAV_HEIGHT}px`,
-      '--transition-duration': () => `${p.transitionDuration}ms`,
-    },
+  const Shared = withStyle({
+    '--nav-height': `${NAV_HEIGHT}px`,
+    '--transition-duration': () => `${p.transitionDuration}ms`,
+  })(
     tw.div`
       w-full h-[--nav-height]
       absolute 
