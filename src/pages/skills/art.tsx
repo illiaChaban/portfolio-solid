@@ -18,13 +18,22 @@ export default () => {
       <canvas width="500" height="500" id={canvasId}>
         <ul id={listId}>
           <ListLink
-            size={2}
+            size={3}
+            href="https://web.dev/explore/progressive-web-apps"
+          >
+            PWA
+          </ListLink>
+          <ListLink
+            size={3}
             href="https://en.wikipedia.org/wiki/React_(web_framework)"
           >
             React
           </ListLink>
+          <ListLink size={2} href="https://www.solidjs.com/">
+            SolidJS
+          </ListLink>
           <ListLink
-            size={2}
+            size={1}
             href="https://en.wikipedia.org/wiki/Angular_(web_framework)"
           >
             Angular
@@ -62,12 +71,6 @@ export default () => {
           </ListLink>
           <ListLink size={2} href="https://en.wikipedia.org/wiki/Git">
             Git
-          </ListLink>
-          <ListLink href="https://en.wikipedia.org/wiki/Bootstrap_(front-end_framework)">
-            Bootstrap
-          </ListLink>
-          <ListLink size={1} href="https://en.wikipedia.org/wiki/JQuery">
-            jQuery
           </ListLink>
           <ListLink href="http://mongoosejs.com/">MongoDB</ListLink>
           <ListLink href="https://en.wikipedia.org/wiki/PostgreSQL">

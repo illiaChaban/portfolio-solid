@@ -17,7 +17,7 @@ export default (p: { contentRef: Ref<HTMLElement> }) => {
 
           <Header />
           <Subheading>
-            Full Stack | TypeScript | React | Angular | C#
+            Full Stack | PWA | TypeScript | React | Tailwind
           </Subheading>
           <Button page="about" class="mt-5 mb-[45px]">
             More About Me
@@ -81,6 +81,8 @@ const Header = () => {
 const Subheading = tw.h3`
   text-lg text-text-subtle1 font-mono font-normal
   m-0 tracking-[-1px]
+  text-nowrap text-ellipsis overflow-hidden
+  [max-width:calc(100vw-32px)]
 `
 
 const WrapLetterInSpan = (p: { children: string }) => (
