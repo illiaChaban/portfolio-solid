@@ -17,7 +17,7 @@ export default (p: { contentRef: Ref<HTMLElement> }) => {
 
           <Header />
           <Subheading>
-            Full Stack | PWA | TypeScript | React | Tailwind
+            Full Stack | PWA | TypeScript | React | Tailwind | C#
           </Subheading>
           <Button page="about" class="mt-5 mb-[45px]">
             More About Me
