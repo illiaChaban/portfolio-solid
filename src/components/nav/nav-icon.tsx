@@ -43,7 +43,7 @@ const NavIconBase = (p: IconBaseProps): JSX.Element => {
         end={p.end}
         classList={{
           [tw`
-            text-[inherit] no-underline 
+            no-underline 
             relative inline-block 
             [font-size:22px] font-mono
             h-[51px] [line-height:51px] w-full
@@ -56,7 +56,7 @@ const NavIconBase = (p: IconBaseProps): JSX.Element => {
             md:flex md:justify-center md:items-center
           `]: p.isActive,
           // make sure icon descriptions on hover don't mess up activation transition
-          ['group']: !p.isActive,
+          [tw`group text-opacity-75 text-text-subtle1`]: !p.isActive,
         }}
         aria-label={`nav-menu--${name()}`}
         noScroll
