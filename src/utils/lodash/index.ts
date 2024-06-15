@@ -41,12 +41,6 @@ export const isString = (val: unknown): val is string => {
   return typeof val === 'string'
 }
 
-export const negate = <TArgs extends any[]>(
-  fn: (...args: TArgs) => boolean,
-): ((...args: TArgs) => boolean) => {
-  return (...args) => !fn(...args)
-}
-
 export const pick = <T extends AnyObj, TKeys extends keyof T>(
   obj: T,
   keys: TKeys[],
@@ -58,12 +52,6 @@ export const pick = <T extends AnyObj, TKeys extends keyof T>(
 }
 
 export const scope = <T>(callback: () => T): T => callback()
-
-export const combine =
-  <T>(...callbacks: ((arg: T) => unknown)[]) =>
-  (arg: T): void => {
-    return callbacks.forEach(cb => cb(arg))
-  }
 
 export const tap =
   <T>(cb: (arg: T) => unknown) =>
